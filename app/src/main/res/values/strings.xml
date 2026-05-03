@@ -4,4 +4,7 @@
     <string name="hint_password">Password</string>
     <string name="btn_login">Login / Sign In</string>
     <string name="btn_guest">Sign In as Guest</string>
+
+    <string name="btn_wishlist">Η Wishlist μου</string>
+    <string name="btn_suggestions">Πρότεινέ μου δώρο</string>
 </resources>
