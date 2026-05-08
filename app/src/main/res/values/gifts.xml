@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="initial_gifts">
+        <item>Mechanical Keyboard|100.0|Gaming|Boyfriend</item>
+        <item>Air Fryer|120.0|Cooking|Mum</item>
+        <item>Yoga Mat|30.0|Fitness|Friend</item>
+        <item>Kindle E-reader|90.0|Reading|Girlfriend</item>
+        <item>Noise Cancelling Headphones|250.0|Tech|Dad</item>
+        <item>Leather Journal|25.0|Reading|Friend</item>
+        <item>Gaming Mouse|60.0|Gaming|Boyfriend</item>
+        <item>Chef Knife Set|80.0|Cooking|Dad</item>
+        <item>Smart Watch|199.0|Tech|Girlfriend</item>
+        <item>Resistance Bands|15.0|Fitness|Mum</item>
+    </string-array>
+</resources>
