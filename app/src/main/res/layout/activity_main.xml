@@ -9,77 +9,74 @@
 
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
         android:contentDescription="@string/app_name"
-        android:padding="16dp"
+        android:padding="32dp"
         android:scaleType="centerInside"
         android:src="@drawable/gifty_logo"
+        app:layout_constraintBottom_toTopOf="@+id/etUsername"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:hint="@string/hint_username"
-        android:textColorHint="#888888"
-        android:inputType="textPersonName"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintTop_toBottomOf="@id/ivLogo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginBottom="16dp"
+        android:hint="@string/hint_username"
+        android:inputType="textPersonName"
+        android:padding="16dp"
+        android:textColorHint="#888888"
+        app:layout_constraintBottom_toTopOf="@+id/etPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Πεδίο Password -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:textColorHint="#888888"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/etUsername"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginBottom="24dp"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColorHint="#888888"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Κουμπί Login -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/btn_login"
-        android:onClick="handleLogin"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="#2b4287"
-        app:layout_constraintTop_toBottomOf="@id/etPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:onClick="handleLogin"
+        android:text="@string/btn_login"
+        app:layout_constraintBottom_toTopOf="@+id/btnGuest"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Κουμπί Guest -->
     <Button
         android:id="@+id/btnGuest"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:onClick="handleGuestLogin"
         android:text="@string/btn_guest"
         android:textAllCaps="false"
-        android:onClick="handleGuestLogin"
         android:textColor="#2b4287"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin"
-        app:layout_constraintStart_toStartOf="@+id/btnLogin"
-        app:layout_constraintEnd_toEndOf="@+id/btnLogin" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="@+id/btnLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
