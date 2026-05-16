@@ -16,6 +16,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
+
+// ΠΡΟΣΤΕΘΗΚΑΝ ΤΑ IMPORTS ΓΙΑ ΝΑ ΜΗΝ ΚΟΚΚΙΝΙΖΟΥΝ ΟΙ ΚΛΑΣΕΙΣ ΣΟΥ
+import com.example.androidapp.adapters.ReminderAdapter;
+import com.example.androidapp.model.ReminderModel;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,7 +37,7 @@ public class RemindersActivity extends AppCompatActivity {
     private FloatingActionButton fabAddReminder;
 
     @Override
-    protected void Bundle) {
+    protected void onCreate(Bundle savedInstanceState) { // Η ΔΗΛΩΣΗ ΔΙΟΡΘΩΘΗΚΕ ΕΔΩ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminders);
 
@@ -47,9 +52,11 @@ public class RemindersActivity extends AppCompatActivity {
         checkCalendarPermissions();
 
         // Παράδειγμα ενέργειας στο FAB κουμπί
-        fabAddReminder.setOnClickListener(v -> {
-            Toast.makeText(RemindersActivity.this, "Εδώ θα ανοίγει το παράθυρο προσθήκης", Toast.LENGTH_SHORT).show();
-        });
+        if (fabAddReminder != null) {
+            fabAddReminder.setOnClickListener(v -> {
+                Toast.makeText(RemindersActivity.this, "Εδώ θα ανοίγει το παράθυρο προσθήκης", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     private void checkCalendarPermissions() {
@@ -80,7 +87,7 @@ public class RemindersActivity extends AppCompatActivity {
                 String title = cursor.getString(1);
                 long dtStart = cursor.getLong(2);
 
-                // Μετατροπή των Milliseconds σε κανονική ημερομηνία (π.χ. 16 May 2026)
+                // Μετατροπή των Milliseconds σε κανονική ημερομηνία
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(dtStart);
                 SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
@@ -93,7 +100,6 @@ public class RemindersActivity extends AppCompatActivity {
 
         // Σύνδεση με τον Adapter
         adapter = new ReminderAdapter(reminderList, position -> {
-            // Κώδικας για διαγραφή (τοπικά ή από το ημερολόγιο)
             reminderList.remove(position);
             adapter.notifyItemRemoved(position);
         });

@@ -1,4 +1,4 @@
-package com.example.androidapp.ui;
+package com.example.androidapp.adapters.;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.androidapp.R; // Ή το δικό σου R path
+import com.example.androidapp.R;
 import java.util.ArrayList;
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {

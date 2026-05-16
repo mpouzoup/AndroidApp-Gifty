@@ -94,7 +94,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@android:drawable/abc_ic_ab_back_material"
+                    android:src="@android:drawable/ic_media_next"
                     android:rotation="180"
                     app:tint="#CBD5E1"/>
             </LinearLayout>
@@ -126,9 +126,41 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@android:drawable/abc_ic_ab_back_material"
+                    android:src="@android:drawable/ic_media_next"
                     android:rotation="180"
                     app:tint="#CBD5E1"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="1dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Log Out"
+                    android:textSize="16sp"
+                    android:textColor="#E11D48"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"/>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@android:drawable/ic_lock_power_off"
+                    app:tint="#E11D48"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
