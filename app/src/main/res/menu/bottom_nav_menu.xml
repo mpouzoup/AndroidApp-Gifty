@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/nav_search"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_search"
         android:title="Finder" />
 
     <item
@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/nav_profile"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_menu_edit"
         android:title="Profile" />
 
 </menu>
