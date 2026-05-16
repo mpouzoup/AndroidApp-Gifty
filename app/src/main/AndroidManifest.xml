@@ -20,6 +20,9 @@
             android:name=".ui.HomeActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
