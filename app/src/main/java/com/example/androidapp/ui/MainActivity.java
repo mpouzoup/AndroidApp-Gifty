@@ -1,4 +1,4 @@
-package com.example.androidapp;
+package com.example.androidapp.ui;
 
 import android.content.Intent; // Απαραίτητο για την αλλαγή οθόνης
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.androidapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.androidapp;
+package com.example.androidapp.ui;
 
 import android.os.Bundle;
 
@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 import android.widget.Toast;
 import android.view.View;
+
+import com.example.androidapp.R;
 
 public class HomeActivity extends AppCompatActivity {
 

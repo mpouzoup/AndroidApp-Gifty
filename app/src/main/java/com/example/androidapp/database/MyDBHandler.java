@@ -1,4 +1,4 @@
-package com.example.androidapp;
+package com.example.androidapp.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.androidapp.R;
 import com.example.androidapp.model.GiftSuggestion;
 import com.example.androidapp.model.WishlistItem;
 import java.util.ArrayList;
