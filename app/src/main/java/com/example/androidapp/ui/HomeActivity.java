@@ -14,7 +14,7 @@ import android.view.View;
 import com.example.androidapp.R;
 
 public class HomeActivity extends AppCompatActivity {
-
+//rouogh;anrg;oh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
