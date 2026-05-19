@@ -1,15 +1,11 @@
 package com.example.androidapp.ui;
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.example.androidapp.adapters.WishlistAdapter;
-import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.R;
-import com.example.androidapp.model.WishlistItem;
-import java.util.List;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class WishlistActivity extends AppCompatActivity {
 
@@ -18,26 +14,30 @@ public class WishlistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wishlist);
 
-        RecyclerView recyclerView = findViewById(R.id.rvWishlist);
-        LinearLayout emptyState = findViewById(R.id.emptyStateLayout);
+        // Ρύθμιση της κάτω μπάρας πλοήγησης
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setSelectedItemId(R.id.nav_wishlist); // Ανάβει το εικονίδιο Wishlist
 
-        MyDBHandler dbHandler = new MyDBHandler(this);
-        List<WishlistItem> items = dbHandler.getAllWishlist();
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int id = item.getItemId();
 
-        if (items.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            emptyState.setVisibility(View.VISIBLE);
-        } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyState.setVisibility(View.GONE);
-
-            final WishlistAdapter adapter = new WishlistAdapter(items, position -> {
-                dbHandler.deleteGift(items.get(position).getId());
-                items.remove(position);
+                if (id == R.id.nav_wishlist) {
+                    return true; // Είμαστε ήδη εδώ
+                } else if (id == R.id.nav_home) {
+                    startActivity(new Intent(WishlistActivity.this, HomeActivity.class));
+                    finish();
+                    return true;
+                } else if (id == R.id.nav_search) {
+                    Toast.makeText(this, "Finder coming soon!", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (id == R.id.nav_profile) {
+                    startActivity(new Intent(WishlistActivity.this, ProfileActivity.class));
+                    finish();
+                    return true;
+                }
+                return false;
             });
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(adapter);
         }
     }
 }
