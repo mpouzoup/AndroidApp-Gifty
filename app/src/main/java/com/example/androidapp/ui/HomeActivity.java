@@ -22,7 +22,7 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        View mainView = findViewById(R.id.headerLayout); // Ή όποιο ID έχεις ως root
+        View mainView = findViewById(R.id.headerLayout);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -33,14 +33,13 @@ public class HomeActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
 
-        // Ορίζουμε ότι στην αρχική οθόνη, το εικονίδιο Home θα είναι προ-επιλεγμένο
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                return true; // Είσαι ήδη στο Home, μην κάνεις τίποτα
+                return true;
             } else if (id == R.id.nav_search) {
                 // Όταν φτιάξεις το GiftFinderActivity, ξεσχολίασε την επόμενη γραμμή:
                 // startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));

@@ -8,7 +8,7 @@ import com.example.androidapp.R;
 public class AboutHelpActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { // Η δήλωση διορθώθηκε πλήρως εδώ
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_help);
 
