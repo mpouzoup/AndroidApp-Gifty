@@ -119,11 +119,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return wishlist;
     }
 
-    public void deleteGift(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_GIFTS, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
-        db.close();
-    }
+//    public void deleteGift(int id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        db.delete(TABLE_GIFTS, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+//        db.close();
+//    }
 
     public List<GiftSuggestion> getRecommendedGifts(String interest, String target) {
         List<GiftSuggestion> suggestions = new ArrayList<>();
