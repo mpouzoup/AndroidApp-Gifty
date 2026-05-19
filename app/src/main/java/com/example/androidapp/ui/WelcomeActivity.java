@@ -20,12 +20,12 @@ public class WelcomeActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Αυτός ο κώδικας θα εκτελεστεί ΜΟΛΙΣ περάσουν τα 3 δευτερόλεπτα
-                Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                 startActivity(intent);
 
                 // Κλείνουμε τη WelcomeActivity για να μην μπορεί ο χρήστης να γυρίσει εδώ με το Back
                 finish();
+
             }
         }, SPLASH_TIME_OUT);
     }
