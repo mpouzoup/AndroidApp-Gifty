@@ -1,4 +1,4 @@
-package com.example.androidapp.adapters.;
+package com.example.androidapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
+import com.example.androidapp.model.ReminderModel;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
 
@@ -35,18 +40,26 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     public void onBindViewHolder(@NonNull ReminderViewHolder holder, int position) {
         ReminderModel currentItem = reminderList.get(position);
         holder.tvEvent.setText(currentItem.getEventName());
-        holder.tvDate.setText(currentItem.getEventDate());
+
+        if (currentItem.getEventDate() == null || currentItem.getEventDate().isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String currentDate = sdf.format(new Date());
+            holder.tvDate.setText(currentDate);
+        } else {
+            holder.tvDate.setText(currentItem.getEventDate());
+        }
 
         holder.ivDelete.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onDeleteClick(position);
+            int currentPosition = holder.getAdapterPosition();
+            if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
+                listener.onDeleteClick(currentPosition);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return reminderList.size();
+        return reminderList != null ? reminderList.size() : 0;
     }
 
     public static class ReminderViewHolder extends RecyclerView.ViewHolder {

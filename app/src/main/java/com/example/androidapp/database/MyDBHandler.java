@@ -19,7 +19,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GiftGuider.db";
     private static final int DATABASE_VERSION = 1;
 
-    // ΠΙΝΑΚΑΣ USERS
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_USERNAME = "username";
