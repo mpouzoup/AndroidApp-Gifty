@@ -46,13 +46,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Αυτή η μέθοδος καλείται αυτόματα για το κουμπί "Guest" (android:onClick="handleGuestLogin")
-     */
     public void handleGuestLogin(View view) {
-        Toast.makeText(this, "Είσοδος ως επισκέπτης", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(intent);
-        finish();
     }
 }
