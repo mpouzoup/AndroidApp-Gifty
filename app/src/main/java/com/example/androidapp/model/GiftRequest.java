@@ -1,13 +1,15 @@
 package com.example.androidapp.model;
 
+import java.util.ArrayList;
+
 public class GiftRequest {
     private int age;
     private double budget;
-    private String hobby;
+    private ArrayList<String> hobby;
     private String occasion;
     private String relationship;
 
-    public GiftRequest(int age,double budget,String hobby,String occasion,String relationship)
+    public GiftRequest(int age,double budget,ArrayList<String> hobby,String occasion,String relationship)
     {
         this.age=age;
         this.budget=budget;
@@ -18,7 +20,7 @@ public class GiftRequest {
 
     public int getAge() {return age;}
     public double getBudget() {return budget;}
-    public String getHobby() {return hobby;}
+    public ArrayList<String> getHobby() {return hobby;}
     public String getOccasion() {return occasion;}
     public String getRelationship() {return relationship;}
 

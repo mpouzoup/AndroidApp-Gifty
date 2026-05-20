@@ -14,7 +14,7 @@ public class InputValidator {
         if (request.getBudget()<=0)
             return false;
 
-        if (isEmpty(request.getHobby()))
+        if (request.getHobby() == null || request.getHobby().isEmpty())
             return false;
 
         if (isEmpty(request.getOccasion()))
@@ -29,9 +29,9 @@ public class InputValidator {
 
     private boolean isEmpty(String value)
     {
-        boolean empty=true;
+        boolean empty=false;
         if (value==null || value.trim().isEmpty())
-            empty=false;
+            empty=true;
 
         return empty;
     }

@@ -14,7 +14,7 @@ public class GiftSuggestion {
     private String description;
     private int score;
 
-    GiftSuggestion(int id,String title,String category,double maxPrice,double minPrice,String hobby,String occasion,String relationship,int age,String description)
+    public GiftSuggestion(int id,String title,String category,double maxPrice,double minPrice,String hobby,String occasion,String relationship,int age,String description)
     {
         this.id=id;
         this.title=title;
