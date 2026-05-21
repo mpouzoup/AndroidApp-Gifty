@@ -50,7 +50,7 @@
                             android:id="@+id/tvDetailName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_parentStart="true"
+                            android:layout_alignParentStart="true"
                             android:layout_toStartOf="@+id/tvDetailPrice"
                             android:fontFamily="sans-serif-black"
                             android:text="Premium Wireless Headphones"
