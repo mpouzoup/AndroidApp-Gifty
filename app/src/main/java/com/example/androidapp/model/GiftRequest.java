@@ -8,6 +8,9 @@ public class GiftRequest {
     private String relationship;
     private int age;
 
+    public GiftRequest() {
+    }
+
     public GiftRequest(String category, double maxPrice, String hobby, String occasion, String relationship, int age) {
         this.category = category;
         this.maxPrice = maxPrice;
@@ -24,4 +27,7 @@ public class GiftRequest {
     public String getOccasion() { return occasion; }
     public String getRelationship() { return relationship; }
     public int getAge() { return age; }
+
+    public void setCategory(String category) { this.category = category; }
+    public void setMaxPrice(double maxPrice) { this.maxPrice = maxPrice; }
 }
