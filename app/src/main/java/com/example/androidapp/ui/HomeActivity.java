@@ -41,12 +41,9 @@ public class HomeActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 return true;
             } else if (id == R.id.nav_search) {
-                // Όταν φτιάξεις το GiftFinderActivity, ξεσχολίασε την επόμενη γραμμή:
-                // startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
-                Toast.makeText(this, "Άνοιγμα Gift Finder", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
                 return true;
             } else if (id == R.id.nav_wishlist) {
-                // Άνοιγμα της Wishlist από την κάτω μπάρα
                 startActivity(new Intent(HomeActivity.this, WishlistActivity.class));
                 return true;
             } else if (id == R.id.nav_profile) {
