@@ -60,6 +60,10 @@
             android:name=".ui.AddReminderActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.GiftResultsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
