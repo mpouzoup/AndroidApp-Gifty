@@ -39,6 +39,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String TABLE_WISHLIST = "wishlist";
     private static final String COLUMN_WISH_ID = "wish_id";
 
+    private static final String TABLE_REMINDERS = "reminders";
+    private static final String COLUMN_REMINDER_ID = "reminder_id";
+    private static final String COLUMN_REMINDER_EVENT = "event_name";
+    private static final String COLUMN_REMINDER_DATE = "event_date";
+
     private Context myContext;
 
     public MyDBHandler(Context context) {
@@ -73,6 +78,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_GIFT_ID + " INTEGER" + ")";
         db.execSQL(CREATE_WISHLIST_TABLE);
 
+        // ΠΡΟΣΘΗΚΗ: Δημιουργία του πίνακα Reminders
+        String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "(" +
+                COLUMN_REMINDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_USER_ID + " INTEGER," +
+                COLUMN_REMINDER_EVENT + " TEXT," +
+                COLUMN_REMINDER_DATE + " TEXT" + ")";
+        db.execSQL(CREATE_REMINDERS_TABLE);
+
         seedDatabase(db);
     }
 
@@ -81,6 +94,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GIFTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WISHLIST);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERS);
         onCreate(db);
     }
 
@@ -128,6 +142,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return userId;
+    }
+
+    public boolean addReminder(int userId, String eventName, String eventDate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_ID, userId);
+        values.put(COLUMN_REMINDER_EVENT, eventName);
+        values.put(COLUMN_REMINDER_DATE, eventDate);
+
+        long id = db.insert(TABLE_REMINDERS, null, values);
+        db.close();
+        return id != -1;
     }
 
     public List<Gift> getRecommendedGifts(GiftRequest request) {

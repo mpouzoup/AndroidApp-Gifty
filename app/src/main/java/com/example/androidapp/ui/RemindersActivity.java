@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
 
-// ΠΡΟΣΤΕΘΗΚΑΝ ΤΑ IMPORTS ΓΙΑ ΝΑ ΜΗΝ ΚΟΚΚΙΝΙΖΟΥΝ ΟΙ ΚΛΑΣΕΙΣ ΣΟΥ
 import com.example.androidapp.adapters.ReminderAdapter;
 import com.example.androidapp.model.ReminderModel;
 
@@ -36,8 +35,10 @@ public class RemindersActivity extends AppCompatActivity {
     private CalendarView calendarView;
     private FloatingActionButton fabAddReminder;
 
+    private int currentUserId = 1;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) { // Η ΔΗΛΩΣΗ ΔΙΟΡΘΩΘΗΚΕ ΕΔΩ
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminders);
 
@@ -48,10 +49,8 @@ public class RemindersActivity extends AppCompatActivity {
         reminderList = new ArrayList<>();
         rvReminders.setLayoutManager(new LinearLayoutManager(this));
 
-        // Έλεγχος αδειών για το Real-Time Ημερολόγιο
         checkCalendarPermissions();
 
-        // Παράδειγμα ενέργειας στο FAB κουμπί
         if (fabAddReminder != null) {
             fabAddReminder.setOnClickListener(v -> {
                 Toast.makeText(RemindersActivity.this, "Εδώ θα ανοίγει το παράθυρο προσθήκης", Toast.LENGTH_SHORT).show();
@@ -72,7 +71,6 @@ public class RemindersActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         Uri uri = CalendarContract.Events.CONTENT_URI;
 
-        // Φιλτράρουμε για να πάρουμε γεγονότα από σήμερα και μετά
         String selection = CalendarContract.Events.DTSTART + " >= ?";
         String[] selectionArgs = new String[]{String.valueOf(Calendar.getInstance().getTimeInMillis())};
         String sortOrder = CalendarContract.Events.DTSTART + " ASC";
@@ -83,22 +81,27 @@ public class RemindersActivity extends AppCompatActivity {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
+                String calendarLogId = cursor.getString(0);
                 String title = cursor.getString(1);
                 long dtStart = cursor.getLong(2);
 
-                // Μετατροπή των Milliseconds σε κανονική ημερομηνία
+                int parsedId;
+                try {
+                    parsedId = Integer.parseInt(calendarLogId);
+                } catch (NumberFormatException e) {
+                    parsedId = calendarLogId.hashCode();
+                }
+
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(dtStart);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 String dateString = formatter.format(calendar.getTime());
 
-                reminderList.add(new ReminderModel(id, title, dateString));
+                reminderList.add(new ReminderModel(parsedId, currentUserId, title, dateString));
             }
             cursor.close();
         }
 
-        // Σύνδεση με τον Adapter
         adapter = new ReminderAdapter(reminderList, position -> {
             reminderList.remove(position);
             adapter.notifyItemRemoved(position);

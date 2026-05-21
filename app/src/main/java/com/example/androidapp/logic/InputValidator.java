@@ -11,7 +11,7 @@ public class InputValidator {
         if (request.getAge()<=0 || request.getAge()>120)
             return false;
 
-        if (request.getBudget()<=0)
+        if (request.getMaxPrice()<=0)
             return false;
 
         if (isEmpty(request.getHobby()))
