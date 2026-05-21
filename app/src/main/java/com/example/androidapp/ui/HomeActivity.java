@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidapp.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView; // Απαραίτητο Import!
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -22,32 +22,32 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        // Ρύθμιση για να μην κρύβεται η εφαρμογή κάτω από το status bar του κινητού
         View mainView = findViewById(R.id.headerLayout);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                // Κρατάμε μόνο το top padding για να μην επηρεαστεί το bottom navigation
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
                 return insets;
             });
         }
 
-        // ΜΕΣΑ ΣΤΗΝ HomeActivity.java (στο onCreate):
-
+        // Αρχικοποίηση του Bottom Navigation Menu
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
 
-            // 1. Ενημερώνουμε την μπάρα ότι ΕΙΜΑΣΤΕ ήδη στο Home, για να ανάψει το σωστό εικονίδιο
+            // Ενημερώνουμε την μπάρα ότι βρισκόμαστε ήδη στην αρχική σελίδα
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
-            // 2. Ορίζουμε τι θα γίνεται όταν πατάμε τα κουμπιά
+            // Διαχείριση των κλικ στα εικονίδια της μπάρας
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_home) {
-                    // Είμαστε ήδη εδώ, οπότε δεν χρειάζεται να ξαναανοίξουμε την ίδια Activity
-                    return true;
+                    return true; // Είμαστε ήδη εδώ
                 } else if (id == R.id.nav_search) {
-                    // Άνοιγμα του Finder
+                    // Άνοιγμα της Activity του Gift Finder
                     startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
                     return true;
                 } else if (id == R.id.nav_wishlist) {
@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(new Intent(HomeActivity.this, WishlistActivity.class));
                     return true;
                 } else if (id == R.id.nav_profile) {
-                    // 🟢 ΕΔΩ ΗΤΑΝ ΤΟ ΛΑΘΟΣ! Τώρα το κουμπί Profile θα σε στέλνει κανονικά στην ProfileActivity
+                    // Άνοιγμα του Προφίλ
                     startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
                     return true;
                 }
@@ -64,13 +64,20 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Κλικ στο μεγάλο κουμπί "Wishlist" μέσα στην οθόνη
+     */
     public void openWishlist(View view) {
         Intent intent = new Intent(this, WishlistActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Κλικ στο μεγάλο κουμπί "Find Gifts" / "Προτάσεις" στη μέση της οθόνης
+     */
     public void openSuggestions(View view) {
-        Toast.makeText(this, "Αναζήτηση Προτάσεων...", Toast.LENGTH_SHORT).show();
+        // 🟢 ΔΙΟΡΘΩΣΗ: Αντί για Toast, στέλνουμε τον χρήστη κατευθείαν στο Gift Finder!
+        Intent intent = new Intent(this, GiftFinderActivity.class);
+        startActivity(intent);
     }
 }
