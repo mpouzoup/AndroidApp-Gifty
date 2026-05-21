@@ -2,6 +2,7 @@ package com.example.androidapp.logic;
 
 import com.example.androidapp.model.GiftRequest;
 import com.example.androidapp.model.GiftSuggestion;
+import com.example.androidapp.model.WishlistItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,6 +60,12 @@ public class GiftRecommendationService {
         if (matches(request.getOccasion(), gift.getOccasion()))
             score += 10;
 
+        int ageDifference=Math.abs(request.getAge()-gift.getAge());
+        if (ageDifference <= 5)
+            score+=10;
+        else if (ageDifference <= 10)
+            score+=5;
+
 
 
         return score;
@@ -96,4 +103,36 @@ public class GiftRecommendationService {
 
         return match;
     }
+
+    public ArrayList<WishlistItem> suggestFromWishlist(double budget,ArrayList<WishlistItem> wishlist)
+    {
+        ArrayList<WishlistItem> results=new ArrayList<>();
+
+        if (budget <= 0 || wishlist == null)
+            return results;
+
+        for (WishlistItem item : wishlist)
+            if (item.getPrice()<=budget)
+                results.add(item);
+
+
+
+        Collections.sort(results,new Comparator<WishlistItem>()
+        {
+            @Override
+            public int compare(WishlistItem w1,WishlistItem w2)
+            {
+                int priorityCompare=Integer.compare(w2.getPriority(),w1.getPriority());
+
+                if (priorityCompare != 0)
+                    return priorityCompare;
+
+                return Double.compare(w1.getPrice(),w2.getPrice());
+            }});
+
+        return results;
+    }
+
+
+
 }
