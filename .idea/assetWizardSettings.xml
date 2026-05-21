@@ -79,8 +79,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\ouran\Downloads\Untitled_Artwork.png" />
-                                                <entry key="scalingPercent" value="133" />
+                                                <entry key="imagePath" value="C:\Users\ouran\Downloads\Untitled_Artwork (1).png" />
+                                                <entry key="scalingPercent" value="70" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -157,7 +157,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="ff9341" />
+                                      <entry key="backgroundColor" value="18181b" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
                                     </map>
                                   </option>
                                 </PersistentState>
