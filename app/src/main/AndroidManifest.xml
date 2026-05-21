@@ -55,6 +55,11 @@
 
         <activity android:name=".ui.GiftFinderActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.AddReminderActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
