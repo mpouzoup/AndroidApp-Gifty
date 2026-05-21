@@ -41,6 +41,8 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
+    implementation "androidx.core:core-splashscreen:1.0.1"
+
     // Για τις λίστες προϊόντων και την εμφάνιση σε κάρτες (Διάλεξη 7)
     implementation 'androidx.recyclerview:recyclerview:1.3.0'
     implementation 'androidx.cardview:cardview:1.0.0'
