@@ -24,7 +24,7 @@ public class GiftFinderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gift_finder); // Σιγουρέψου ότι το XML σου λέγεται activity_gift_finder.xml
+        setContentView(R.layout.activity_search);
 
         // 1. Αρχικοποίηση των UI στοιχείων
         etRecipientAge = findViewById(R.id.etRecipientAge);
