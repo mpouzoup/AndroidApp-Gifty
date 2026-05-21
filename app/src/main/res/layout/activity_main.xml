@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light_blue"
+    android:background="#FFEBEA"
     tools:context=".ui.MainActivity">
 
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="0dp"
-        android:layout_height="250dp"
+        android:layout_height="0dp"
         android:contentDescription="@string/app_name"
-        android:padding="32dp"
         android:scaleType="centerInside"
         android:src="@drawable/gifty_logo"
         app:layout_constraintBottom_toTopOf="@+id/etUsername"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent="1" />
 
     <EditText
         android:id="@+id/etUsername"
@@ -57,13 +59,28 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:backgroundTint="#2b4287"
         android:onClick="handleLogin"
-        android:text="@string/btn_login"
-        app:layout_constraintBottom_toTopOf="@+id/btnGuest"
+        android:text="Sign In"
+        app:layout_constraintBottom_toTopOf="@+id/btnSignUp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnSignUp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:onClick="handleSignUpNavigation"
+        android:text="Don't have an account? Sign Up"
+        android:textAllCaps="false"
+        android:textColor="#475569"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnGuest"
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="@+id/btnLogin" />
 
     <Button
         android:id="@+id/btnGuest"
@@ -72,9 +89,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:onClick="handleGuestLogin"
-        android:text="@string/btn_guest"
+        android:text="Sign in as Guest"
         android:textAllCaps="false"
         android:textColor="#2b4287"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btnLogin"
         app:layout_constraintStart_toStartOf="@+id/btnLogin" />
