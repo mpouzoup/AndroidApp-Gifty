@@ -5,25 +5,27 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.androidapp.R;
+import androidx.core.splashscreen.SplashScreen; // Import της νέας βιβλιοθήκης
 
 public class WelcomeActivity extends AppCompatActivity {
-    private static final int SPLASH_TIME_OUT = 2000;
+
+    private boolean keepSplashScreen = true;
+    private static final int DELAY_TIME = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_welcome);
+        splashScreen.setKeepOnScreenCondition(() -> keepSplashScreen);
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            keepSplashScreen = false;
 
-                finish();
-            }
-        }, SPLASH_TIME_OUT);
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }, DELAY_TIME);
     }
 }
