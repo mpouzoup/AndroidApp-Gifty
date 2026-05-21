@@ -31,27 +31,37 @@ public class HomeActivity extends AppCompatActivity {
             });
         }
 
+        // ΜΕΣΑ ΣΤΗΝ HomeActivity.java (στο onCreate):
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        if (bottomNavigationView != null) {
 
-        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+            // 1. Ενημερώνουμε την μπάρα ότι ΕΙΜΑΣΤΕ ήδη στο Home, για να ανάψει το σωστό εικονίδιο
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
+            // 2. Ορίζουμε τι θα γίνεται όταν πατάμε τα κουμπιά
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int id = item.getItemId();
 
-            if (id == R.id.nav_home) {
-                return true;
-            } else if (id == R.id.nav_search) {
-                startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
-                return true;
-            } else if (id == R.id.nav_wishlist) {
-                startActivity(new Intent(HomeActivity.this, WishlistActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Άνοιγμα Προφίλ", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
+                if (id == R.id.nav_home) {
+                    // Είμαστε ήδη εδώ, οπότε δεν χρειάζεται να ξαναανοίξουμε την ίδια Activity
+                    return true;
+                } else if (id == R.id.nav_search) {
+                    // Άνοιγμα του Finder
+                    startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
+                    return true;
+                } else if (id == R.id.nav_wishlist) {
+                    // Άνοιγμα του Wishlist
+                    startActivity(new Intent(HomeActivity.this, WishlistActivity.class));
+                    return true;
+                } else if (id == R.id.nav_profile) {
+                    // 🟢 ΕΔΩ ΗΤΑΝ ΤΟ ΛΑΘΟΣ! Τώρα το κουμπί Profile θα σε στέλνει κανονικά στην ProfileActivity
+                    startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                    return true;
+                }
+                return false;
+            });
+        }
     }
 
 
