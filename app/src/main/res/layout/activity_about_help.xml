@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC">
@@ -21,7 +22,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/abc_ic_ab_back_material"
+            android:src="@android:drawable/ic_menu_revert"
             app:tint="#2b4287"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -216,7 +217,6 @@
                             android:textStyle="bold"
                             android:textColor="#1E293B"
                             android:textSize="15sp"
-                            android:layout_getLayout="@id/headerLayout"
                             android:layout_marginStart="12dp"/>
                         <TextView
                             android:layout_width="wrap_content"

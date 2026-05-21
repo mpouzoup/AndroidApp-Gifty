@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light_blue"
@@ -72,7 +72,7 @@
                         android:text="The best gift is a piece of your heart."
                         android:textSize="16sp"
                         android:fontFamily="serif"
-                        android:italic="true"
+                        android:textStyle="italic"
                         android:textColor="#333333" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

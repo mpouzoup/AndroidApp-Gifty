@@ -25,14 +25,12 @@
                 android:layout_height="350dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/gifty_logo"
-                app:layout_gradient="@null"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-30dp"
-                android:layout_bottom_padding="24dp"
                 app:cardCornerRadius="30dp"
                 app:cardElevation="0dp"
                 app:layout_constraintTop_toBottomOf="@id/ivDetailImage">
@@ -41,7 +39,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="24dp"
+                    android:paddingBottom="24dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -51,7 +50,7 @@
                             android:id="@+id/tvDetailName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
+                            android:layout_parentStart="true"
                             android:layout_toStartOf="@+id/tvDetailPrice"
                             android:fontFamily="sans-serif-black"
                             android:text="Premium Wireless Headphones"
