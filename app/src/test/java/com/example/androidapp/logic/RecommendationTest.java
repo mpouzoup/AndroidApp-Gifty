@@ -14,46 +14,22 @@ public class RecommendationTest {
     public void testRecommendations()
     {
 
-        // ---------------------------
-        // Create hobbies
-        // ---------------------------
-
         ArrayList<String> hobby=new ArrayList<>();
 
         hobby.add("fitness");
         hobby.add("music");
 
-        // ---------------------------
-        // Create request
-        // ---------------------------
-
-        GiftRequest request = new GiftRequest(23,
+        GiftRequest request=new GiftRequest(23,
                 30,
                 hobby,
                 "birthday",
                 "friend");
 
-        // ---------------------------
-        // Get mock gifts
-        // ---------------------------
-
         ArrayList<GiftSuggestion> gifts=MockGift.getMockGifts();
-
-        // ---------------------------
-        // Create recommendation service
-        // ---------------------------
 
         GiftRecommendationService service=new GiftRecommendationService();
 
-        // ---------------------------
-        // Get recommendations
-        // ---------------------------
-
         List<GiftSuggestion> results=service.suggestGifts(request,gifts);
-
-        // ---------------------------
-        // Print results
-        // ---------------------------
 
         System.out.println("Recommended gifts :");
 
@@ -61,4 +37,5 @@ public class RecommendationTest {
             System.out.println(gift.getTitle()+" with score = "+gift.getScore());
 
     }
+
 }

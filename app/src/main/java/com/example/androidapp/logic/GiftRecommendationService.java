@@ -8,9 +8,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+
+/*
+ * Κλάση που υλοποιεί τη βασική λογική προτάσεων δώρων της εφαρμογής
+ *
+ * Η κλάση:
+ * - αξιολογεί τα διαθέσιμα δώρα
+ * - υπολογίζει score καταλληλότητας
+ * - φιλτράρει άσχετα αποτελέσματα
+ * - ταξινομεί τις καλύτερες προτάσεις
+ *
+ * Υποστηρίζει επίσης filtering κ' sorting των wishlist αντικειμένων
+ */
+
 public class GiftRecommendationService {
 
     private InputValidator validator=new InputValidator();
+
+    /*
+     * Δημιουργεί ταξινομημένες προτάσεις δώρων με βάση τα στοιχεία που έδωσε ο χρήστης
+     *
+     * Η μέθοδος:
+     * ελέγχει αν το request είναι valid
+     * υπολογίζει score για κάθε δώρο
+     * απορρίπτει άσχετα αποτελέσματα
+     * ταξινομεί τα δώρα με βάση το score
+     */
 
     public ArrayList<GiftSuggestion> suggestGifts(GiftRequest request,ArrayList<GiftSuggestion> allGifts)
     {
@@ -39,26 +62,37 @@ public class GiftRecommendationService {
         return results;
     }
 
+    /*
+     * Υπολογίζει πόσο καλά ταιριάζει ένα δώρο με τις προτιμήσεις και τα στοιχεία του χρήστη
+     *
+     * Το score καθορίζεται από:
+     * hobbies
+     * budget
+     * σχέση (relationship)
+     * περίσταση (occasion)
+     * ηλικία
+     */
+
     private int calculateScore(GiftRequest request,GiftSuggestion gift)
     {
         int score=0;
 
 
         if (matchesAnyHobby(request.getHobby(),gift.getHobby()))
-            score += 40;
+            score += 40; //μεγαλύτερη βαρύτητα δίνεται σε συμβατότητα με το/τα hobby/hobbies
 
         if (gift.getMinPrice()<=request.getBudget())
             if (gift.getMaxPrice()<=request.getBudget())
-                score+=30; // όλο το εύρος τιμής είναι μέσα στο budget
+                score+=30; //όλο το εύρος τιμής είναι μέσα στο budget
             else
-                score+=15; // ξεκινάει μέσα στο budget αλλά ίσως ξεφεύγει
+                score+=15; //ξεκινάει μέσα στο budget αλλά ίσως ξεφεύγει
 
 
-        if (matches(request.getRelationship(), gift.getRelationship())) //target
-            score += 20;
+        if (matches(request.getRelationship(),gift.getRelationship()))
+            score+=20;
 
-        if (matches(request.getOccasion(), gift.getOccasion()))
-            score += 10;
+        if (matches(request.getOccasion(),gift.getOccasion()))
+            score+=10;
 
         int ageDifference=Math.abs(request.getAge()-gift.getAge());
         if (ageDifference <= 5)
@@ -71,6 +105,9 @@ public class GiftRecommendationService {
         return score;
     }
 
+
+
+     //Ελέγχει αν έστω ένα hobby του χρήστη ταιριάζει με το hobby/category του δώρου
     private boolean matchesAnyHobby(ArrayList<String> hobby,String giftCategory)
     {
         if (hobby==null || giftCategory==null)
@@ -86,7 +123,13 @@ public class GiftRecommendationService {
         return false;
     }
 
-
+    /*
+     * Βοηθητική μέθοδος σύγκρισης String
+     *
+     * όπου
+     * αγνοεί κεφαλαία/πεζά
+     * θεωρεί το "general" ως γενικό match
+     */
     private boolean matches(String requestValue,String giftValue) {
         if (requestValue == null || giftValue == null)
             return false;
@@ -104,6 +147,13 @@ public class GiftRecommendationService {
         return match;
     }
 
+    /*
+     * Επιστρέφει wishlist αντικείμενα που βρίσκονται μέσα στο διαθέσιμο budget
+     *
+     * Τα αποτελέσματα ταξινομούνται:
+     * πρώτα κατά priority κ'
+     * δευτερεύοντα κατά χαμηλότερη τιμή
+     */
     public ArrayList<WishlistItem> suggestFromWishlist(double budget,ArrayList<WishlistItem> wishlist)
     {
         ArrayList<WishlistItem> results=new ArrayList<>();
