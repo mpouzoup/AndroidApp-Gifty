@@ -169,8 +169,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // FIX: Χρησιμοποιούμε "LIKE" αντί για "=" στο Relationship ώστε αν ψάχνουμε "boyfriend"
-        // να πιάνει και τα δώρα που έχουν καταχωρηθεί ως "friend, boyfriend"
+        // Χρησιμοποιούμε "LIKE" αντί για "=" στο Relationship
         String query = "SELECT * FROM " + TABLE_GIFTS +
                 " WHERE " + COLUMN_CATEGORY + " = ? " +
                 " AND " + COLUMN_PRICE + " <= ? " +
@@ -185,21 +184,30 @@ public class MyDBHandler extends SQLiteOpenHelper {
         });
 
         if (cursor.moveToFirst()) {
-            do {
-                // Εδώ περνάμε την εικόνα (στήλη index 9) στο τελευταίο όρισμα του κατασκευαστή του Gift
-                String imagePath = cursor.getString(9);
+            // 🟢 ΔΙΟΡΘΩΣΗ: Παίρνουμε τα indexes των στηλών δυναμικά με βάση τα ονόματά τους
+            int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
+            int titleIndex = cursor.getColumnIndexOrThrow(COLUMN_TITLE);
+            int priceIndex = cursor.getColumnIndexOrThrow(COLUMN_PRICE);
+            int categoryIndex = cursor.getColumnIndexOrThrow(COLUMN_CATEGORY);
+            int hobbyIndex = cursor.getColumnIndexOrThrow(COLUMN_HOBBY);
+            int occasionIndex = cursor.getColumnIndexOrThrow(COLUMN_OCCASION);
+            int relationshipIndex = cursor.getColumnIndexOrThrow(COLUMN_RELATIONSHIP);
+            int ageIndex = cursor.getColumnIndexOrThrow(COLUMN_AGE);
+            int descriptionIndex = cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION);
+            int imageIndex = cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH);
 
+            do {
                 Gift gift = new Gift(
-                        cursor.getInt(0),    // gift_id
-                        cursor.getString(1), // title
-                        cursor.getString(8), // description
-                        cursor.getDouble(2), // price
-                        cursor.getString(3), // category
-                        cursor.getString(4), // hobby
-                        cursor.getString(5), // occasion
-                        cursor.getString(6), // relationship
-                        cursor.getInt(7),    // age
-                        imagePath            // image_path (αντικαθιστά το κενό "")
+                        cursor.getInt(idIndex),
+                        cursor.getString(titleIndex),
+                        cursor.getString(descriptionIndex),
+                        cursor.getDouble(priceIndex),
+                        cursor.getString(categoryIndex),
+                        cursor.getString(hobbyIndex),
+                        cursor.getString(occasionIndex),
+                        cursor.getString(relationshipIndex),
+                        cursor.getInt(ageIndex),
+                        cursor.getString(imageIndex) // Το όνομα της εικόνας (π.χ. "img_keyboard")
                 );
                 suggestions.add(gift);
             } while (cursor.moveToNext());

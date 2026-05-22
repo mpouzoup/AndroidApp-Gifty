@@ -27,8 +27,6 @@ public class GiftResultsActivity extends AppCompatActivity {
     private Chip chipActiveAge, chipActiveBudget, chipActiveInterest;
     private RecyclerView rvResults;
     private FloatingActionButton fabNewSearch;
-
-    // Η δική σου βάση δεδομένων
     private MyDBHandler dbHandler;
 
     @Override
@@ -36,7 +34,7 @@ public class GiftResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        // 1. Αρχικοποίηση στοιχείων από το XML σου
+        // Αρχικοποίηση στοιχείων
         btnBack = findViewById(R.id.btnBack);
         tvResultsCount = findViewById(R.id.tvResultsCount);
         chipActiveAge = findViewById(R.id.chipActiveAge);
@@ -45,64 +43,46 @@ public class GiftResultsActivity extends AppCompatActivity {
         rvResults = findViewById(R.id.rvResults);
         fabNewSearch = findViewById(R.id.fabNewSearch);
 
-        // Αρχικοποίηση του δικού σου DB Handler
         dbHandler = new MyDBHandler(this);
 
-        // 2. Λήψη των φίλτρων από την GiftFinderActivity
+        // 🟢 ΔΙΟΡΘΩΣΗ: Λήψη του αντικειμένου GiftRequest πακέτο, όπως στάλθηκε!
         Intent incomingIntent = getIntent();
-        String ageStr = incomingIntent.getStringExtra("AGE_KEY");
-        String budgetStr = incomingIntent.getStringExtra("BUDGET_KEY");
-        String interest = incomingIntent.getStringExtra("INTEREST_KEY"); // Αντιστοιχεί στο Category/Hobby
+        GiftRequest request = (GiftRequest) incomingIntent.getSerializableExtra("GIFT_REQUEST");
 
-        // Default τιμές σε περίπτωση που κάτι ήρθε άδειο
-        double maxPrice = 50.0;
-        if (budgetStr != null && !budgetStr.isEmpty()) {
-            try {
-                maxPrice = Double.parseDouble(budgetStr);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+        // Αν για κάποιο λόγο το request είναι null, φτιάξε ένα default για να μην κρασάρει
+        if (request == null) {
+            request = new GiftRequest("general", 50.0);
+            request.setAge(25);
+            request.setRelationship("friend");
+            request.setOccasion("General");
         }
 
-        String category = (interest != null) ? interest : "Gaming";
+        // 🟢 Ενημέρωση των Chips στην οθόνη με τα ΠΡΑΓΜΑΤΙΚΑ δεδομένα του χρήστη
+        if (chipActiveAge != null) chipActiveAge.setText("Age: " + request.getAge());
+        if (chipActiveBudget != null) chipActiveBudget.setText("Under " + request.getMaxPrice() + "€");
+        if (chipActiveInterest != null) chipActiveInterest.setText(request.getCategory());
 
-        // Ενημέρωση των Chips στην οθόνη
-        if (ageStr != null) chipActiveAge.setText("Age: " + ageStr);
-        chipActiveBudget.setText("Under " + maxPrice + "€");
-        chipActiveInterest.setText(category);
-
-        // 3. Λειτουργίες κουμπιών Back & New Search
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
         if (fabNewSearch != null) fabNewSearch.setOnClickListener(v -> finish());
 
-        // 4. Δημιουργία του GiftRequest για τη βάση σου
-        GiftRequest request = new GiftRequest();
-        request.setCategory(category);
-        request.setMaxPrice(maxPrice);
-
-        // Λήψη των ΠΡΑΓΜΑΤΙΚΩΝ δώρων από τη βάση σου
+        // 🟢 Λήψη των ΠΡΑΓΜΑΤΙΚΩΝ δώρων από τη SQLite χρησιμοποιώντας το σωστό request
         List<Gift> realGifts = dbHandler.getRecommendedGifts(request);
 
-        // Ενημέρωση του TextView με το πλήθος των αποτελεσμάτων
         if (tvResultsCount != null) {
             tvResultsCount.setText("Found " + realGifts.size() + " ideas");
         }
 
-        // 5. Ρύθμιση του RecyclerView με τον δικό σου GiftSuggestionsAdapter
+        // Ρύθμιση του RecyclerView
         if (rvResults != null) {
             rvResults.setLayoutManager(new LinearLayoutManager(this));
 
-            // Υλοποίηση του OnAddClickListener του Adapter σου για αποθήκευση στο Wishlist!
             GiftSuggestionsAdapter adapter = new GiftSuggestionsAdapter(realGifts, new GiftSuggestionsAdapter.OnAddClickListener() {
                 @Override
                 public void onAddClick(Gift gift) {
-                    // Παίρνουμε το ID του συνδεδεμένου χρήστη (π.χ. από SharedPreferences ή βάζουμε mock 1 για το demo)
                     SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
                     int userId = prefs.getInt("USER_ID", 1);
 
-                    // Κλήση της δικής σου μεθόδου στη βάση
                     dbHandler.addGiftToWishlist(userId, gift.getId());
-
                     Toast.makeText(GiftResultsActivity.this, gift.getTitle() + " added to Wishlist! ❤️", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -110,11 +90,11 @@ public class GiftResultsActivity extends AppCompatActivity {
             rvResults.setAdapter(adapter);
 
             if (realGifts.isEmpty()) {
-                Toast.makeText(this, "No gifts found in database matching these filters.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "No gifts found matching your criteria.", Toast.LENGTH_LONG).show();
             }
         }
 
-        // 6. Ρύθμιση κάτω μπάρας πλοήγησης (Bottom Navigation)
+        // Κάτω μπάρα πλοήγησης
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_search);
