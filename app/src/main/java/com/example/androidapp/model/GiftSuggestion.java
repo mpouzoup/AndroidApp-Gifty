@@ -1,5 +1,18 @@
 package com.example.androidapp.model;
 
+/*
+ * Κλάση που αναπαριστά ένα διαθέσιμο δώρο το οποίο μπορεί να προταθεί στον χρήστη
+ *
+ * Περιλαμβάνει πληροφορίες για:
+ * κατηγορία
+ * εύρος τιμής
+ * hobby/hobbies
+ * occasion
+ * relationship
+ * προτεινόμενη ηλικία
+ *
+ * Το score χρησιμοποιείται δυναμικά από το recommendation system
+ */
 public class GiftSuggestion {
 
     private int id;
@@ -12,7 +25,7 @@ public class GiftSuggestion {
     private String relationship;
     private int age;
     private String description;
-    private int score;
+    private int score; // Δυναμικό score καταλληλότητας του δώρου
 
     public GiftSuggestion(int id,String title,String category,double maxPrice,double minPrice,String hobby,String occasion,String relationship,int age,String description)
     {

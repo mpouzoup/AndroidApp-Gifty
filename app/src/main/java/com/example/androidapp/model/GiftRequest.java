@@ -2,6 +2,11 @@ package com.example.androidapp.model;
 
 import java.util.ArrayList;
 
+/*
+ * Κλάση που αναπαριστά τα στοιχεία που δίνει ο χρήστης για αναζήτηση δώρου
+ *
+ * Χρησιμοποιείται ως input στο recommendation system της εφαρμογής
+ */
 public class GiftRequest {
     private int age;
     private double budget;

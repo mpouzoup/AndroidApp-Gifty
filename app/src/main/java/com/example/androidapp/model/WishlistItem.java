@@ -1,5 +1,15 @@
 package com.example.androidapp.model;
 
+
+/*
+ * Κλάση που αναπαριστά ένα αντικείμενο απο το wishlist
+ *
+ * Περιλαμβάνει πληροφορίες για:
+ * το δώρο
+ * τον χρήστη στον οποίο ανήκει
+ * την κατηγορία
+ * την προτεραιότητα αγοράς
+ */
 public class WishlistItem {
     private String title;
     private int id;
@@ -7,7 +17,7 @@ public class WishlistItem {
     private double price;
     private String category;
     private String description;
-    private int priority;
+    private int priority; //προτεραιότητα αγοράς του αντικειμένου
 
     public WishlistItem(String title,int id,int userId,double price,String category,String description,int priority)
     {
