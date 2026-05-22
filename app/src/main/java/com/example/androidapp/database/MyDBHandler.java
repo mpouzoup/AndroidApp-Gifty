@@ -127,12 +127,45 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return list;
     }
 
-    // 🟢 ΠΡΟΣΘΗΚΗ 2: Μέθοδος για να διαγράφει ένα reminder με βάση το ID του
     public void deleteReminder(int reminderId) {
+        // Αν το id είναι 0 ή αρνητικό, σταματάμε για να αποφύγουμε το κρασάρισμα
+        if (reminderId <= 0) {
+            return;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
-        // Διαγράφει τη γραμμή όπου το id είναι ίσο με αυτό που στείλαμε
-        db.delete("reminders", "id = ?", new String[]{String.valueOf(reminderId)});
+        try {
+            // Αντικατάστησε το "reminders" και "id" με τις δικές σου σταθερές αν διαφέρουν
+            db.delete("reminders", "id = ?", new String[]{String.valueOf(reminderId)});
+        } catch (Exception e) {
+            e.printStackTrace(); // Καταγράφει το σφάλμα στο Logcat αντί να κρασάρει το app
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close(); // Κλείνουμε πάντα τη βάση με ασφάλεια
+            }
+        }
+    }
+    public User getUserById(int userId) {
+        User user = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query για την εύρεση του χρήστη με βάση το user_id
+        String query = "SELECT " + COLUMN_USERNAME + ", " + COLUMN_EMAIL +
+                " FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_ID + " = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            String username = cursor.getString(0);
+            String email = cursor.getString(1);
+
+            // Δημιουργούμε το αντικείμενο User (κωδικό βάζουμε κενό μιας και δεν τον χρειαζόμαστε στο Profile)
+            user = new User(username, email, "");
+        }
+
+        cursor.close();
         db.close();
+        return user;
     }
     private void seedDatabase(SQLiteDatabase db) {
         try {
@@ -243,16 +276,16 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return userId;
     }
 
-    public boolean addReminder(int userId, String eventName, String eventDate) {
+    public void addReminder(ReminderModel reminder) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_USER_ID, userId);
-        values.put(COLUMN_REMINDER_EVENT, eventName);
-        values.put(COLUMN_REMINDER_DATE, eventDate);
 
-        long id = db.insert(TABLE_REMINDERS, null, values);
+        values.put("user_id", reminder.getUserId()); // 🟢 Εδώ αποθηκεύεται το ID του σωστού χρήστη!
+        values.put("event_name", reminder.getEventName());
+        values.put("event_date", reminder.getEventDate());
+
+        db.insert("reminders", null, values);
         db.close();
-        return id != -1;
     }
 
     public void addGiftToWishlist(int userId, int giftId) {

@@ -1,11 +1,14 @@
 package com.example.androidapp.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
+import com.example.androidapp.model.ReminderModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -20,6 +23,7 @@ public class AddReminderActivity extends AppCompatActivity {
     private TextInputLayout tilEventDate;
     private Button btnSaveReminder;
     private MyDBHandler dbHandler;
+
     private int currentUserId = 1;
 
     @Override
@@ -28,6 +32,10 @@ public class AddReminderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_reminder);
 
         dbHandler = new MyDBHandler(this);
+
+        // 1. 🟢 Λήψη του ΠΡΑΓΜΑΤΙΚΟΥ User ID από τα SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        currentUserId = prefs.getInt("USER_ID", 1); // Διαβάζει ποιος χρήστης είναι συνδεδεμένος
 
         etEventName = findViewById(R.id.etEventName);
         tilEventDate = findViewById(R.id.tilEventDate);
@@ -50,8 +58,12 @@ public class AddReminderActivity extends AppCompatActivity {
 
             etEventDate.setText(simpleFormat.format(date));
         });
-
-        // Αποθήκευση
+        android.widget.ImageButton btnBackToCalendar = findViewById(R.id.btnBackToCalendar);
+        if (btnBackToCalendar != null) {
+            btnBackToCalendar.setOnClickListener(v -> {
+                finish();
+            });
+        }
         btnSaveReminder.setOnClickListener(v -> saveEvent());
     }
 
@@ -64,14 +76,12 @@ public class AddReminderActivity extends AppCompatActivity {
             return;
         }
 
-        boolean isInserted = dbHandler.addReminder(currentUserId, name, date);
+        ReminderModel newReminder = new ReminderModel(0, currentUserId, name, date);
 
-        if (isInserted) {
-            Toast.makeText(this, "Event saved!", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
-            finish();
-        } else {
-            Toast.makeText(this, "Failed to save event", Toast.LENGTH_SHORT).show();
-        }
+        dbHandler.addReminder(newReminder);
+
+        Toast.makeText(this, "Event saved!", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
+        finish();
     }
 }
