@@ -134,14 +134,23 @@ public class RemindersActivity extends AppCompatActivity {
 
         // Σύνδεση με τον Adapter και διαχείριση διαγραφής
         adapter = new ReminderAdapter(reminderList, position -> {
-            ReminderModel reminderToDelete = reminderList.get(position);
+            // Προστασία: Ελέγχουμε αν η θέση είναι έγκυρη μέσα στη λίστα
+            if (position >= 0 && position < reminderList.size()) {
+                ReminderModel reminderToDelete = reminderList.get(position);
 
-            // Διαγραφή από τη βάση δεδομένων
-            dbHandler.deleteReminder(reminderToDelete.getId());
+                // 🟢 Κλήση της ασφαλούς διαγραφής
+                dbHandler.deleteReminder(reminderToDelete.getId());
 
-            reminderList.remove(position);
-            adapter.notifyItemRemoved(position);
-            Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
+                // Ενημέρωση του UI
+                reminderList.remove(position);
+                adapter.notifyItemRemoved(position);
+
+                // 🟢 Σημαντικό: Ενημερώνουμε τον adapter για τις αλλαγές των θέσεων (positions)
+                // ώστε να μην μπερδευτούν τα indexes αν ο χρήστης σβήσει πολλά reminders σερί!
+                adapter.notifyItemRangeChanged(position, reminderList.size());
+
+                Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
+            }
         });
 
         rvReminders.setAdapter(adapter);
