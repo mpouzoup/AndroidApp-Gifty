@@ -17,7 +17,8 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GiftGuider.db";
-    private static final int DATABASE_VERSION = 1;
+    // Αυξάνουμε το version σε 2 επειδή αλλάξαμε τη δομή των πινάκων
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "user_id";
@@ -35,6 +36,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String COLUMN_RELATIONSHIP = "relationship";
     private static final String COLUMN_AGE = "age";
     private static final String COLUMN_DESCRIPTION = "description";
+    // ΝΕΟ ΠΕΔΙΟ: Για το όνομα ή το μονοπάτι της φωτογραφίας
+    private static final String COLUMN_IMAGE_PATH = "image_path";
 
     private static final String TABLE_WISHLIST = "wishlist";
     private static final String COLUMN_WISH_ID = "wish_id";
@@ -60,6 +63,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_PASSWORD + " TEXT" + ")";
         db.execSQL(CREATE_USERS_TABLE);
 
+        // Ενημερωμένος πίνακας GIFTS με το COLUMN_IMAGE_PATH
         String CREATE_GIFTS_TABLE = "CREATE TABLE " + TABLE_GIFTS + "(" +
                 COLUMN_GIFT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_TITLE + " TEXT," +
@@ -69,7 +73,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_OCCASION + " TEXT," +
                 COLUMN_RELATIONSHIP + " TEXT," +
                 COLUMN_AGE + " INTEGER," +
-                COLUMN_DESCRIPTION + " TEXT" + ")";
+                COLUMN_DESCRIPTION + " TEXT," +
+                COLUMN_IMAGE_PATH + " TEXT" + ")"; // Προσθήκη στήλης εικόνας
         db.execSQL(CREATE_GIFTS_TABLE);
 
         String CREATE_WISHLIST_TABLE = "CREATE TABLE " + TABLE_WISHLIST + "(" +
@@ -78,7 +83,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_GIFT_ID + " INTEGER" + ")";
         db.execSQL(CREATE_WISHLIST_TABLE);
 
-        // ΠΡΟΣΘΗΚΗ: Δημιουργία του πίνακα Reminders
         String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "(" +
                 COLUMN_REMINDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_USER_ID + " INTEGER," +
@@ -103,12 +107,17 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String[] giftList = myContext.getResources().getStringArray(R.array.initial_gifts);
             for (String giftEntry : giftList) {
                 String[] parts = giftEntry.split("\\|");
+                // Προσαρμογή: Δεχόμαστε προαιρετικά και 5ο στοιχείο για τη φωτογραφία
                 if (parts.length >= 4) {
                     ContentValues values = new ContentValues();
                     values.put(COLUMN_TITLE, parts[0]);
                     values.put(COLUMN_PRICE, Double.parseDouble(parts[1]));
                     values.put(COLUMN_CATEGORY, parts[2]);
-                    values.put(COLUMN_RELATIONSHIP, parts[3]);
+                    values.put(COLUMN_RELATIONSHIP, parts[3]); // Εδώ μπορεί να γράφει π.  χ. "friend, boyfriend"
+
+                    if (parts.length >= 5) {
+                        values.put(COLUMN_IMAGE_PATH, parts[4]); // Όνομα εικόνας drawable
+                    }
                     db.insert(TABLE_GIFTS, null, values);
                 }
             }
@@ -160,24 +169,37 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        // FIX: Χρησιμοποιούμε "LIKE" αντί για "=" στο Relationship ώστε αν ψάχνουμε "boyfriend"
+        // να πιάνει και τα δώρα που έχουν καταχωρηθεί ως "friend, boyfriend"
         String query = "SELECT * FROM " + TABLE_GIFTS +
-                " WHERE " + COLUMN_CATEGORY + " = ? AND " + COLUMN_PRICE + " <= ?";
+                " WHERE " + COLUMN_CATEGORY + " = ? " +
+                " AND " + COLUMN_PRICE + " <= ? " +
+                " AND " + COLUMN_RELATIONSHIP + " LIKE ?";
 
-        Cursor cursor = db.rawQuery(query, new String[]{request.getCategory(), String.valueOf(request.getMaxPrice())});
+        String searchRelationship = "%" + request.getRelationship() + "%";
+
+        Cursor cursor = db.rawQuery(query, new String[]{
+                request.getCategory(),
+                String.valueOf(request.getMaxPrice()),
+                searchRelationship
+        });
 
         if (cursor.moveToFirst()) {
             do {
+                // Εδώ περνάμε την εικόνα (στήλη index 9) στο τελευταίο όρισμα του κατασκευαστή του Gift
+                String imagePath = cursor.getString(9);
+
                 Gift gift = new Gift(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(8),
-                        cursor.getDouble(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getString(6),
-                        cursor.getInt(7),
-                        ""
+                        cursor.getInt(0),    // gift_id
+                        cursor.getString(1), // title
+                        cursor.getString(8), // description
+                        cursor.getDouble(2), // price
+                        cursor.getString(3), // category
+                        cursor.getString(4), // hobby
+                        cursor.getString(5), // occasion
+                        cursor.getString(6), // relationship
+                        cursor.getInt(7),    // age
+                        imagePath            // image_path (αντικαθιστά το κενό "")
                 );
                 suggestions.add(gift);
             } while (cursor.moveToNext());
