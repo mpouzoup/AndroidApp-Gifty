@@ -95,7 +95,6 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_media_next"
-                    android:rotation="180"
                     app:tint="#CBD5E1"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -127,7 +126,6 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_media_next"
-                    android:rotation="180"
                     app:tint="#CBD5E1"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -152,6 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Log Out"
+                    android:id="@+id/tvLogoutText"
                     android:textSize="16sp"
                     android:textColor="#E11D48"
                     android:textStyle="bold"
