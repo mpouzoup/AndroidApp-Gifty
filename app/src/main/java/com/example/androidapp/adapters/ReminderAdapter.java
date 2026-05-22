@@ -39,6 +39,8 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     @Override
     public void onBindViewHolder(@NonNull ReminderViewHolder holder, int position) {
         ReminderModel currentItem = reminderList.get(position);
+
+        // 🟢 Σωστή χρήση των δικών σου μεθόδων
         holder.tvEvent.setText(currentItem.getEventName());
 
         if (currentItem.getEventDate() == null || currentItem.getEventDate().isEmpty()) {

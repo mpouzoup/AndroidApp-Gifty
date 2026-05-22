@@ -3,6 +3,7 @@ package com.example.androidapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,26 +22,31 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        // 🟢 ΔΙΟΡΘΩΣΗ: Εφαρμόζουμε σωστά τα Insets για να μην μπλοκάρονται τα κλικ
-        View mainView = findViewById(R.id.headerLayout);
+        // 1. 🟢 ΔΙΟΡΘΩΣΗ INSETS: Στοχεύουμε το mainConstraintLayout για να μην κλειδώνουν τα κλικ
+        View mainView = findViewById(R.id.mainConstraintLayout);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                // Προσθέτουμε κανονικά και το bottom padding της συσκευής για να «σπρώξει»
-                // τα κουμπιά πάνω από το φυσικό όριο της οθόνης
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                // Αφήνουμε το κάτω padding στο 0 επειδή η NestedScrollView σταματάει πάνω από τη μπάρα
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
                 return insets;
             });
         }
 
-        // Αρχικοποίηση του Bottom Navigation Menu
+        // 2. 🟢 ΣΥΝΔΕΣΗ "VIEW ALL": Στέλνει τον χρήστη στην ξεχωριστή RemindersActivity
+        TextView tvViewAllReminders = findViewById(R.id.tvViewAllReminders);
+        if (tvViewAllReminders != null) {
+            tvViewAllReminders.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, RemindersActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // 3. 🟢 Αρχικοποίηση του Bottom Navigation Menu
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
-
-            // Ενημερώνουμε την μπάρα ότι βρισκόμαστε ήδη στην αρχική σελίδα
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
-            // Διαχείριση των κλικ στα εικονίδια της μπάρας
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
 
@@ -62,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Κλικ στο μεγάλο κουμπί "Wishlist" μέσα στην οθόνη
+     * Κλικ στο μεγάλο CardView "Wishlist" μέσα στην οθόνη
      */
     public void openWishlist(View view) {
         Intent intent = new Intent(this, WishlistActivity.class);
@@ -70,7 +76,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Κλικ στο μεγάλο κουμπί "Find Gifts" / "Προτάσεις" στη μέση της οθόνης
+     * Κλικ στο μεγάλο CardView "Smart Gift Finder" στη μέση της οθόνης
      */
     public void openSuggestions(View view) {
         Intent intent = new Intent(this, GiftFinderActivity.class);

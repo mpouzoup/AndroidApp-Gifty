@@ -1,40 +1,37 @@
 package com.example.androidapp.ui;
 
-import android.Manifest;
-import android.content.ContentResolver;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.CalendarContract;
+import android.view.View;
 import android.widget.CalendarView;
+import android.widget.ImageButton;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
 
 import com.example.androidapp.adapters.ReminderAdapter;
+import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.ReminderModel;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.List;
 
 public class RemindersActivity extends AppCompatActivity {
 
-    private static final int CALENDAR_PERMISSION_CODE = 100;
     private RecyclerView rvReminders;
     private ReminderAdapter adapter;
     private ArrayList<ReminderModel> reminderList;
     private CalendarView calendarView;
     private FloatingActionButton fabAddReminder;
+    private ImageButton btnBackToHome;
 
+    private MyDBHandler dbHandler;
     private int currentUserId = 1;
 
     @Override
@@ -45,79 +42,81 @@ public class RemindersActivity extends AppCompatActivity {
         calendarView = findViewById(R.id.calendarView);
         fabAddReminder = findViewById(R.id.fabAddReminder);
         rvReminders = findViewById(R.id.rvReminders);
+        btnBackToHome = findViewById(R.id.btnBackToHome);
+
+        dbHandler = new MyDBHandler(this);
+
+        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        currentUserId = prefs.getInt("USER_ID", 1);
 
         reminderList = new ArrayList<>();
         rvReminders.setLayoutManager(new LinearLayoutManager(this));
 
-        checkCalendarPermissions();
+        if (btnBackToHome != null) {
+            btnBackToHome.setOnClickListener(v -> finish());
+        }
 
         if (fabAddReminder != null) {
             fabAddReminder.setOnClickListener(v -> {
-                Toast.makeText(RemindersActivity.this, "Εδώ θα ανοίγει το παράθυρο προσθήκης", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(RemindersActivity.this, AddReminderActivity.class));
+            });
+        }
+
+        loadDatabaseEvents();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.nav_home) {
+                    startActivity(new Intent(RemindersActivity.this, HomeActivity.class));
+                    finish();
+                    return true;
+                } else if (id == R.id.nav_search) {
+                    startActivity(new Intent(RemindersActivity.this, GiftFinderActivity.class));
+                    finish();
+                    return true;
+                } else if (id == R.id.nav_wishlist) {
+                    startActivity(new Intent(RemindersActivity.this, WishlistActivity.class));
+                    finish();
+                    return true;
+                } else if (id == R.id.nav_profile) {
+                    startActivity(new Intent(RemindersActivity.this, ProfileActivity.class));
+                    finish();
+                    return true;
+                }
+                return false;
             });
         }
     }
 
-    private void checkCalendarPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_CODE);
-        } else {
-            loadRealTimeEvents();
-        }
-    }
-
-    private void loadRealTimeEvents() {
+    private void loadDatabaseEvents() {
         reminderList.clear();
-        ContentResolver contentResolver = getContentResolver();
-        Uri uri = CalendarContract.Events.CONTENT_URI;
 
-        String selection = CalendarContract.Events.DTSTART + " >= ?";
-        String[] selectionArgs = new String[]{String.valueOf(Calendar.getInstance().getTimeInMillis())};
-        String sortOrder = CalendarContract.Events.DTSTART + " ASC";
+        List<ReminderModel> fromDb = dbHandler.getUserReminders(currentUserId);
 
-        Cursor cursor = contentResolver.query(uri,
-                new String[]{CalendarContract.Events._ID, CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART},
-                selection, selectionArgs, sortOrder);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String calendarLogId = cursor.getString(0);
-                String title = cursor.getString(1);
-                long dtStart = cursor.getLong(2);
-
-                int parsedId;
-                try {
-                    parsedId = Integer.parseInt(calendarLogId);
-                } catch (NumberFormatException e) {
-                    parsedId = calendarLogId.hashCode();
-                }
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(dtStart);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                String dateString = formatter.format(calendar.getTime());
-
-                reminderList.add(new ReminderModel(parsedId, currentUserId, title, dateString));
-            }
-            cursor.close();
+        if (fromDb != null) {
+            reminderList.addAll(fromDb);
         }
 
         adapter = new ReminderAdapter(reminderList, position -> {
+            ReminderModel reminderToDelete = reminderList.get(position);
+
+            dbHandler.deleteReminder(reminderToDelete.getId());
+
             reminderList.remove(position);
             adapter.notifyItemRemoved(position);
+            Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
         });
+
         rvReminders.setAdapter(adapter);
-    }
+    } // 🟢 ΔΙΟΡΘΩΣΗ: Αφαιρέθηκε ο διπλός κώδικας που μπέρδευε τις αγκύλες
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CALENDAR_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadRealTimeEvents();
-            } else {
-                Toast.makeText(this, "Η άδεια ημερολογίου απορρίφθηκε. Δεν είναι δυνατή η εμφάνιση real-time γεγονότων.", Toast.LENGTH_LONG).show();
-            }
-        }
+    protected void onResume() {
+        super.onResume();
+        loadDatabaseEvents();
     }
 }

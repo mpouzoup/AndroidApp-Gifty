@@ -4,20 +4,20 @@
     xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:background="#1B1B1F">
 
     <TextView
         android:id="@+id/tvWishlistTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        android:text="My Wishlist"
-        android:textSize="28sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="sans-serif-black"
-        android:textColor="#1E293B"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="My Wishlist"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvWishlist"
@@ -46,8 +46,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:src="@android:drawable/btn_star_big_on"
-            app:tint="#CBD5E1"
-            android:layout_marginBottom="24dp" />
+            app:tint="#475569" android:layout_marginBottom="24dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,31 +54,26 @@
             android:text="Your list is a bit lonely!"
             android:textSize="22sp"
             android:fontFamily="sans-serif-medium"
-            android:textColor="#475569" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginHorizontal="40dp"
-            android:text="Save all the things you love in one place and share them with friends."
-            android:textAlignment="center"
-            android:lineSpacingExtra="4dp"
-            android:textSize="15sp"
-            android:textColor="#64748B" />
-
-        <Button
-            android:id="@+id/btnExplore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:paddingHorizontal="40dp"
-            android:paddingVertical="12dp"
-            android:text="Explore Gifts"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:backgroundTint="#2b4287"
-            app:cornerRadius="25dp" />
+            android:textColor="#E2E8F0" /> <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="40dp"
+        android:text="Save all the things you love in one place and share them with friends."
+        android:textAlignment="center"
+        android:lineSpacingExtra="4dp"
+        android:textSize="15sp"
+        android:textColor="#94A3B8" /> <Button
+        android:id="@+id/btnExplore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="12dp"
+        android:text="Explore Gifts"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:backgroundTint="#8B5CF6" app:cornerRadius="25dp" />
 
     </LinearLayout>
 
@@ -87,14 +81,13 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#FFFFFF"
+        android:background="#1E1E24"
         app:elevation="20dp"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="#2b4287"
-        app:itemTextColor="#2b4287"
+        app:itemIconTint="#8B5CF6"
+        app:itemTextColor="#8B5CF6"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

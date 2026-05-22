@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.androidapp.R;
 import com.example.androidapp.model.Gift;
 import com.example.androidapp.model.GiftRequest;
+import com.example.androidapp.model.ReminderModel;
 import com.example.androidapp.model.WishlistItem;
 import com.example.androidapp.model.User;
 
@@ -101,7 +102,38 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERS);
         onCreate(db);
     }
+    // 🟢 ΠΡΟΣΘΗΚΗ 1: Μέθοδος για να διαβάζει τα reminders του συγκεκριμένου χρήστη
+    public List<ReminderModel> getUserReminders(int userId) {
+        List<ReminderModel> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        // Αντικατάστησε τα TABLE_REMINDERS, COLUMN_USER_ID, κλπ. με τις δικές σου μεταβλητές αν διαφέρουν
+        String query = "SELECT * FROM reminders WHERE user_id = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                ReminderModel reminder = new ReminderModel(
+                        cursor.getInt(0),    // id (COLUMN_ID)
+                        cursor.getInt(1),    // user_id (COLUMN_USER_ID)
+                        cursor.getString(2), // eventName (COLUMN_EVENT_NAME)
+                        cursor.getString(3)  // eventDate (COLUMN_EVENT_DATE)
+                );
+                list.add(reminder);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    // 🟢 ΠΡΟΣΘΗΚΗ 2: Μέθοδος για να διαγράφει ένα reminder με βάση το ID του
+    public void deleteReminder(int reminderId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Διαγράφει τη γραμμή όπου το id είναι ίσο με αυτό που στείλαμε
+        db.delete("reminders", "id = ?", new String[]{String.valueOf(reminderId)});
+        db.close();
+    }
     private void seedDatabase(SQLiteDatabase db) {
         try {
             String[] giftList = myContext.getResources().getStringArray(R.array.initial_gifts);
