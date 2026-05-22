@@ -1,8 +1,6 @@
 package com.example.androidapp.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -11,113 +9,76 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
-import com.example.androidapp.adapters.GiftSuggestionsAdapter;
 import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.Gift;
 import com.example.androidapp.model.GiftRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class GiftResultsActivity extends AppCompatActivity {
 
-    private ImageButton btnBack;
-    private TextView tvResultsCount;
-    private Chip chipActiveAge, chipActiveBudget, chipActiveInterest;
     private RecyclerView rvResults;
-    private FloatingActionButton fabNewSearch;
+    private TextView tvResultsCount;
+    private ImageButton btnBack;
     private MyDBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Ενεργοποίηση EdgeToEdge για να δένει με το Home
+        androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_results);
 
-        // Αρχικοποίηση στοιχείων
-        btnBack = findViewById(R.id.btnBack);
-        tvResultsCount = findViewById(R.id.tvResultsCount);
-        chipActiveAge = findViewById(R.id.chipActiveAge);
-        chipActiveBudget = findViewById(R.id.chipActiveBudget);
-        chipActiveInterest = findViewById(R.id.chipActiveInterest);
+        // 1. Αρχικοποίηση στοιχείων UI
         rvResults = findViewById(R.id.rvResults);
-        fabNewSearch = findViewById(R.id.fabNewSearch);
-
+        tvResultsCount = findViewById(R.id.tvResultsCount);
+        btnBack = findViewById(R.id.btnBack);
         dbHandler = new MyDBHandler(this);
 
-        // 🟢 ΔΙΟΡΘΩΣΗ: Λήψη του αντικειμένου GiftRequest πακέτο, όπως στάλθηκε!
-        Intent incomingIntent = getIntent();
-        GiftRequest request = (GiftRequest) incomingIntent.getSerializableExtra("GIFT_REQUEST");
-
-        // Αν για κάποιο λόγο το request είναι null, φτιάξε ένα default για να μην κρασάρει
-        if (request == null) {
-            request = new GiftRequest("general", 50.0);
-            request.setAge(25);
-            request.setRelationship("friend");
-            request.setOccasion("General");
-        }
-
-        // 🟢 Ενημέρωση των Chips στην οθόνη με τα ΠΡΑΓΜΑΤΙΚΑ δεδομένα του χρήστη
-        if (chipActiveAge != null) chipActiveAge.setText("Age: " + request.getAge());
-        if (chipActiveBudget != null) chipActiveBudget.setText("Under " + request.getMaxPrice() + "€");
-        if (chipActiveInterest != null) chipActiveInterest.setText(request.getCategory());
-
-        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
-        if (fabNewSearch != null) fabNewSearch.setOnClickListener(v -> finish());
-
-        // 🟢 Λήψη των ΠΡΑΓΜΑΤΙΚΩΝ δώρων από τη SQLite χρησιμοποιώντας το σωστό request
-        List<Gift> realGifts = dbHandler.getRecommendedGifts(request);
-
-        if (tvResultsCount != null) {
-            tvResultsCount.setText("Found " + realGifts.size() + " ideas");
-        }
-
         // Ρύθμιση του RecyclerView
-        if (rvResults != null) {
-            rvResults.setLayoutManager(new LinearLayoutManager(this));
+        rvResults.setLayoutManager(new LinearLayoutManager(this));
 
-            GiftSuggestionsAdapter adapter = new GiftSuggestionsAdapter(realGifts, new GiftSuggestionsAdapter.OnAddClickListener() {
-                @Override
-                public void onAddClick(Gift gift) {
-                    SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-                    int userId = prefs.getInt("USER_ID", 1);
+        // 2. Λήψη του GiftRequest από το Intent της προηγούμενης οθόνης
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("GIFT_REQUEST")) {
+            GiftRequest request = (GiftRequest) intent.getSerializableExtra("GIFT_REQUEST");
 
-                    dbHandler.addGiftToWishlist(userId, gift.getId());
-                    Toast.makeText(GiftResultsActivity.this, gift.getTitle() + " added to Wishlist! ❤️", Toast.LENGTH_SHORT).show();
+            if (request != null) {
+                // 3. ΚΛΗΣΗ ΤΗΣ ΒΑΣΗΣ: Εδώ γίνεται το μαγικό!
+                List<Gift> recommendedGifts = dbHandler.getRecommendedGifts(request);
+
+                // 4. Ενημέρωση του τίτλου για το πόσα δώρα βρέθηκαν
+                if (tvResultsCount != null) {
+                    tvResultsCount.setText("Found " + recommendedGifts.size() + " ideas");
                 }
-            });
 
-            rvResults.setAdapter(adapter);
+                // 5. Σύνδεση με τον Adapter (Σιγουρέψου ότι έχεις φτιάξει τον GiftAdapter σου)
+                // Αν ο adapter σου λέγεται αλλιώς, άλλαξε απλώς το όνομα εδώ:
+                // 5. Σύνδεση με τον δικό σου GiftSuggestionsAdapter
+                if (!recommendedGifts.isEmpty()) {
+                    // Χρησιμοποιούμε τον δικό σου Adapter και ορίζουμε τι θα γίνεται όταν ο χρήστης πατάει το "+"
+                    com.example.androidapp.adapters.GiftSuggestionsAdapter adapter =
+                            new com.example.androidapp.adapters.GiftSuggestionsAdapter(recommendedGifts, new com.example.androidapp.adapters.GiftSuggestionsAdapter.OnAddClickListener() {
+                                @Override
+                                public void onAddClick(Gift gift) {
+                                    // Εδώ θα μπει ο κώδικας για να αποθηκεύεται το δώρο στη Wishlist της SQLite!
+                                    // Για παράδειγμα:
+                                    // int currentUserId = 1; // Ή αυτόν που παίρνεις από τα SharedPreferences
+                                    // dbHandler.addGiftToWishlist(currentUserId, gift.getId());
 
-            if (realGifts.isEmpty()) {
-                Toast.makeText(this, "No gifts found matching your criteria.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(GiftResultsActivity.this, gift.getTitle() + " added to Wishlist! ❤️", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                    rvResults.setAdapter(adapter);
+                } else {
+                    Toast.makeText(this, "No gifts match your criteria. Try higher budget!", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
-        // Κάτω μπάρα πλοήγησης
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setSelectedItemId(R.id.nav_search);
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.nav_home) {
-                    startActivity(new Intent(GiftResultsActivity.this, HomeActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_search) {
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_wishlist) {
-                    startActivity(new Intent(GiftResultsActivity.this, WishlistActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(GiftResultsActivity.this, ProfileActivity.class));
-                    finish();
-                    return true;
-                }
-                return false;
-            });
+        // 6. Λειτουργία για το κουμπί Back
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
         }
     }
 }

@@ -145,48 +145,91 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipGaming"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gaming"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#2D2D34" />
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipSports"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/chipCooking"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sports"
+                        android:text="Cooking"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#2D2D34" />
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipArt"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/chipFitness"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Art"
+                        android:text="Fitness"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#2D2D34" />
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipReading"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reading"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTech"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Technology"
+                        android:text="Tech"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#2D2D34" />
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipFashion"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/chipMusic"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fashion"
+                        android:text="Music"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#2D2D34" />
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipGym"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gym"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTraveling"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Traveling"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCoffee"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Coffee"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMovies"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Movies"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLegos"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Legos"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>

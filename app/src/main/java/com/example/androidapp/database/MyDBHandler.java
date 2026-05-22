@@ -107,16 +107,22 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String[] giftList = myContext.getResources().getStringArray(R.array.initial_gifts);
             for (String giftEntry : giftList) {
                 String[] parts = giftEntry.split("\\|");
-                // Προσαρμογή: Δεχόμαστε προαιρετικά και 5ο στοιχείο για τη φωτογραφία
                 if (parts.length >= 4) {
                     ContentValues values = new ContentValues();
                     values.put(COLUMN_TITLE, parts[0]);
-                    values.put(COLUMN_PRICE, Double.parseDouble(parts[1]));
+
+                    // Ασφάλεια: Αν η τιμή δεν είναι αριθμός (π.χ. "??"), βάζουμε 0.0 αντί να κρασάρει η εφαρμογή
+                    try {
+                        values.put(COLUMN_PRICE, Double.parseDouble(parts[1]));
+                    } catch (NumberFormatException e) {
+                        values.put(COLUMN_PRICE, 0.0);
+                    }
+
                     values.put(COLUMN_CATEGORY, parts[2]);
-                    values.put(COLUMN_RELATIONSHIP, parts[3]); // Εδώ μπορεί να γράφει π.  χ. "friend, boyfriend"
+                    values.put(COLUMN_RELATIONSHIP, parts[3]);
 
                     if (parts.length >= 5) {
-                        values.put(COLUMN_IMAGE_PATH, parts[4]); // Όνομα εικόνας drawable
+                        values.put(COLUMN_IMAGE_PATH, parts[4]);
                     }
                     db.insert(TABLE_GIFTS, null, values);
                 }
@@ -124,6 +130,58 @@ public class MyDBHandler extends SQLiteOpenHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Gift> getRecommendedGifts(GiftRequest request) {
+        List<Gift> suggestions = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // FIX: Αλλάξαμε το "=" σε "LIKE" και στο COLUMN_CATEGORY για να μην υπάρχει θέμα με πεζά/κεφαλαία
+        String query = "SELECT * FROM " + TABLE_GIFTS +
+                " WHERE " + COLUMN_CATEGORY + " LIKE ?" +
+                " AND " + COLUMN_PRICE + " <= ?" +
+                " AND " + COLUMN_RELATIONSHIP + " LIKE ?";
+
+        String searchCategory = "%" + request.getCategory() + "%";
+        String searchRelationship = "%" + request.getRelationship() + "%";
+
+        Cursor cursor = db.rawQuery(query, new String[]{
+                searchCategory,
+                String.valueOf(request.getMaxPrice()),
+                searchRelationship
+        });
+
+        if (cursor.moveToFirst()) {
+            int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
+            int titleIndex = cursor.getColumnIndexOrThrow(COLUMN_TITLE);
+            int priceIndex = cursor.getColumnIndexOrThrow(COLUMN_PRICE);
+            int categoryIndex = cursor.getColumnIndexOrThrow(COLUMN_CATEGORY);
+            int hobbyIndex = cursor.getColumnIndexOrThrow(COLUMN_HOBBY);
+            int occasionIndex = cursor.getColumnIndexOrThrow(COLUMN_OCCASION);
+            int relationshipIndex = cursor.getColumnIndexOrThrow(COLUMN_RELATIONSHIP);
+            int ageIndex = cursor.getColumnIndexOrThrow(COLUMN_AGE);
+            int descriptionIndex = cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION);
+            int imageIndex = cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH);
+
+            do {
+                Gift gift = new Gift(
+                        cursor.getInt(idIndex),
+                        cursor.getString(titleIndex),
+                        cursor.getString(descriptionIndex),
+                        cursor.getDouble(priceIndex),
+                        cursor.getString(categoryIndex),
+                        cursor.getString(hobbyIndex),
+                        cursor.getString(occasionIndex),
+                        cursor.getString(relationshipIndex),
+                        cursor.getInt(ageIndex),
+                        cursor.getString(imageIndex)
+                );
+                suggestions.add(gift);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return suggestions;
     }
 
     public boolean registerUser(User user) {
@@ -163,58 +221,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         long id = db.insert(TABLE_REMINDERS, null, values);
         db.close();
         return id != -1;
-    }
-
-    public List<Gift> getRecommendedGifts(GiftRequest request) {
-        List<Gift> suggestions = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Χρησιμοποιούμε "LIKE" αντί για "=" στο Relationship
-        String query = "SELECT * FROM " + TABLE_GIFTS +
-                " WHERE " + COLUMN_CATEGORY + " = ? " +
-                " AND " + COLUMN_PRICE + " <= ? " +
-                " AND " + COLUMN_RELATIONSHIP + " LIKE ?";
-
-        String searchRelationship = "%" + request.getRelationship() + "%";
-
-        Cursor cursor = db.rawQuery(query, new String[]{
-                request.getCategory(),
-                String.valueOf(request.getMaxPrice()),
-                searchRelationship
-        });
-
-        if (cursor.moveToFirst()) {
-            // 🟢 ΔΙΟΡΘΩΣΗ: Παίρνουμε τα indexes των στηλών δυναμικά με βάση τα ονόματά τους
-            int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
-            int titleIndex = cursor.getColumnIndexOrThrow(COLUMN_TITLE);
-            int priceIndex = cursor.getColumnIndexOrThrow(COLUMN_PRICE);
-            int categoryIndex = cursor.getColumnIndexOrThrow(COLUMN_CATEGORY);
-            int hobbyIndex = cursor.getColumnIndexOrThrow(COLUMN_HOBBY);
-            int occasionIndex = cursor.getColumnIndexOrThrow(COLUMN_OCCASION);
-            int relationshipIndex = cursor.getColumnIndexOrThrow(COLUMN_RELATIONSHIP);
-            int ageIndex = cursor.getColumnIndexOrThrow(COLUMN_AGE);
-            int descriptionIndex = cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION);
-            int imageIndex = cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH);
-
-            do {
-                Gift gift = new Gift(
-                        cursor.getInt(idIndex),
-                        cursor.getString(titleIndex),
-                        cursor.getString(descriptionIndex),
-                        cursor.getDouble(priceIndex),
-                        cursor.getString(categoryIndex),
-                        cursor.getString(hobbyIndex),
-                        cursor.getString(occasionIndex),
-                        cursor.getString(relationshipIndex),
-                        cursor.getInt(ageIndex),
-                        cursor.getString(imageIndex) // Το όνομα της εικόνας (π.χ. "img_keyboard")
-                );
-                suggestions.add(gift);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return suggestions;
     }
 
     public void addGiftToWishlist(int userId, int giftId) {
@@ -261,4 +267,5 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
         return wishlist;
     }
+
 }
