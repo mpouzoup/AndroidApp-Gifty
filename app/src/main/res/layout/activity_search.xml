@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://tools.android.com/tools"
+    xmlns:tools2="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1B1B1F">
@@ -24,52 +25,54 @@
                 android:id="@+id/tvSearchTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:text="Gift Finder"
+                android:textColor="#FFFFFF"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Tell us more about your loved one"
-                android:textSize="16sp"
                 android:textColor="#A0A0AB"
-                app:layout_constraintTop_toBottomOf="@id/tvSearchTitle"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSearchTitle" />
 
             <EditText
                 android:id="@+id/etRecipientAge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="12dp"
+                android:background="@android:drawable/editbox_background"
                 android:hint="Age"
                 android:inputType="number"
                 android:padding="16dp"
-                android:textColor="#FFFFFF"
+                android:textColor="#070000"
                 android:textColorHint="#888888"
-                android:background="@android:drawable/editbox_background"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/etMaxBudget"
-                android:layout_marginEnd="12dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
 
             <EditText
                 android:id="@+id/etMaxBudget"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background"
                 android:hint="Max Budget (€)"
                 android:inputType="numberDecimal"
                 android:padding="16dp"
-                android:textColor="#FFFFFF"
+                android:textColor="#050000"
                 android:textColorHint="#888888"
-                android:background="@android:drawable/editbox_background"
-                app:layout_constraintTop_toTopOf="@id/etRecipientAge"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/etRecipientAge" />
+                app:layout_constraintStart_toEndOf="@id/etRecipientAge"
+                app:layout_constraintTop_toTopOf="@id/etRecipientAge" />
 
             <TextView
                 android:id="@+id/tvRelLabel"
@@ -107,36 +110,38 @@
                 android:id="@+id/spOccasion"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:background="@android:drawable/btn_dropdown"
-                app:layout_constraintTop_toBottomOf="@id/tvOccasionLabel" />
+                app:layout_constraintTop_toBottomOf="@id/tvOccasionLabel"
+                tools2:layout_editor_absoluteX="24dp" />
 
             <TextView
                 android:id="@+id/tvInterestsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
                 android:text="Interests &amp; Hobbies"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:textSize="15sp"
-                app:layout_constraintTop_toBottomOf="@id/spOccasion"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spOccasion" />
 
             <HorizontalScrollView
                 android:id="@+id/svChips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:scrollbars="none"
-                app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
+                app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel"
+                tools2:layout_editor_absoluteX="24dp">
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/cgInterests"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleSelection="false"
-                    app:chipSpacingHorizontal="8dp">
+                    app:chipSpacingHorizontal="8dp"
+                    app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipGaming"
@@ -144,8 +149,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gaming"
-                        app:chipBackgroundColor="#2D2D34"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipSports"
@@ -153,8 +158,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sports"
-                        app:chipBackgroundColor="#2D2D34"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipArt"
@@ -162,8 +167,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Art"
-                        app:chipBackgroundColor="#2D2D34"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTech"
@@ -171,8 +176,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Technology"
-                        app:chipBackgroundColor="#2D2D34"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        app:chipBackgroundColor="#2D2D34" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFashion"
@@ -180,8 +185,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Fashion"
-                        app:chipBackgroundColor="#2D2D34"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        app:chipBackgroundColor="#2D2D34" />
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
@@ -192,16 +197,18 @@
                 android:layout_height="54dp"
                 android:layout_marginTop="36dp"
                 android:layout_marginBottom="16dp"
-                android:text="Let's go!"
                 android:backgroundTint="#8B5CF6"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
+                android:text="Let's go!"
                 android:textAllCaps="false"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@id/svChips"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/svChips"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
@@ -209,8 +216,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#1B1B1F"
+        android:layout_height="wrap_content" android:background="#1B1B1F"
         app:elevation="20dp"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="#8B5CF6"

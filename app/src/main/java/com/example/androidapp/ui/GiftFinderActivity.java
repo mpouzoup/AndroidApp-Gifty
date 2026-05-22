@@ -34,13 +34,11 @@ public class GiftFinderActivity extends AppCompatActivity {
         cgInterests = findViewById(R.id.cgInterests);
         btnFindGifts = findViewById(R.id.btnFindGifts);
 
-        // Αντικατάστησε το γέμισμα του Relationship Spinner
-        String[] relationships = {"friend", "family", "partner", "boyfriend", "girlfriend", "colleague"};
+        String[] relationships = {"Friend", "Family", "Partner", "Boyfriend", "Girlfriend", "Colleague"};
         ArrayAdapter<String> relAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, relationships);
         relAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRelationship.setAdapter(relAdapter);
 
-// Αντικατάστησε το γέμισμα του Occasion Spinner
         String[] occasions = {"Birthday", "Anniversary", "Christmas", "Graduation", "Housewarming", "General"};
         ArrayAdapter<String> occAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, occasions);
         occAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
