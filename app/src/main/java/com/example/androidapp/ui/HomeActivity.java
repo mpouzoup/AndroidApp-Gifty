@@ -3,7 +3,6 @@ package com.example.androidapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,13 +21,14 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        // Ρύθμιση για να μην κρύβεται η εφαρμογή κάτω από το status bar του κινητού
+        // 🟢 ΔΙΟΡΘΩΣΗ: Εφαρμόζουμε σωστά τα Insets για να μην μπλοκάρονται τα κλικ
         View mainView = findViewById(R.id.headerLayout);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                // Κρατάμε μόνο το top padding για να μην επηρεαστεί το bottom navigation
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+                // Προσθέτουμε κανονικά και το bottom padding της συσκευής για να «σπρώξει»
+                // τα κουμπιά πάνω από το φυσικό όριο της οθόνης
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
             });
         }
@@ -45,17 +45,14 @@ public class HomeActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_home) {
-                    return true; // Είμαστε ήδη εδώ
+                    return true;
                 } else if (id == R.id.nav_search) {
-                    // Άνοιγμα της Activity του Gift Finder
                     startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
                     return true;
                 } else if (id == R.id.nav_wishlist) {
-                    // Άνοιγμα του Wishlist
                     startActivity(new Intent(HomeActivity.this, WishlistActivity.class));
                     return true;
                 } else if (id == R.id.nav_profile) {
-                    // Άνοιγμα του Προφίλ
                     startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
                     return true;
                 }
@@ -76,7 +73,6 @@ public class HomeActivity extends AppCompatActivity {
      * Κλικ στο μεγάλο κουμπί "Find Gifts" / "Προτάσεις" στη μέση της οθόνης
      */
     public void openSuggestions(View view) {
-        // 🟢 ΔΙΟΡΘΩΣΗ: Αντί για Toast, στέλνουμε τον χρήστη κατευθείαν στο Gift Finder!
         Intent intent = new Intent(this, GiftFinderActivity.class);
         startActivity(intent);
     }
