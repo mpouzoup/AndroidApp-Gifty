@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         if (userId != -1) {
             Toast.makeText(this, "Επιτυχής σύνδεση! Καλώς ήρθες, " + username, Toast.LENGTH_SHORT).show();
 
-            // Αποθήκευση του USER_ID στα SharedPreferences
+            // Αποθήκευση του USER_ID στα ShaaredPreferences
             SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
             prefs.edit().putInt("USER_ID", userId).apply();
 
