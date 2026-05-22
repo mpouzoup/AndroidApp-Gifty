@@ -42,6 +42,10 @@ public class RemindersActivity extends AppCompatActivity {
 
         // Αρχικοποίηση των UI στοιχείων από το XML
         calendarView = findViewById(R.id.calendarView);
+        // 🟢 ΚΛΕΙΔΩΜΑ ΠΡΟΗΓΟΥΜΕΝΩΝ ΗΜΕΡΩΝ: Ορίζουμε ως ελάχιστη ημερομηνία τη σημερινή
+        if (calendarView != null) {
+            calendarView.setMinDate(System.currentTimeMillis() - 1000);
+        }
         fabAddReminder = findViewById(R.id.fabAddReminder);
         rvReminders = findViewById(R.id.rvReminders);
         btnBackToHome = findViewById(R.id.btnBackToHome);

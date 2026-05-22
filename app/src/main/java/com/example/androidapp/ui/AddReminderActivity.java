@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.ReminderModel;
+import com.google.android.material.datepicker.CalendarConstraints; // 🟢 Προσθήκη Import
+import com.google.android.material.datepicker.DateValidatorPointForward; // 🟢 Προσθήκη Import
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,18 +35,24 @@ public class AddReminderActivity extends AppCompatActivity {
 
         dbHandler = new MyDBHandler(this);
 
-        // 1. 🟢 Λήψη του ΠΡΑΓΜΑΤΙΚΟΥ User ID από τα SharedPreferences
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-        currentUserId = prefs.getInt("USER_ID", 1); // Διαβάζει ποιος χρήστης είναι συνδεδεμένος
+        currentUserId = prefs.getInt("USER_ID", 1);
 
         etEventName = findViewById(R.id.etEventName);
         tilEventDate = findViewById(R.id.tilEventDate);
         etEventDate = findViewById(R.id.etEventDate);
         btnSaveReminder = findViewById(R.id.btnSaveReminder);
 
+        // 1. 🟢 Δημιουργία περιορισμών: Επιτρέπεται η επιλογή ΜΟΝΟ από σήμερα και μετά
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.now())
+                .build();
+
+        // 2. 🟢 Σύνδεση των constraints με τον DatePicker
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select Event Date")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setCalendarConstraints(constraints) // 🔴 Η αλλαγή έγινε εδώ!
                 .build();
 
         etEventDate.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "DATE_PICKER"));
@@ -58,6 +66,7 @@ public class AddReminderActivity extends AppCompatActivity {
 
             etEventDate.setText(simpleFormat.format(date));
         });
+
         android.widget.ImageButton btnBackToCalendar = findViewById(R.id.btnBackToCalendar);
         if (btnBackToCalendar != null) {
             btnBackToCalendar.setOnClickListener(v -> {
