@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:background="#1B1B1F">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profileHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingTop="40dp"
+        android:background="#1B1B1F"
+        android:paddingTop="48dp"
         android:paddingBottom="30dp"
-        android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
@@ -21,7 +20,7 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:background="@android:drawable/dialog_holo_light_frame"
-            android:backgroundTint="#2b4287"
+            android:backgroundTint="#8B5CF6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -44,7 +43,7 @@
             android:text="Gifty User"
             android:textSize="22sp"
             android:fontFamily="sans-serif-black"
-            android:textColor="#1E293B"
+            android:textColor="#FFFFFF"
             app:layout_constraintTop_toBottomOf="@id/avatarContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -55,7 +54,7 @@
             android:layout_height="wrap_content"
             android:text="user@gifty.com"
             android:textSize="14sp"
-            android:textColor="#64748B"
+            android:textColor="#A0A0AB"
             app:layout_constraintTop_toBottomOf="@id/tvUsername"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -74,7 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="1dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#2D2D34"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground">
@@ -89,13 +89,13 @@
                     android:layout_weight="1"
                     android:text="Account Settings"
                     android:textSize="16sp"
-                    android:textColor="#1E293B"
+                    android:textColor="#FFFFFF"
                     android:fontFamily="sans-serif-medium"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_media_next"
-                    app:tint="#CBD5E1"/>
+                    app:tint="#A0A0AB"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -105,7 +105,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="1dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#2D2D34"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground">
@@ -120,13 +121,13 @@
                     android:layout_weight="1"
                     android:text="Help &amp; About Gifty"
                     android:textSize="16sp"
-                    android:textColor="#1E293B"
+                    android:textColor="#FFFFFF"
                     android:fontFamily="sans-serif-medium"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_media_next"
-                    app:tint="#CBD5E1"/>
+                    app:tint="#A0A0AB"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -136,7 +137,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="1dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#2D2D34"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground">
@@ -152,14 +154,14 @@
                     android:text="Log Out"
                     android:id="@+id/tvLogoutText"
                     android:textSize="16sp"
-                    android:textColor="#E11D48"
+                    android:textColor="#F43F5E"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_lock_power_off"
-                    app:tint="#E11D48"/>
+                    app:tint="#F43F5E"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -168,12 +170,12 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#FFFFFF"
+        android:layout_height="wrap_content"
+        android:background="#1B1B1F"
         app:elevation="20dp"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="#2b4287"
-        app:itemTextColor="#2b4287"
+        app:itemIconTint="#8B5CF6"
+        app:itemTextColor="#8B5CF6"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
