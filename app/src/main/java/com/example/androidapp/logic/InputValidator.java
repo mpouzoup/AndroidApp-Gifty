@@ -1,40 +1,38 @@
 package com.example.androidapp.logic;
+
 import com.example.androidapp.model.GiftRequest;
 
 public class InputValidator {
 
-    public boolean isValid(GiftRequest request)
-    {
-        if (request==null)
+    public boolean isValid(GiftRequest request) {
+        if (request == null)
             return false;
 
-        if (request.getAge()<=0 || request.getAge()>120)
+        // Έλεγχος ηλικίας (από 1 έως 120 έτη)
+        if (request.getAge() <= 0 || request.getAge() > 120)
             return false;
 
-        if (request.getMaxPrice()<=0)
+        // Έλεγχος Budget
+        if (request.getMaxPrice() <= 0)
             return false;
 
-        if (isEmpty(request.getHobby()))
+        // FIX 1: Έλεγχος αν η λίστα με τα Hobbies είναι άδεια
+        if (request.getHobby() == null || request.getHobby().isEmpty())
             return false;
 
-        if (isEmpty(request.getOccasion()))
+        // Έλεγχος για την περίσταση
+        if (isTextEmpty(request.getOccasion()))
             return false;
 
-        if (isEmpty(request.getRelationship()))
+        // Έλεγχος για τη σχέση
+        if (isTextEmpty(request.getRelationship()))
             return false;
-
 
         return true;
     }
 
-    private boolean isEmpty(String value)
-    {
-        boolean empty=true;
-        if (value==null || value.trim().isEmpty())
-            empty=false;
-
-        return empty;
+    // FIX 2: Διόρθωση της λογικής (Επιστρέφει TRUE αν είναι όντως άδειο)
+    private boolean isTextEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
-
-
 }
