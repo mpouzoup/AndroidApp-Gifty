@@ -2,8 +2,8 @@
 <resources>
     <string-array name="initial_gifts">
         <item>Mechanical Keyboard|100.0|Gaming|Boyfriend</item>
-        <item>Air Fryer|120.0|Cooking|Mum</item>
-        <item>Yoga Mat|30.0|Fitness|Friend</item>
+        <item>Air Fryer|47.0|Cooking|Mum|img_air_fryer</item>
+        <item>Yoga Mat|30.0|Fitness|Friend|img_yoga_mat</item>
         <item>Kindle E-reader|90.0|Reading|Girlfriend</item>
         <item>Noise Cancelling Headphones|250.0|Tech|Dad</item>
         <item>Leather Journal|25.0|Reading|Friend</item>
