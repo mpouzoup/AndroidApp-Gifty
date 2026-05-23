@@ -1,7 +1,10 @@
 package com.example.androidapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +15,8 @@ import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.Gift;
 import com.example.androidapp.model.GiftRequest;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.chip.Chip;
 import java.util.List;
 
 public class GiftResultsActivity extends AppCompatActivity {
@@ -20,11 +25,13 @@ public class GiftResultsActivity extends AppCompatActivity {
     private TextView tvResultsCount;
     private ImageButton btnBack;
     private MyDBHandler dbHandler;
+    private BottomNavigationView bottomNavigation;
+
+    private Chip chipActiveAge, chipActiveBudget, chipActiveInterest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Ενεργοποίηση EdgeToEdge για να δένει με το Home
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_results);
 
@@ -32,40 +39,89 @@ public class GiftResultsActivity extends AppCompatActivity {
         rvResults = findViewById(R.id.rvResults);
         tvResultsCount = findViewById(R.id.tvResultsCount);
         btnBack = findViewById(R.id.btnBack);
+        bottomNavigation = findViewById(R.id.bottomNavigation);
         dbHandler = new MyDBHandler(this);
 
-        // Ρύθμιση του RecyclerView
+        chipActiveAge = findViewById(R.id.chipActiveAge);
+        chipActiveBudget = findViewById(R.id.chipActiveBudget);
+        chipActiveInterest = findViewById(R.id.chipActiveInterest);
+
         rvResults.setLayoutManager(new LinearLayoutManager(this));
 
-        // 2. Λήψη του GiftRequest από το Intent της προηγούμενης οθόνης
+        // 2. Λήψη του USER_ID από τα SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        int currentUserId = prefs.getInt("USER_ID", 1);
+
+        // 3. Λειτουργία του Bottom Navigation Menu
+        if (bottomNavigation != null) {
+            bottomNavigation.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.nav_home) {
+                    Intent intentHome = new Intent(GiftResultsActivity.this, HomeActivity.class);
+                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intentHome);
+                    finish();
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    finish();
+                    return true;
+                } else if (itemId == R.id.nav_wishlist) {
+                    Intent intentWishlist = new Intent(GiftResultsActivity.this, WishlistActivity.class);
+                    startActivity(intentWishlist);
+                    finish();
+                    return true;
+                } else if (itemId == R.id.nav_profile) {
+                    Intent intentProfile = new Intent(GiftResultsActivity.this, ProfileActivity.class);
+                    startActivity(intentProfile);
+                    finish();
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        // 4. Λήψη του GiftRequest από το Intent
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("GIFT_REQUEST")) {
             GiftRequest request = (GiftRequest) intent.getSerializableExtra("GIFT_REQUEST");
 
             if (request != null) {
-                // 3. ΚΛΗΣΗ ΤΗΣ ΒΑΣΗΣ: Εδώ γίνεται το μαγικό!
+
+                if (chipActiveAge != null) {
+                    chipActiveAge.setText("Age: " + request.getAge());
+                }
+                if (chipActiveBudget != null) {
+                    chipActiveBudget.setText("Under " + request.getMaxPrice() + "€");
+                }
+                if (chipActiveInterest != null) {
+                    chipActiveInterest.setText(request.getCategory());
+                }
+
+                // Κλήση της βάσης
                 List<Gift> recommendedGifts = dbHandler.getRecommendedGifts(request);
 
-                // 4. Ενημέρωση του τίτλου για το πόσα δώρα βρέθηκαν
                 if (tvResultsCount != null) {
                     tvResultsCount.setText("Found " + recommendedGifts.size() + " ideas");
                 }
 
-                // 5. Σύνδεση με τον Adapter (Σιγουρέψου ότι έχεις φτιάξει τον GiftAdapter σου)
-                // Αν ο adapter σου λέγεται αλλιώς, άλλαξε απλώς το όνομα εδώ:
-                // 5. Σύνδεση με τον δικό σου GiftSuggestionsAdapter
+                // 5. Σύνδεση με τον Adapter
                 if (!recommendedGifts.isEmpty()) {
-                    // Χρησιμοποιούμε τον δικό σου Adapter και ορίζουμε τι θα γίνεται όταν ο χρήστης πατάει το "+"
                     com.example.androidapp.adapters.GiftSuggestionsAdapter adapter =
                             new com.example.androidapp.adapters.GiftSuggestionsAdapter(recommendedGifts, new com.example.androidapp.adapters.GiftSuggestionsAdapter.OnAddClickListener() {
                                 @Override
                                 public void onAddClick(Gift gift) {
-                                    // Εδώ θα μπει ο κώδικας για να αποθηκεύεται το δώρο στη Wishlist της SQLite!
-                                    // Για παράδειγμα:
-                                    // int currentUserId = 1; // Ή αυτόν που παίρνεις από τα SharedPreferences
-                                    // dbHandler.addGiftToWishlist(currentUserId, gift.getId());
 
-                                    Toast.makeText(GiftResultsActivity.this, gift.getTitle() + " added to Wishlist! ❤️", Toast.LENGTH_SHORT).show();
+                                    Log.d("WISHLIST_ADD", "User ID: " + currentUserId + " | Gift ID: " + gift.getId() + " | Title: " + gift.getTitle());
+
+                                    // 🟢 ΔΙΟΡΘΩΣΗ: Ελέγχουμε αν η εισαγωγή στη βάση πέτυχε ή αν υπήρχε ήδη
+                                    boolean isAdded = dbHandler.addGiftToWishlist(currentUserId, gift.getId());
+
+                                    if (isAdded) {
+                                        Toast.makeText(GiftResultsActivity.this, gift.getTitle() + " added to Wishlist! ❤️", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(GiftResultsActivity.this, gift.getTitle() + " is already in your Wishlist! ✨", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
 
@@ -76,7 +132,6 @@ public class GiftResultsActivity extends AppCompatActivity {
             }
         }
 
-        // 6. Λειτουργία για το κουμπί Back
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }

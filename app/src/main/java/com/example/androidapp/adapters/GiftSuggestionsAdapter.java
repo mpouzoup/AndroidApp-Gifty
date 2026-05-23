@@ -41,10 +41,19 @@ public class GiftSuggestionsAdapter extends RecyclerView.Adapter<GiftSuggestions
         holder.tvName.setText(currentGift.getTitle());
         holder.tvPrice.setText(String.format(Locale.getDefault(), "€%.2f", currentGift.getPrice()));
 
+        holder.ivAdd.setImageResource(android.R.drawable.btn_star_big_off);
+        holder.ivAdd.setColorFilter(android.graphics.Color.parseColor("#94A3B8")); // Απαλό γκρι
+        holder.ivAdd.setClickable(true);
+
         holder.ivAdd.setOnClickListener(v -> {
             int currentPosition = holder.getAdapterPosition();
             if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
                 listener.onAddClick(giftList.get(currentPosition));
+
+                holder.ivAdd.setImageResource(android.R.drawable.btn_star_big_on);
+                holder.ivAdd.setColorFilter(android.graphics.Color.parseColor("#8B5CF6")); // Το μωβ σου
+
+                holder.ivAdd.setClickable(false);
             }
         });
     }

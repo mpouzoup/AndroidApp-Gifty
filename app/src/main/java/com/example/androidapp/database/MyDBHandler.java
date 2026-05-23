@@ -201,20 +201,37 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // FIX: Αλλάξαμε το "=" σε "LIKE" και στο COLUMN_CATEGORY για να μην υπάρχει θέμα με πεζά/κεφαλαία
-        String query = "SELECT * FROM " + TABLE_GIFTS +
-                " WHERE " + COLUMN_CATEGORY + " LIKE ?" +
+        // 1. Παίρνουμε το String των κατηγοριών (π.χ. "Art, Tech") και το σπάμε σε πίνακα
+        String rawCategories = request.getCategory();
+        String[] categories = rawCategories.split(",\\s*"); // Χωρίζει με βάση το κόμμα
+
+        // 2. Χτίζουμε δυναμικά το κομμάτι των κατηγοριών: (category LIKE ? OR category LIKE ?)
+        StringBuilder categoryQuery = new StringBuilder("(");
+        List<String> queryArgs = new ArrayList<>();
+
+        for (int i = 0; i < categories.length; i++) {
+            categoryQuery.append(COLUMN_CATEGORY).append(" LIKE ?");
+            queryArgs.add("%" + categories[i].trim() + "%");
+            if (i < categories.length - 1) {
+                categoryQuery.append(" OR ");
+            }
+        }
+        categoryQuery.append(")");
+
+        // 3. Ενώνουμε το δυναμικό query με τα υπόλοιπα κριτήρια (Price, Relationship)
+        String finalQuery = "SELECT * FROM " + TABLE_GIFTS +
+                " WHERE " + categoryQuery.toString() +
                 " AND " + COLUMN_PRICE + " <= ?" +
                 " AND " + COLUMN_RELATIONSHIP + " LIKE ?";
 
-        String searchCategory = "%" + request.getCategory() + "%";
-        String searchRelationship = "%" + request.getRelationship() + "%";
+        // Προσθέτουμε τα τελευταία ορίσματα στην λίστα
+        queryArgs.add(String.valueOf(request.getMaxPrice()));
+        queryArgs.add("%" + request.getRelationship() + "%");
 
-        Cursor cursor = db.rawQuery(query, new String[]{
-                searchCategory,
-                String.valueOf(request.getMaxPrice()),
-                searchRelationship
-        });
+        // Μετατρέπουμε τη λίστα ορισμάτων σε κλασικό πίνακα String[]
+        String[] argsArray = queryArgs.toArray(new String[0]);
+
+        Cursor cursor = db.rawQuery(finalQuery, argsArray);
 
         if (cursor.moveToFirst()) {
             int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
@@ -288,14 +305,28 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addGiftToWishlist(int userId, int giftId) {
+    public boolean addGiftToWishlist(int userId, int giftId) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        String checkQuery = "SELECT 1 FROM " + TABLE_WISHLIST +
+                " WHERE " + COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?";
+        Cursor cursor = db.rawQuery(checkQuery, new String[]{String.valueOf(userId), String.valueOf(giftId)});
+
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+
+        if (exists) {
+            db.close();
+            return false;
+        }
+
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_ID, userId);
         values.put(COLUMN_GIFT_ID, giftId);
 
-        db.insert(TABLE_WISHLIST, null, values);
+        long id = db.insert(TABLE_WISHLIST, null, values);
         db.close();
+        return id != -1;
     }
 
     public void removeGiftFromWishlist(int userId, int giftId) {
