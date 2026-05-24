@@ -18,7 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView tvUsername, tvUserEmail;
-    private CardView cvAccountSettings, cvHelpSupport, cvLogout; // Προσθήκη cvAccountSettings
+    private CardView cvAccountSettings, cvHelpSupport, cvLogout;
     private TextView tvLogoutText;
     private boolean isGuest = false;
     private MyDBHandler dbHandler;
@@ -28,12 +28,9 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Ενεργοποίηση EdgeToEdge για να δένει με το Dark Theme
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
-        // Αρχικοποίηση στοιχείων UI
-        // ⚠️ Σημείωση: Σιγουρέψου ότι στο activity_profile.xml έχεις βάλει android:id="@+id/cvAccountSettings" στην πρώτη κάρτα
         cvAccountSettings = findViewById(R.id.cvAccountSettings);
         tvUsername = findViewById(R.id.tvUsername);
         tvUserEmail = findViewById(R.id.tvUserEmail);
@@ -45,7 +42,6 @@ public class ProfileActivity extends AppCompatActivity {
         prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         userId = prefs.getInt("USER_ID", -1);
 
-        // Κλικ στο Account Settings -> Ανοίγει τη SettingsActivity
         if (cvAccountSettings != null) {
             cvAccountSettings.setOnClickListener(v -> {
                 Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
@@ -53,7 +49,6 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
 
-        // Κλικ στο Help & About
         if (cvHelpSupport != null) {
             cvHelpSupport.setOnClickListener(v -> {
                 Intent intent = new Intent(ProfileActivity.this, AboutHelpActivity.class);
@@ -61,7 +56,6 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
 
-        // Κλικ στο Log Out / Sign In
         if (cvLogout != null) {
             cvLogout.setOnClickListener(v -> {
                 if (isGuest) {
@@ -74,8 +68,12 @@ public class ProfileActivity extends AppCompatActivity {
                             .setTitle("Log Out")
                             .setMessage("Are you sure you want to log out from Gifty?")
                             .setPositiveButton("Yes, Log Out", (dialog, which) -> {
-                                // Καθαρίζουμε το USER_ID από τα προτιμήσεις κατά το logout
-                                prefs.edit().remove("USER_ID").apply();
+
+                                // 🟢 ΔΙΟΡΘΩΣΗ: Καθαρίζουμε πλήρως το Session και το IS_LOGGED_IN
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.remove("USER_ID");
+                                editor.putBoolean("IS_LOGGED_IN", false); // Ακυρώνουμε την αυτόματη είσοδο
+                                editor.apply();
 
                                 Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -89,12 +87,10 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
 
-        // Ρύθμιση κάτω μπάρας πλοήγησης (Bottom Navigation)
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_profile);
 
-            // ΦΙΞ: Ρύθμιση padding για να κάθεται τέλεια η μπάρα στο κάτω μέρος
             androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
                 androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
                 v.setPadding(0, 0, 0, systemBars.bottom);
@@ -127,6 +123,9 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Ανανέωση του userId σε περίπτωση αλλαγών
+        userId = prefs.getInt("USER_ID", -1);
 
         if (userId == -1) {
             isGuest = true;

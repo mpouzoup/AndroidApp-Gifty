@@ -19,27 +19,39 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        // 1. 🟢 ΕΛΕΓΧΟΣ SESSION: Ελέγχουμε αν είναι ήδη συνδεδεμένος ΠΡΙΝ φορτώσουμε το UI
+        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("IS_LOGGED_IN", false);
 
-        // 1. Σύνδεση με τα IDs ακριβώς όπως είναι στο δικό σου XML
+        if (isLoggedIn) {
+            // Αν είναι ήδη συνδεδεμένος, τον στέλνουμε κατευθείαν στο Home!
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish(); // Κλείνουμε τη MainActivity ακαριαία
+            return; // Σταματάμε την εκτέλεση της onCreate
+        }
+
+        // 2. Αν ΔΕΝ είναι συνδεδεμένος, συνεχίζει κανονικά η αρχική οθόνη
+        super.onCreate(savedInstanceState);
+        androidx.activity.EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main); // Φορτώνει μόνο το δικό της XML
+
+        // 3. Σύνδεση με τα IDs του XML σου
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
         btnGuest = findViewById(R.id.btnGuest);
 
-        // 2. Click Listener για το κουμπί Sign In
+        // 4. Click Listeners
         if (btnLogin != null) {
             btnLogin.setOnClickListener(v -> handleLogin(v));
         }
 
-        // 3. Click Listener για το κουμπί "Don't have an account? Sign Up"
         if (btnSignUp != null) {
             btnSignUp.setOnClickListener(v -> handleSignUpNavigation(v));
         }
 
-        // 4. Click Listener για το κουμπί "Sign in as Guest"
         if (btnGuest != null) {
             btnGuest.setOnClickListener(v -> handleGuestLogin(v));
         }
@@ -61,38 +73,35 @@ public class MainActivity extends AppCompatActivity {
         int userId = dbHandler.checkUserLogin(username, password);
 
         if (userId != -1) {
-            Toast.makeText(this, "Επιτυχής σύνδεση! Καλώς ήρθες, " + username, Toast.LENGTH_SHORT).show();
-
-            // Αποθήκευση του USER_ID στα ShaaredPreferences
+            // 🟢 ΣΥΝΔΕΘΗΚΕ ΕΠΙΤΥΧΩΣ: Αποθηκεύουμε το ID και το ότι είναι Logged In!
             SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-            prefs.edit().putInt("USER_ID", userId).apply();
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("USER_ID", userId);
+            editor.putBoolean("IS_LOGGED_IN", true); // Κλειδώνει το session
+            editor.apply();
 
-            // Μεταφορά στην αρχική σελίδα
+            // Μεταφορά στην HomeActivity
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
-            finish();
+            finish(); // Κλείνουμε τη MainActivity
         } else {
-            Toast.makeText(this, "Λάθος όνομα χρήστη ή κωδικός πρόσβασης!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Invalid credentials!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Ανοίγει τη σελίδα εγγραφής (RegisterActivity)
-     */
     public void handleSignUpNavigation(View view) {
         Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
 
-    /**
-     * Παράκαμψη του Login (Είσοδος ως Επισκέπτης)
-     */
     public void handleGuestLogin(View view) {
         Toast.makeText(this, "Είσοδος ως επισκέπτης", Toast.LENGTH_SHORT).show();
 
-        // Σώζουμε ένα ID "0" ή "-1" στα SharedPreferences για να ξέρουμε ότι είναι Guest
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-        prefs.edit().putInt("USER_ID", -1).apply();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("USER_ID", -1);
+        editor.putBoolean("IS_LOGGED_IN", false); // Ο Guest ΔΕΝ μένει μόνιμα συνδεδεμένος
+        editor.apply();
 
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
