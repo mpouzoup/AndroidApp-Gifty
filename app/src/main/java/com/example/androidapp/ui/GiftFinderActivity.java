@@ -25,11 +25,9 @@ public class GiftFinderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Ενεργοποίηση EdgeToEdge για ομοιόμορφη εμφάνιση με την αρχική σελίδα
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
 
-        // 1. Αρχικοποίηση στοιχείων UI
         etRecipientAge = findViewById(R.id.etRecipientAge);
         etMaxBudget = findViewById(R.id.etMaxBudget);
         spRelationship = findViewById(R.id.spRelationship);
@@ -37,19 +35,16 @@ public class GiftFinderActivity extends AppCompatActivity {
         cgInterests = findViewById(R.id.cgInterests);
         btnFindGifts = findViewById(R.id.btnFindGifts);
 
-        // 2. Γέμισμα του Spinner για το Relationship
         String[] relationships = {"Friend", "Family", "Partner", "Boyfriend", "Girlfriend", "Colleague"};
         ArrayAdapter<String> relAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, relationships);
         relAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRelationship.setAdapter(relAdapter);
 
-        // 3. Γέμισμα του Spinner για το Occasion
         String[] occasions = {"Birthday", "Anniversary", "Christmas", "Graduation", "Housewarming", "General"};
         ArrayAdapter<String> occAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, occasions);
         occAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spOccasion.setAdapter(occAdapter);
 
-        // 4. Λειτουργία Κουμπιού "Let's go!"
         if (btnFindGifts != null) {
             btnFindGifts.setOnClickListener(v -> {
                 String ageStr = etRecipientAge.getText().toString().trim();
@@ -57,7 +52,6 @@ public class GiftFinderActivity extends AppCompatActivity {
                 String selectedRelationship = spRelationship.getSelectedItem().toString().toLowerCase(); // Μετατροπή σε πεζά για τη βάση
                 String selectedOccasion = spOccasion.getSelectedItem().toString().toLowerCase();
 
-                // Validation: Έλεγχος αν ο χρήστης συμπλήρωσε Ηλικία και Budget
                 if (ageStr.isEmpty() || budgetStr.isEmpty()) {
                     Toast.makeText(GiftFinderActivity.this, "Please fill in Age and Budget", Toast.LENGTH_SHORT).show();
                     return;
@@ -66,7 +60,6 @@ public class GiftFinderActivity extends AppCompatActivity {
                 int age = Integer.parseInt(ageStr);
                 double maxBudget = Double.parseDouble(budgetStr);
 
-                // Μάζεμα των επιλεγμένων Interests από τα Chips
                 ArrayList<String> selectedInterests = new ArrayList<>();
                 for (int i = 0; i < cgInterests.getChildCount(); i++) {
                     Chip chip = (Chip) cgInterests.getChildAt(i);
@@ -75,48 +68,47 @@ public class GiftFinderActivity extends AppCompatActivity {
                     }
                 }
 
-                // 🟢 ΔΙΟΡΘΩΣΗ: Αν δεν επιλεγεί κανένα χόμπι, ψάχνουμε με κενό String
-                // ώστε η SQLite (μέσω του LIKE '%%') να επιστρέψει όλες τις κατηγορίες!
-                String primaryCategory = "";
+                String combinedCategories = "";
+
                 if (!selectedInterests.isEmpty()) {
-                    primaryCategory = selectedInterests.get(0);
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < selectedInterests.size(); i++) {
+                        sb.append(selectedInterests.get(i));
+                        if (i < selectedInterests.size() - 1) {
+                            sb.append(",");
+                        }
+                    }
+                    combinedCategories = sb.toString();
                 } else {
-                    // Προσθέτουμε ένα εικονικό στοιχείο στη λίστα για να περάσει επιτυχώς από τον InputValidator
+                    combinedCategories = "";
                     selectedInterests.add("all");
                 }
 
-                // Δημιουργία του αντικειμένου GiftRequest με τα φιλτραρισμένα δεδομένα
-                GiftRequest giftRequest = new GiftRequest(primaryCategory, maxBudget);
+                GiftRequest giftRequest = new GiftRequest(combinedCategories, maxBudget);
                 giftRequest.setRelationship(selectedRelationship);
                 giftRequest.setOccasion(selectedOccasion);
                 giftRequest.setAge(age);
-                giftRequest.setHobby(selectedInterests);
-
-                // 5. ΜΕΤΑΦΟΡΑ ΔΕΔΟΜΕΝΩΝ: Στέλνουμε το Request στην GiftResultsActivity
-                Intent intent = new Intent(GiftFinderActivity.this, GiftResultsActivity.class);
+                giftRequest.setHobby(selectedInterests);                Intent intent = new Intent(GiftFinderActivity.this, GiftResultsActivity.class);
                 intent.putExtra("GIFT_REQUEST", giftRequest);
                 startActivity(intent);
             });
         }
 
-        // 6. Ρύθμιση κάτω μπάρας πλοήγησης (Bottom Navigation)
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         if (bottomNavigationView != null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_search);
 
-            // Διόρθωση Insets για να μην κρύβονται τα εικονίδια από τη μπάρα του συστήματος Android
             androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
                 androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
                 v.setPadding(0, 0, 0, systemBars.bottom);
                 return insets;
             });
 
-            // Διαχείριση των κλικ στα εικονίδια
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_search) {
-                    return true; // Είμαστε ήδη εδώ
+                    return true;
                 } else if (id == R.id.nav_home) {
                     startActivity(new Intent(GiftFinderActivity.this, HomeActivity.class));
                     finish();

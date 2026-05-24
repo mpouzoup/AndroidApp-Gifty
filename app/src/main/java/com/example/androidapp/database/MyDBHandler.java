@@ -18,8 +18,7 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GiftGuider.db";
-    // Αυξάνουμε το version σε 2 επειδή αλλάξαμε τη δομή των πινάκων
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "user_id";
@@ -201,36 +200,59 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // 1. Παίρνουμε το String των κατηγοριών (π.χ. "Art, Tech") και το σπάμε σε πίνακα
         String rawCategories = request.getCategory();
-        String[] categories = rawCategories.split(",\\s*"); // Χωρίζει με βάση το κόμμα
 
-        // 2. Χτίζουμε δυναμικά το κομμάτι των κατηγοριών: (category LIKE ? OR category LIKE ?)
-        StringBuilder categoryQuery = new StringBuilder("(");
+        // ΦΙΞ: Αν το String είναι τελείως κενό, βάζουμε μια default τιμή για να μην σπάσει το split
+        if (rawCategories == null || rawCategories.trim().isEmpty()) {
+            rawCategories = "all";
+        }
+
+        String[] categories = rawCategories.split(",\\s*");
+        StringBuilder categoryQuery = new StringBuilder();
         List<String> queryArgs = new ArrayList<>();
 
-        for (int i = 0; i < categories.length; i++) {
-            categoryQuery.append(COLUMN_CATEGORY).append(" LIKE ?");
-            queryArgs.add("%" + categories[i].trim() + "%");
-            if (i < categories.length - 1) {
-                categoryQuery.append(" OR ");
+        // Αν δεν έχουμε επιλεγμένα χόμπι, φέρνουμε όλες τις κατηγορίες
+        if (categories.length == 1 && categories[0].equals("all")) {
+            categoryQuery.append("1=1"); // Πάντα αληθές στην SQLite (φέρνει τα πάντα)
+        } else {
+            categoryQuery.append("(");
+            for (int i = 0; i < categories.length; i++) {
+                categoryQuery.append(COLUMN_CATEGORY).append(" LIKE ?");
+                queryArgs.add("%" + categories[i].trim() + "%");
+                if (i < categories.length - 1) {
+                    categoryQuery.append(" OR ");
+                }
             }
+            categoryQuery.append(")");
         }
-        categoryQuery.append(")");
 
-        // 3. Ενώνουμε το δυναμικό query με τα υπόλοιπα κριτήρια (Price, Relationship)
+        // 🟢 ΕΞΥΠΝΟ QUERY: Φέρνει το δώρο αν ταιριάζει η κατηγορία ΚΑΙ η τιμή,
+        // και εμφανίζει το δώρο είτε αν ταιριάζει η σχέση, είτε αν η σχέση είναι γενική ('general' ή κενή),
+        // είτε αν ο χρήστης ζήτησε συγκεκριμένα ένα χόμπι (γιατί το χόμπι έχει μεγαλύτερη σημασία!)
         String finalQuery = "SELECT * FROM " + TABLE_GIFTS +
                 " WHERE " + categoryQuery.toString() +
                 " AND " + COLUMN_PRICE + " <= ?" +
-                " AND " + COLUMN_RELATIONSHIP + " LIKE ?";
+                " AND (" + COLUMN_RELATIONSHIP + " LIKE ? " +
+                " OR " + COLUMN_RELATIONSHIP + " = 'general' " +
+                " OR " + COLUMN_RELATIONSHIP + " = '' " +
+                " OR " + categoryQuery.toString() + ")"; // Επιτρέπει στο χόμπι να παρακάμψει τον περιορισμό σχέσης
 
-        // Προσθέτουμε τα τελευταία ορίσματα στην λίστα
+        // Προσθήκη του budget στα ορίσματα
         queryArgs.add(String.valueOf(request.getMaxPrice()));
+
+        // Προσθήκη της σχέσης στα ορίσματα
         queryArgs.add("%" + request.getRelationship() + "%");
 
-        // Μετατρέπουμε τη λίστα ορισμάτων σε κλασικό πίνακα String[]
+        // Επειδή βάλαμε το categoryQuery δύο φορές στο SQL, πρέπει να ξαναπεράσουμε τα ορίσματα των κατηγοριών για τη δεύτερη φορά
+        if (!categories[0].equals("all")) {
+            for (String cat : categories) {
+                queryArgs.add("%" + cat.trim() + "%");
+            }
+        }
+
         String[] argsArray = queryArgs.toArray(new String[0]);
 
+        // Εκτέλεση του query
         Cursor cursor = db.rawQuery(finalQuery, argsArray);
 
         if (cursor.moveToFirst()) {
