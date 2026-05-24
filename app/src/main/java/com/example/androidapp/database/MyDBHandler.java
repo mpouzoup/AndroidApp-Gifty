@@ -243,7 +243,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         queryArgs.add(String.valueOf(request.getMaxPrice()));
 
         // Προσθήκη της σχέσης στα ορίσματα
-        queryArgs.add("%" + request.getRelationship() + "%");
+        String relation = request.getRelationship().trim();
+        queryArgs.add("%" + relation + "%");
 
         // Επειδή βάλαμε το categoryQuery δύο φορές στο SQL, πρέπει να ξαναπεράσουμε τα ορίσματα των κατηγοριών για τη δεύτερη φορά
         if (!categories[0].equals("all")) {

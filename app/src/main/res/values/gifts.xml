@@ -7,21 +7,21 @@
         <item>Kindle E-reader|90.0|Reading|Girlfriend</item>
         <item>Noise Cancelling Headphones|250.0|Tech|Dad</item>
         <item>Leather Journal|25.0|Reading|Friend</item>
-        <item>Gaming Mouse|60.0|Gaming|Boyfriend</item>
+        <item>Gaming Mouse|49.0|Gaming|Boyfriend</item>
         <item>Chef Knife Set|80.0|Cooking|Dad</item>
         <item>Smart Watch|199.0|Tech|Girlfriend</item>
         <item>Resistance Bands|15.0|Fitness|Mum</item>
         <item>Vinyl|20.0|Music|Boyfriend</item>
         <item>Massage Gun|40.0|Gym|Boyfriend</item>
-        <item>Protein Shaker|10.0|Gym|Friend</item>
-        <item>Headphones|38.0|Gym|Friend</item>
+        <item>Protein Shaker|5.0|Gym|Friend</item>
+        <item>Headphones|42.0|Gym|Friend</item>
         <item>Cute Customized Keychains|25.0|Traveling|Friend</item>
         <item>Pocket perfumes|25.0|Traveling|Friend</item>
         <item>Ceramic Cup for Coffee|30.0|Coffee|Friend</item>
-        <item>Kodak Charmera Keychain Digital Camera|45.0|Traveling|Boyfriend</item>
+        <item>Kodak Charmera Keychain Digital Camera|45.0|Traveling|Boyfriend,Friend</item>
         <item>Vintage Movie Poster|15.0|Movies|Boyfriend</item>
-        <item>Coffee Machine|20.0|Coffee|Boyfriend</item>
-        <item>Personalized Lego Figure|20.0|Legos|Boyfriend</item>
-        <item>Car Lego|40.0|Legos|Boyfriend</item>
+        <item>Coffee Machine|20.0|Coffee|Boyfriend,Friend</item>
+        <item>Personalized Lego Figure|11.99|Legos|Boyfriend</item>
+        <item>Car Lego|27.99|Legos|Boyfriend</item>
     </string-array>
 </resources>
