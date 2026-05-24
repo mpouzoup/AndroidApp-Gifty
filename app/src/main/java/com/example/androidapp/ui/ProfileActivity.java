@@ -18,10 +18,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView tvUsername, tvUserEmail;
-    private CardView cvHelpSupport, cvLogout;
+    private CardView cvAccountSettings, cvHelpSupport, cvLogout; // Προσθήκη cvAccountSettings
     private TextView tvLogoutText;
     private boolean isGuest = false;
-    private MyDBHandler dbHandler; // Αρχικοποίηση του Handler της βάσης
+    private MyDBHandler dbHandler;
+    private SharedPreferences prefs;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,9 @@ public class ProfileActivity extends AppCompatActivity {
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
+        // Αρχικοποίηση στοιχείων UI
+        // ⚠️ Σημείωση: Σιγουρέψου ότι στο activity_profile.xml έχεις βάλει android:id="@+id/cvAccountSettings" στην πρώτη κάρτα
+        cvAccountSettings = findViewById(R.id.cvAccountSettings);
         tvUsername = findViewById(R.id.tvUsername);
         tvUserEmail = findViewById(R.id.tvUserEmail);
         cvHelpSupport = findViewById(R.id.cvHelpSupport);
@@ -37,28 +42,15 @@ public class ProfileActivity extends AppCompatActivity {
         tvLogoutText = findViewById(R.id.tvLogoutText);
 
         dbHandler = new MyDBHandler(this);
+        prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        userId = prefs.getInt("USER_ID", -1);
 
-        // 1. Έλεγχος SharedPreferences για το ID του χρήστη
-        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-        int userId = prefs.getInt("USER_ID", -1);
-
-        if (userId == -1) {
-            // Ο χρήστης μπήκε ως Guest
-            isGuest = true;
-            if (tvUsername != null) tvUsername.setText("Guest Visitor");
-            if (tvUserEmail != null) tvUserEmail.setText("Sign in to save your wishlists!");
-            if (tvLogoutText != null) tvLogoutText.setText("Create Account / Sign In");
-        } else {
-            // 🟢 ΕΝΟΠΟΙΗΣΗ ΜΕ ΒΑΣΗ: Τραβάμε τον πραγματικό χρήστη από τη SQLite
-            User loggedInUser = dbHandler.getUserById(userId);
-
-            if (loggedInUser != null) {
-                if (tvUsername != null) tvUsername.setText(loggedInUser.getUsername());
-                if (tvUserEmail != null) tvUserEmail.setText(loggedInUser.getEmail());
-            } else {
-                // Fail-safe αν για κάποιο λόγο δεν βρεθεί το ID στη βάση
-                if (tvUsername != null) tvUsername.setText("Gifty User");
-            }
+        // Κλικ στο Account Settings -> Ανοίγει τη SettingsActivity
+        if (cvAccountSettings != null) {
+            cvAccountSettings.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            });
         }
 
         // Κλικ στο Help & About
@@ -129,6 +121,36 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 return false;
             });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (userId == -1) {
+            isGuest = true;
+            if (tvUsername != null) tvUsername.setText("Guest Visitor");
+            if (tvUserEmail != null) tvUserEmail.setText("Sign in to save your wishlists!");
+            if (tvLogoutText != null) tvLogoutText.setText("Create Account / Sign In");
+
+            if (cvAccountSettings != null) {
+                cvAccountSettings.setVisibility(android.view.View.GONE);
+            }
+        } else {
+            isGuest = false;
+            User loggedInUser = dbHandler.getUserById(userId);
+            if (loggedInUser != null) {
+                if (tvUsername != null) tvUsername.setText(loggedInUser.getUsername());
+                if (tvUserEmail != null) tvUserEmail.setText(loggedInUser.getEmail());
+                if (tvLogoutText != null) tvLogoutText.setText("Log Out");
+            } else {
+                if (tvUsername != null) tvUsername.setText("Gifty User");
+            }
+
+            if (cvAccountSettings != null) {
+                cvAccountSettings.setVisibility(android.view.View.VISIBLE);
+            }
         }
     }
 }

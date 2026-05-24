@@ -364,4 +364,45 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return wishlist;
     }
 
+    public boolean updateUsername(int userId, String newUsername) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("username", newUsername);
+
+        int rows = db.update("users", values, "user_id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return rows > 0;
+    }
+
+    public boolean updatePassword(int userId, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("password", newPassword);
+
+        int rows = db.update("users", values, "user_id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return rows > 0;
+    }
+
+    public boolean deleteUserAccount(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("wishlist", "user_id = ?", new String[]{String.valueOf(userId)});
+        db.delete("reminders", "user_id = ?", new String[]{String.valueOf(userId)});
+        int rows = db.delete("users", "user_id = ?", new String[]{String.valueOf(userId)});
+
+        db.close();
+        return rows > 0;
+    }
+
+    public boolean checkCurrentPassword(int userId, String currentPassword) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM users WHERE user_id = ? AND password = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), currentPassword});
+
+        boolean isValid = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return isValid;
+    }
 }
