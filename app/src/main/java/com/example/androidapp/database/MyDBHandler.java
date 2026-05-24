@@ -106,17 +106,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<ReminderModel> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Αντικατάστησε τα TABLE_REMINDERS, COLUMN_USER_ID, κλπ. με τις δικές σου μεταβλητές αν διαφέρουν
-        String query = "SELECT * FROM reminders WHERE user_id = ?";
+        // Προσθέσαμε ORDER BY για να έρχονται αυτόματα σωστά διατεταγμένα!
+        String query = "SELECT * FROM " + TABLE_REMINDERS +
+                " WHERE " + COLUMN_USER_ID + " = ?" +
+                " ORDER BY " + COLUMN_REMINDER_DATE + " ASC";
+
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
 
         if (cursor.moveToFirst()) {
             do {
                 ReminderModel reminder = new ReminderModel(
-                        cursor.getInt(0),    // id (COLUMN_ID)
-                        cursor.getInt(1),    // user_id (COLUMN_USER_ID)
-                        cursor.getString(2), // eventName (COLUMN_EVENT_NAME)
-                        cursor.getString(3)  // eventDate (COLUMN_EVENT_DATE)
+                        cursor.getInt(0),    // reminder_id
+                        cursor.getInt(1),    // user_id
+                        cursor.getString(2), // event_name
+                        cursor.getString(3)  // event_date
                 );
                 list.add(reminder);
             } while (cursor.moveToNext());
@@ -127,20 +130,19 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     public void deleteReminder(int reminderId) {
-        // Αν το id είναι 0 ή αρνητικό, σταματάμε για να αποφύγουμε το κρασάρισμα
         if (reminderId <= 0) {
             return;
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-            // Αντικατάστησε το "reminders" και "id" με τις δικές σου σταθερές αν διαφέρουν
-            db.delete("reminders", "id = ?", new String[]{String.valueOf(reminderId)});
+            // Διορθώθηκε το string του id με τη σωστή σταθερά του πίνακα
+            db.delete(TABLE_REMINDERS, COLUMN_REMINDER_ID + " = ?", new String[]{String.valueOf(reminderId)});
         } catch (Exception e) {
-            e.printStackTrace(); // Καταγράφει το σφάλμα στο Logcat αντί να κρασάρει το app
+            e.printStackTrace();
         } finally {
             if (db != null && db.isOpen()) {
-                db.close(); // Κλείνουμε πάντα τη βάση με ασφάλεια
+                db.close();
             }
         }
     }
