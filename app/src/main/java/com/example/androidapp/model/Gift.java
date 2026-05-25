@@ -1,6 +1,8 @@
 package com.example.androidapp.model;
 
-public class Gift {
+import java.io.Serializable;
+
+public class Gift implements Serializable {
     private int id;
     private String title;
     private String description;
@@ -10,11 +12,12 @@ public class Gift {
     private String occasion;
     private String relationship;
     private int targetAge;
-    private String imageUrl;
+    private String imagePath; // 🟢 Διορθώθηκε από imageUrl σε imagePath
     private String storeUrl;
 
+    // Ενημερωμένος Constructor που δέχεται σωστά το imagePath
     public Gift(int id, String title, String description, double price, String category,
-                String hobby, String occasion, String relationship, int targetAge, String storeUrl) {
+                String hobby, String occasion, String relationship, int targetAge, String imagePath) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -24,9 +27,10 @@ public class Gift {
         this.occasion = occasion;
         this.relationship = relationship;
         this.targetAge = targetAge;
-        this.storeUrl = storeUrl;
+        this.imagePath = imagePath; // 🟢 Ανάθεση του imagePath
     }
 
+    // ==================== GETTERS ====================
     public int getId() { return id; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
@@ -37,4 +41,12 @@ public class Gift {
     public String getRelationship() { return relationship; }
     public int getTargetAge() { return targetAge; }
     public String getStoreUrl() { return storeUrl; }
+
+    // 🟢 Ο ΜΥΣΤΙΚΟΣ GETTER ΠΟΥ ΔΙΟΡΘΩΝΕΙ ΤΟ ΚΟΚΚΙΝΙΣΜΑ:
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    // Setter σε περίπτωση που χρειαστεί να αλλάξεις το storeUrl μελλοντικά
+    public void setStoreUrl(String storeUrl) { this.storeUrl = storeUrl; }
 }

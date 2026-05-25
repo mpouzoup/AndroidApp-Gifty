@@ -330,12 +330,27 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public List<WishlistItem> getUserWishlist(int userId) {
         List<WishlistItem> wishlist = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT w." + COLUMN_WISH_ID + ", g." + COLUMN_GIFT_ID + ", g." + COLUMN_TITLE + ", g." + COLUMN_PRICE +
-                " FROM " + TABLE_WISHLIST + " w JOIN " + TABLE_GIFTS + " g ON w." + COLUMN_GIFT_ID + " = g." + COLUMN_GIFT_ID + " WHERE w." + COLUMN_USER_ID + " = ?";
+
+        // 🟢 Προσθέσαμε το g.image_path στο SELECT για να το τραβάμε από τον πίνακα των δώρων
+        String query = "SELECT w." + COLUMN_WISH_ID + ", g." + COLUMN_GIFT_ID + ", g." + COLUMN_TITLE + ", g." + COLUMN_PRICE + ", g.image_path" +
+                " FROM " + TABLE_WISHLIST + " w " +
+                " JOIN " + TABLE_GIFTS + " g ON w." + COLUMN_GIFT_ID + " = g." + COLUMN_GIFT_ID +
+                " WHERE w." + COLUMN_USER_ID + " = ?";
+
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
         if (cursor.moveToFirst()) {
             do {
-                wishlist.add(new WishlistItem(cursor.getInt(0), userId, cursor.getInt(1), cursor.getString(2), cursor.getDouble(3)));
+                // 🟢 Περνάμε το cursor.getString(4) ως τελευταίο όρισμα στον Constructor
+                WishlistItem item = new WishlistItem(
+                        cursor.getInt(0),    // wish_id
+                        userId,              // user_id
+                        cursor.getInt(1),    // gift_id
+                        cursor.getString(2), // giftTitle
+                        cursor.getDouble(3), // giftPrice
+                        cursor.getString(4)  // imagePath (Αυτό διαβάζει το g.image_path!)
+                );
+                wishlist.add(item);
             } while (cursor.moveToNext());
         }
         cursor.close();
