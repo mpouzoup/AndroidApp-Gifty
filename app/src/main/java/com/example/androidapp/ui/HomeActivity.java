@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout; // 🟢 Προσθήκη Import
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -67,7 +69,27 @@ public class HomeActivity extends AppCompatActivity {
         if (currentUserId == -1 && cardHomeCalendar != null) {
             cardHomeCalendar.setVisibility(View.GONE);
         }
+        CardView cardFindGift = findViewById(R.id.cardFindGift);
+        CardView cardWishlist = findViewById(R.id.cardWishlist);
 
+        View.OnTouchListener microInteractionListener = (view, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // Όταν το πατάει, μικραίνει ομαλά και γίνεται ελαφρώς transparent
+                    view.animate().scaleX(0.95f).scaleY(0.95f).alpha(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    // Όταν το αφήνει, επανέρχεται ακαριαία στο 100% του μεγέθους του
+                    view.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                    break;
+            }
+            return false; // Επιστρέφουμε false για να μην μπλοκάρουμε το κανονικό onClickListener του XML!
+        };
+
+// Εφαρμογή του εφέ και στα δύο κουμπιά
+        if (cardFindGift != null) cardFindGift.setOnTouchListener(microInteractionListener);
+        if (cardWishlist != null) cardWishlist.setOnTouchListener(microInteractionListener);
         // 4. ΣΥΝΔΕΣΗ "Open Full Calendar": Στέλνει τον χρήστη στην RemindersActivity
         TextView tvViewAllReminders = findViewById(R.id.tvViewAllReminders);
         if (tvViewAllReminders != null) {
