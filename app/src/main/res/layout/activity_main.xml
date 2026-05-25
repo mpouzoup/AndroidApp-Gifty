@@ -9,6 +9,15 @@
     tools2:visibility="visible"
     tools:context=".ui.MainActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fallingGiftsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="0dp"
@@ -35,7 +44,8 @@
         android:hint="@string/hint_username"
         android:inputType="textPersonName"
         android:padding="16dp"
-        android:textColor="#FFFFFF" android:textColorHint="#888888"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#888888"
         app:layout_constraintBottom_toTopOf="@+id/etPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -50,7 +60,8 @@
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:padding="16dp"
-        android:textColor="#FFFFFF" android:textColorHint="#888888"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#888888"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

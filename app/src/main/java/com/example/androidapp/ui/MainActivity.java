@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
 
@@ -55,6 +57,79 @@ public class MainActivity extends AppCompatActivity {
         if (btnGuest != null) {
             btnGuest.setOnClickListener(v -> handleGuestLogin(v));
         }
+
+        // ==================== 🟢 ΔΥΝΑΜΙΚΗ ΒΡΟΧΗ ΔΩΡΩΝ ====================
+        // 1. Βρίσκουμε το container της βροχής
+        ConstraintLayout giftsContainer = findViewById(R.id.fallingGiftsContainer);
+
+        if (giftsContainer != null) {
+            // 2. Ορίζουμε τα δύο αρχεία drawable
+            int[] giftDrawables = {R.drawable.flat_gift, R.drawable.big_gift};
+            java.util.Random random = new java.util.Random();
+            android.os.Handler handler = new android.os.Handler();
+
+            // 3. Δημιουργούμε το επαναλαμβανόμενο task για τη βροχή
+            Runnable fallingRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    // 🌟 ΔΙΟΡΘΩΣΗ CONTEXT: Από LoginActivity.this σε MainActivity.this
+                    ImageView giftView = new ImageView(MainActivity.this);
+
+                    // Επιλέγουμε τυχαία ένα από τα δύο δώρα
+                    int randomDrawable = giftDrawables[random.nextInt(giftDrawables.length)];
+                    giftView.setImageResource(randomDrawable);
+
+                    // Ορίζουμε τυχαίο μέγεθος (από 40dp έως 90dp) για να υπάρχει βάθος στην κίνηση
+                    int minSizeDp = 100;
+                    int maxSizeDp = 200;
+                    int randomSizeDp = minSizeDp + random.nextInt(maxSizeDp - minSizeDp);
+
+                    int size = (int) (randomSizeDp * getResources().getDisplayMetrics().density);
+                    ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(size, size);
+                    giftView.setLayoutParams(params);
+
+                    // Βάζουμε το δώρο να ξεκινάει ΠΑΝΩ από την οθόνη
+                    giftView.setY(-size);
+
+                    // Τοποθετούμε το δώρο σε τυχαίο οριζόντιο σημείο (X) της οθόνης
+                    int screenWidth = giftsContainer.getWidth();
+                    if (screenWidth > 0) {
+                        giftView.setX(random.nextInt(screenWidth - size));
+                    }
+
+                    // Δίνουμε μια τυχαία διαφάνεια (Alpha)
+                    giftView.setAlpha(0.3f + random.nextFloat() * 0.5f);
+
+                    // Προσθέτουμε το ImageView στο container
+                    giftsContainer.addView(giftView);
+
+                    // 4. Ξεκινάμε το Animation της πτώσης
+                    int screenHeight = giftsContainer.getHeight();
+                    // 🌟 Όσο πιο μεγάλο είναι το δώρο, τόσο πιο γρήγορα πέφτει (3D εφέ!)
+                    long duration = 7000 - (long)((float)(randomSizeDp - minSizeDp) / (maxSizeDp - minSizeDp) * 3000);
+
+                    giftView.animate()
+                            .translationY(screenHeight + size)
+                            .rotation(random.nextFloat() * 360)
+                            .setDuration(duration)
+                            .setInterpolator(new android.view.animation.LinearInterpolator())
+                            .setListener(new android.animation.AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(android.animation.Animator animation) {
+                                    // Διαγραφή για εξοικονόμηση μνήμης
+                                    giftsContainer.removeView(giftView);
+                                }
+                            });
+
+                    // 5. Επαναλαμβάνουμε τη διαδικασία κάθε 1.5 δευτερόλεπτο
+                    handler.postDelayed(this, 1500);
+                }
+            };
+
+            // Ξεκινάει το loop της βροχής μόλις φορτώσει το Layout
+            giftsContainer.post(() -> handler.post(fallingRunnable));
+        }
+        // ==============================================================================
     }
 
     /**
@@ -73,17 +148,15 @@ public class MainActivity extends AppCompatActivity {
         int userId = dbHandler.checkUserLogin(username, password);
 
         if (userId != -1) {
-            // 🟢 ΣΥΝΔΕΘΗΚΕ ΕΠΙΤΥΧΩΣ: Αποθηκεύουμε το ID και το ότι είναι Logged In!
             SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("USER_ID", userId);
-            editor.putBoolean("IS_LOGGED_IN", true); // Κλειδώνει το session
+            editor.putBoolean("IS_LOGGED_IN", true);
             editor.apply();
 
-            // Μεταφορά στην HomeActivity
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
-            finish(); // Κλείνουμε τη MainActivity
+            finish();
         } else {
             Toast.makeText(this, "Invalid credentials!", Toast.LENGTH_SHORT).show();
         }
@@ -100,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("USER_ID", -1);
-        editor.putBoolean("IS_LOGGED_IN", false); // Ο Guest ΔΕΝ μένει μόνιμα συνδεδεμένος
+        editor.putBoolean("IS_LOGGED_IN", false);
         editor.apply();
 
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
