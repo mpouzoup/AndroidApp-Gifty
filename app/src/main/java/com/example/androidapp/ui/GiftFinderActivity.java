@@ -35,7 +35,7 @@ public class GiftFinderActivity extends AppCompatActivity {
         cgInterests = findViewById(R.id.cgInterests);
         btnFindGifts = findViewById(R.id.btnFindGifts);
 
-        String[] relationships = {"Friend", "Family", "Partner", "Boyfriend", "Girlfriend", "Colleague"};
+        String[] relationships = {"Friend", "Mum", "Dad", "Boyfriend", "Girlfriend"};
         ArrayAdapter<String> relAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, relationships);
         relAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRelationship.setAdapter(relAdapter);

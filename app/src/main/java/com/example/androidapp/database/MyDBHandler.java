@@ -18,7 +18,7 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GiftGuider.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5; // 🟢 ΑΥΞΗΣΗ VERSION ΣΕ 5
 
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "user_id";
@@ -34,9 +34,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String COLUMN_HOBBY = "hobby";
     private static final String COLUMN_OCCASION = "occasion";
     private static final String COLUMN_RELATIONSHIP = "relationship";
-    private static final String COLUMN_AGE = "age";
+    private static final String COLUMN_AGE = "age"; // 🟢 ΕΠΑΝΑΦΟΡΑ ΣΤΗΛΗΣ ΗΛΙΚΙΑΣ
     private static final String COLUMN_DESCRIPTION = "description";
-    // ΝΕΟ ΠΕΔΙΟ: Για το όνομα ή το μονοπάτι της φωτογραφίας
     private static final String COLUMN_IMAGE_PATH = "image_path";
 
     private static final String TABLE_WISHLIST = "wishlist";
@@ -44,6 +43,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_REMINDERS = "reminders";
     private static final String COLUMN_REMINDER_ID = "reminder_id";
+    private static final String COLUMN_USER_ID_FK = "user_id";
     private static final String COLUMN_REMINDER_EVENT = "event_name";
     private static final String COLUMN_REMINDER_DATE = "event_date";
 
@@ -63,7 +63,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_PASSWORD + " TEXT" + ")";
         db.execSQL(CREATE_USERS_TABLE);
 
-        // Ενημερωμένος πίνακας GIFTS με το COLUMN_IMAGE_PATH
+        // 🟢 Προσθήκη COLUMN_AGE ξανά στον πίνακα
         String CREATE_GIFTS_TABLE = "CREATE TABLE " + TABLE_GIFTS + "(" +
                 COLUMN_GIFT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_TITLE + " TEXT," +
@@ -74,7 +74,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_RELATIONSHIP + " TEXT," +
                 COLUMN_AGE + " INTEGER," +
                 COLUMN_DESCRIPTION + " TEXT," +
-                COLUMN_IMAGE_PATH + " TEXT" + ")"; // Προσθήκη στήλης εικόνας
+                COLUMN_IMAGE_PATH + " TEXT" + ")";
         db.execSQL(CREATE_GIFTS_TABLE);
 
         String CREATE_WISHLIST_TABLE = "CREATE TABLE " + TABLE_WISHLIST + "(" +
@@ -85,7 +85,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "(" +
                 COLUMN_REMINDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUMN_USER_ID + " INTEGER," +
+                COLUMN_USER_ID_FK + " INTEGER," +
                 COLUMN_REMINDER_EVENT + " TEXT," +
                 COLUMN_REMINDER_DATE + " TEXT" + ")";
         db.execSQL(CREATE_REMINDERS_TABLE);
@@ -101,27 +101,15 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERS);
         onCreate(db);
     }
-    // 🟢 ΠΡΟΣΘΗΚΗ 1: Μέθοδος για να διαβάζει τα reminders του συγκεκριμένου χρήστη
+
     public List<ReminderModel> getUserReminders(int userId) {
         List<ReminderModel> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-
-        // Προσθέσαμε ORDER BY για να έρχονται αυτόματα σωστά διατεταγμένα!
-        String query = "SELECT * FROM " + TABLE_REMINDERS +
-                " WHERE " + COLUMN_USER_ID + " = ?" +
-                " ORDER BY " + COLUMN_REMINDER_DATE + " ASC";
-
+        String query = "SELECT * FROM " + TABLE_REMINDERS + " WHERE " + COLUMN_USER_ID_FK + " = ? ORDER BY " + COLUMN_REMINDER_DATE + " ASC";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
-
         if (cursor.moveToFirst()) {
             do {
-                ReminderModel reminder = new ReminderModel(
-                        cursor.getInt(0),    // reminder_id
-                        cursor.getInt(1),    // user_id
-                        cursor.getString(2), // event_name
-                        cursor.getString(3)  // event_date
-                );
-                list.add(reminder);
+                list.add(new ReminderModel(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(3)));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -130,44 +118,30 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     public void deleteReminder(int reminderId) {
-        if (reminderId <= 0) {
-            return;
-        }
-
+        if (reminderId <= 0) return;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-            // Διορθώθηκε το string του id με τη σωστή σταθερά του πίνακα
             db.delete(TABLE_REMINDERS, COLUMN_REMINDER_ID + " = ?", new String[]{String.valueOf(reminderId)});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
+            if (db != null && db.isOpen()) db.close();
         }
     }
+
     public User getUserById(int userId) {
         User user = null;
         SQLiteDatabase db = this.getReadableDatabase();
-
-        // Query για την εύρεση του χρήστη με βάση το user_id
-        String query = "SELECT " + COLUMN_USERNAME + ", " + COLUMN_EMAIL +
-                " FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_ID + " = ?";
-
+        String query = "SELECT " + COLUMN_USERNAME + ", " + COLUMN_EMAIL + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
-
         if (cursor.moveToFirst()) {
-            String username = cursor.getString(0);
-            String email = cursor.getString(1);
-
-            // Δημιουργούμε το αντικείμενο User (κωδικό βάζουμε κενό μιας και δεν τον χρειαζόμαστε στο Profile)
-            user = new User(username, email, "");
+            user = new User(cursor.getString(0), cursor.getString(1), "");
         }
-
         cursor.close();
         db.close();
         return user;
     }
+
     private void seedDatabase(SQLiteDatabase db) {
         try {
             String[] giftList = myContext.getResources().getStringArray(R.array.initial_gifts);
@@ -177,7 +151,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
                     ContentValues values = new ContentValues();
                     values.put(COLUMN_TITLE, parts[0]);
 
-                    // Ασφάλεια: Αν η τιμή δεν είναι αριθμός (π.χ. "??"), βάζουμε 0.0 αντί να κρασάρει η εφαρμογή
                     try {
                         values.put(COLUMN_PRICE, Double.parseDouble(parts[1]));
                     } catch (NumberFormatException e) {
@@ -187,8 +160,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
                     values.put(COLUMN_CATEGORY, parts[2]);
                     values.put(COLUMN_RELATIONSHIP, parts[3]);
 
+                    // 🟢 Διάβασμα ορίου ηλικίας από τη θέση 4
                     if (parts.length >= 5) {
-                        values.put(COLUMN_IMAGE_PATH, parts[4]);
+                        try {
+                            values.put(COLUMN_AGE, Integer.parseInt(parts[4]));
+                        } catch (NumberFormatException e) {
+                            values.put(COLUMN_AGE, 0);
+                        }
+                    } else {
+                        values.put(COLUMN_AGE, 0);
+                    }
+
+                    // Διάβασμα εικόνας από τη θέση 5 (αν υπάρχει)
+                    if (parts.length >= 6) {
+                        values.put(COLUMN_IMAGE_PATH, parts[5]);
                     }
                     db.insert(TABLE_GIFTS, null, values);
                 }
@@ -202,9 +187,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        // 1. Καθαρισμός Κατηγοριών
         String rawCategories = request.getCategory();
-
-        // ΦΙΞ: Αν το String είναι τελείως κενό, βάζουμε μια default τιμή για να μην σπάσει το split
         if (rawCategories == null || rawCategories.trim().isEmpty()) {
             rawCategories = "all";
         }
@@ -213,14 +197,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
         StringBuilder categoryQuery = new StringBuilder();
         List<String> queryArgs = new ArrayList<>();
 
-        // Αν δεν έχουμε επιλεγμένα χόμπι, φέρνουμε όλες τις κατηγορίες
+        // Χτίσιμο του Query για τις κατηγορίες
         if (categories.length == 1 && categories[0].equals("all")) {
-            categoryQuery.append("1=1"); // Πάντα αληθές στην SQLite (φέρνει τα πάντα)
+            categoryQuery.append("1=1");
         } else {
             categoryQuery.append("(");
             for (int i = 0; i < categories.length; i++) {
-                categoryQuery.append(COLUMN_CATEGORY).append(" LIKE ?");
-                queryArgs.add("%" + categories[i].trim() + "%");
+                categoryQuery.append("category LIKE ?");
+                queryArgs.add("%" + categories[i].trim() + "%"); // 👈 ΑΥΤΑ ΜΠΑΙΝΟΥΝ ΠΡΩΤΑ ΣΤΗ ΛΙΣΤΑ
                 if (i < categories.length - 1) {
                     categoryQuery.append(" OR ");
                 }
@@ -228,47 +212,43 @@ public class MyDBHandler extends SQLiteOpenHelper {
             categoryQuery.append(")");
         }
 
-        // 🟢 ΕΞΥΠΝΟ QUERY: Φέρνει το δώρο αν ταιριάζει η κατηγορία ΚΑΙ η τιμή,
-        // και εμφανίζει το δώρο είτε αν ταιριάζει η σχέση, είτε αν η σχέση είναι γενική ('general' ή κενή),
-        // είτε αν ο χρήστης ζήτησε συγκεκριμένα ένα χόμπι (γιατί το χόμπι έχει μεγαλύτερη σημασία!)
-        String finalQuery = "SELECT * FROM " + TABLE_GIFTS +
-                " WHERE " + categoryQuery.toString() +
-                " AND " + COLUMN_PRICE + " <= ?" +
-                " AND (" + COLUMN_RELATIONSHIP + " LIKE ? " +
-                " OR " + COLUMN_RELATIONSHIP + " = 'general' " +
-                " OR " + COLUMN_RELATIONSHIP + " = '' " +
-                " OR " + categoryQuery.toString() + ")"; // Επιτρέπει στο χόμπι να παρακάμψει τον περιορισμό σχέσης
+        // 2. 🟢 ΤΟ ΕΞΥΠΝΟ & ΚΑΘΑΡΟ SQL QUERY
+        // Χρησιμοποιούμε "INSTR" ή "LIKE" με ειδικό τρόπο για να ξεχωρίζει το Friend από το Boyfriend!
+        String finalQuery = "SELECT * FROM gifts WHERE " + categoryQuery.toString() +
+                " AND price <= ?" +
+                " AND age <= ?" +
+                " AND (relationship LIKE ? OR relationship = 'general' OR relationship = '')";
 
-        // Προσθήκη του budget στα ορίσματα
+        // 3. 🟢 ΠΡΟΣΘΗΚΗ ΥΠΟΛΟΙΠΩΝ ΟΡΙΣΜΑΤΩΝ ΜΕ ΤΗΝ ΑΥΣΤΗΡΑ ΣΩΣΤΗ ΣΕΙΡΑ
+
+        // Γεμίζει το: price <= ?
         queryArgs.add(String.valueOf(request.getMaxPrice()));
 
-        // Προσθήκη της σχέσης στα ορίσματα
+        // Γεμίζει το: age <= ?
+        queryArgs.add(String.valueOf(request.getAge()));
+
+        // Γεμίζει το: relationship LIKE ?
+        // Προσθέτουμε κόμματα στα boundries ή ελέγχουμε καθαρά το string για να μην μπερδεύεται το Friend με το Boyfriend
         String relation = request.getRelationship().trim();
         queryArgs.add("%" + relation + "%");
 
-        // Επειδή βάλαμε το categoryQuery δύο φορές στο SQL, πρέπει να ξαναπεράσουμε τα ορίσματα των κατηγοριών για τη δεύτερη φορά
-        if (!categories[0].equals("all")) {
-            for (String cat : categories) {
-                queryArgs.add("%" + cat.trim() + "%");
-            }
-        }
-
+        // Μετατροπή της λίστας σε Array για την SQLite
         String[] argsArray = queryArgs.toArray(new String[0]);
 
-        // Εκτέλεση του query
+        // Εκτέλεση του Query
         Cursor cursor = db.rawQuery(finalQuery, argsArray);
 
         if (cursor.moveToFirst()) {
-            int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
-            int titleIndex = cursor.getColumnIndexOrThrow(COLUMN_TITLE);
-            int priceIndex = cursor.getColumnIndexOrThrow(COLUMN_PRICE);
-            int categoryIndex = cursor.getColumnIndexOrThrow(COLUMN_CATEGORY);
-            int hobbyIndex = cursor.getColumnIndexOrThrow(COLUMN_HOBBY);
-            int occasionIndex = cursor.getColumnIndexOrThrow(COLUMN_OCCASION);
-            int relationshipIndex = cursor.getColumnIndexOrThrow(COLUMN_RELATIONSHIP);
-            int ageIndex = cursor.getColumnIndexOrThrow(COLUMN_AGE);
-            int descriptionIndex = cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION);
-            int imageIndex = cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH);
+            int idIndex = cursor.getColumnIndexOrThrow("gift_id");
+            int titleIndex = cursor.getColumnIndexOrThrow("title");
+            int priceIndex = cursor.getColumnIndexOrThrow("price");
+            int categoryIndex = cursor.getColumnIndexOrThrow("category");
+            int hobbyIndex = cursor.getColumnIndexOrThrow("hobby");
+            int occasionIndex = cursor.getColumnIndexOrThrow("occasion");
+            int relationshipIndex = cursor.getColumnIndexOrThrow("relationship");
+            int ageIndex = cursor.getColumnIndexOrThrow("age");
+            int descriptionIndex = cursor.getColumnIndexOrThrow("description");
+            int imageIndex = cursor.getColumnIndexOrThrow("image_path");
 
             do {
                 Gift gift = new Gift(
@@ -297,7 +277,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_USERNAME, user.getUsername());
         values.put(COLUMN_EMAIL, user.getEmail());
         values.put(COLUMN_PASSWORD, user.getPassword());
-
         long id = db.insert(TABLE_USERS, null, values);
         db.close();
         return id != -1;
@@ -305,14 +284,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public int checkUserLogin(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COLUMN_USER_ID + " FROM " + TABLE_USERS +
-                " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
+        String query = "SELECT " + COLUMN_USER_ID + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
         Cursor cursor = db.rawQuery(query, new String[]{username, password});
-
         int userId = -1;
-        if (cursor.moveToFirst()) {
-            userId = cursor.getInt(0);
-        }
+        if (cursor.moveToFirst()) userId = cursor.getInt(0);
         cursor.close();
         db.close();
         return userId;
@@ -321,34 +296,26 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void addReminder(ReminderModel reminder) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
-        values.put("user_id", reminder.getUserId()); // 🟢 Εδώ αποθηκεύεται το ID του σωστού χρήστη!
+        values.put("user_id", reminder.getUserId());
         values.put("event_name", reminder.getEventName());
         values.put("event_date", reminder.getEventDate());
-
         db.insert("reminders", null, values);
         db.close();
     }
 
     public boolean addGiftToWishlist(int userId, int giftId) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        String checkQuery = "SELECT 1 FROM " + TABLE_WISHLIST +
-                " WHERE " + COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?";
+        String checkQuery = "SELECT 1 FROM " + TABLE_WISHLIST + " WHERE " + COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?";
         Cursor cursor = db.rawQuery(checkQuery, new String[]{String.valueOf(userId), String.valueOf(giftId)});
-
         boolean exists = cursor.getCount() > 0;
         cursor.close();
-
         if (exists) {
             db.close();
             return false;
         }
-
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_ID, userId);
         values.put(COLUMN_GIFT_ID, giftId);
-
         long id = db.insert(TABLE_WISHLIST, null, values);
         db.close();
         return id != -1;
@@ -356,32 +323,19 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public void removeGiftFromWishlist(int userId, int giftId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_WISHLIST, COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?",
-                new String[]{String.valueOf(userId), String.valueOf(giftId)});
+        db.delete(TABLE_WISHLIST, COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?", new String[]{String.valueOf(userId), String.valueOf(giftId)});
         db.close();
     }
 
     public List<WishlistItem> getUserWishlist(int userId) {
         List<WishlistItem> wishlist = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-
         String query = "SELECT w." + COLUMN_WISH_ID + ", g." + COLUMN_GIFT_ID + ", g." + COLUMN_TITLE + ", g." + COLUMN_PRICE +
-                " FROM " + TABLE_WISHLIST + " w " +
-                " JOIN " + TABLE_GIFTS + " g ON w." + COLUMN_GIFT_ID + " = g." + COLUMN_GIFT_ID +
-                " WHERE w." + COLUMN_USER_ID + " = ?";
-
+                " FROM " + TABLE_WISHLIST + " w JOIN " + TABLE_GIFTS + " g ON w." + COLUMN_GIFT_ID + " = g." + COLUMN_GIFT_ID + " WHERE w." + COLUMN_USER_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
-
         if (cursor.moveToFirst()) {
             do {
-                WishlistItem item = new WishlistItem(
-                        cursor.getInt(0),
-                        userId,
-                        cursor.getInt(1),
-                        cursor.getString(2),
-                        cursor.getDouble(3)
-                );
-                wishlist.add(item);
+                wishlist.add(new WishlistItem(cursor.getInt(0), userId, cursor.getInt(1), cursor.getString(2), cursor.getDouble(3)));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -393,7 +347,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("username", newUsername);
-
         int rows = db.update("users", values, "user_id = ?", new String[]{String.valueOf(userId)});
         db.close();
         return rows > 0;
@@ -403,7 +356,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("password", newPassword);
-
         int rows = db.update("users", values, "user_id = ?", new String[]{String.valueOf(userId)});
         db.close();
         return rows > 0;
@@ -411,11 +363,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public boolean deleteUserAccount(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.delete("wishlist", "user_id = ?", new String[]{String.valueOf(userId)});
         db.delete("reminders", "user_id = ?", new String[]{String.valueOf(userId)});
         int rows = db.delete("users", "user_id = ?", new String[]{String.valueOf(userId)});
-
         db.close();
         return rows > 0;
     }
@@ -424,7 +374,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM users WHERE user_id = ? AND password = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), currentPassword});
-
         boolean isValid = cursor.getCount() > 0;
         cursor.close();
         db.close();
