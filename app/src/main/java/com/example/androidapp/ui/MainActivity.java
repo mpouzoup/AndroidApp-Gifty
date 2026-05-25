@@ -156,6 +156,17 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // Για Android 14+ (API 34+)
+                overrideActivityTransition(
+                        OVERRIDE_TRANSITION_OPEN,
+                        R.anim.fade_in,
+                        R.anim.fade_out
+                );
+            } else {
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+
             finish();
         } else {
             Toast.makeText(this, "Invalid credentials!", Toast.LENGTH_SHORT).show();
