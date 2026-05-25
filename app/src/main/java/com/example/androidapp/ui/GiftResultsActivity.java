@@ -46,7 +46,7 @@ public class GiftResultsActivity extends AppCompatActivity {
         chipActiveBudget = findViewById(R.id.chipActiveBudget);
         chipActiveInterest = findViewById(R.id.chipActiveInterest);
 
-        rvResults.setLayoutManager(new LinearLayoutManager(this));
+        rvResults.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 2));
 
         // 2. Λήψη του USER_ID από τα SharedPreferences
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);

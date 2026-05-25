@@ -42,7 +42,7 @@ public class WishlistActivity extends AppCompatActivity {
         rvWishlist = findViewById(R.id.rvWishlist);
         emptyStateLayout = findViewById(R.id.emptyStateLayout);
 
-        rvWishlist.setLayoutManager(new LinearLayoutManager(this));
+        rvWishlist.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 2));
         wishlistList = new ArrayList<>();
 
         // 2. Λήψη του USER_ID από τα SharedPreferences
