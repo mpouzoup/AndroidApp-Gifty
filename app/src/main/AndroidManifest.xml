@@ -54,10 +54,6 @@
             android:name=".ui.DashboardActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".ui.AboutHelpActivity"
-            android:exported="false" />
-
     </application>
 
 </manifest>
