@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
 
@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isLoggedIn = prefs.getBoolean("IS_LOGGED_IN", false);
 
         if (isLoggedIn) {
-            // Αν είναι ήδη συνδεδεμένος, τον στέλνουμε κατευθείαν στο Home!
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            // 🟢 ΦΙΞ: Αν είναι ήδη συνδεδεμένος, τον στέλνουμε κατευθείαν στη DashboardActivity!
+            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish(); // Κλείνουμε τη MainActivity ακαριαία
             return; // Σταματάμε την εκτέλεση της onCreate
@@ -59,27 +59,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // ==================== 🟢 ΔΥΝΑΜΙΚΗ ΒΡΟΧΗ ΔΩΡΩΝ ====================
-        // 1. Βρίσκουμε το container της βροχής
         ConstraintLayout giftsContainer = findViewById(R.id.fallingGiftsContainer);
 
         if (giftsContainer != null) {
-            // 2. Ορίζουμε τα δύο αρχεία drawable
             int[] giftDrawables = {R.drawable.flat_gift, R.drawable.big_gift};
             java.util.Random random = new java.util.Random();
             android.os.Handler handler = new android.os.Handler();
 
-            // 3. Δημιουργούμε το επαναλαμβανόμενο task για τη βροχή
             Runnable fallingRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    // 🌟 ΔΙΟΡΘΩΣΗ CONTEXT: Από LoginActivity.this σε MainActivity.this
                     ImageView giftView = new ImageView(MainActivity.this);
 
-                    // Επιλέγουμε τυχαία ένα από τα δύο δώρα
                     int randomDrawable = giftDrawables[random.nextInt(giftDrawables.length)];
                     giftView.setImageResource(randomDrawable);
 
-                    // Ορίζουμε τυχαίο μέγεθος (από 40dp έως 90dp) για να υπάρχει βάθος στην κίνηση
                     int minSizeDp = 100;
                     int maxSizeDp = 200;
                     int randomSizeDp = minSizeDp + random.nextInt(maxSizeDp - minSizeDp);
@@ -88,24 +82,17 @@ public class MainActivity extends AppCompatActivity {
                     ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(size, size);
                     giftView.setLayoutParams(params);
 
-                    // Βάζουμε το δώρο να ξεκινάει ΠΑΝΩ από την οθόνη
                     giftView.setY(-size);
 
-                    // Τοποθετούμε το δώρο σε τυχαίο οριζόντιο σημείο (X) της οθόνης
                     int screenWidth = giftsContainer.getWidth();
                     if (screenWidth > 0) {
                         giftView.setX(random.nextInt(screenWidth - size));
                     }
 
-                    // Δίνουμε μια τυχαία διαφάνεια (Alpha)
                     giftView.setAlpha(0.3f + random.nextFloat() * 0.5f);
-
-                    // Προσθέτουμε το ImageView στο container
                     giftsContainer.addView(giftView);
 
-                    // 4. Ξεκινάμε το Animation της πτώσης
                     int screenHeight = giftsContainer.getHeight();
-                    // 🌟 Όσο πιο μεγάλο είναι το δώρο, τόσο πιο γρήγορα πέφτει (3D εφέ!)
                     long duration = 7000 - (long)((float)(randomSizeDp - minSizeDp) / (maxSizeDp - minSizeDp) * 3000);
 
                     giftView.animate()
@@ -116,17 +103,14 @@ public class MainActivity extends AppCompatActivity {
                             .setListener(new android.animation.AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(android.animation.Animator animation) {
-                                    // Διαγραφή για εξοικονόμηση μνήμης
                                     giftsContainer.removeView(giftView);
                                 }
                             });
 
-                    // 5. Επαναλαμβάνουμε τη διαδικασία κάθε 1.5 δευτερόλεπτο
                     handler.postDelayed(this, 1500);
                 }
             };
 
-            // Ξεκινάει το loop της βροχής μόλις φορτώσει το Layout
             giftsContainer.post(() -> handler.post(fallingRunnable));
         }
         // ==============================================================================
@@ -154,10 +138,10 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("IS_LOGGED_IN", true);
             editor.apply();
 
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            // 🟢 ΦΙΞ: Ανακατεύθυνση στη DashboardActivity αντί για την HomeActivity
+            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             startActivity(intent);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                // Για Android 14+ (API 34+)
                 overrideActivityTransition(
                         OVERRIDE_TRANSITION_OPEN,
                         R.anim.fade_in,
@@ -187,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("IS_LOGGED_IN", false);
         editor.apply();
 
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        // 🟢 ΦΙΞ: Ανακατεύθυνση του Guest στη DashboardActivity αντί για την HomeActivity
+        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }

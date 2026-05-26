@@ -6,18 +6,21 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout; // 🟢 Προσθήκη Import για τα Borders
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment; // 🟢 Υποχρεωτικό Import για Fragments
 
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
@@ -29,9 +32,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-public class HomeActivity extends AppCompatActivity {
+// 🟢 Αλλαγή: Κληρονομεί πλέον το Fragment αντί για το AppCompatActivity
+public class HomeActivity extends Fragment {
 
     private int currentUserId = 1;
     private MyDBHandler dbHandler;
@@ -39,27 +42,27 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayout layoutNextEvent;
     private TextView tvNextEventText;
 
-    // 🟢 Δήλωση των Layouts για τα κυκλικά περιγράμματα του Timeline
     private FrameLayout borderTue, borderWed, borderThu, borderFri;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_home);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // 1. 🟢 Φορτώνουμε το XML σχέδιο μέσω του inflater
+        View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        dbHandler = new MyDBHandler(this);
+        // 2. 🟢 ΦΙΞ: Χρήση του requireContext() για τη βάση δεδομένων
+        dbHandler = new MyDBHandler(requireContext());
 
-        layoutNextEvent = findViewById(R.id.layoutNextEvent);
-        tvNextEventText = findViewById(R.id.tvNextEventText);
+        // 3. 🟢 ΦΙΞ: Προσθήκη του "view." μπροστά από ΚΑΘΕ findViewById
+        layoutNextEvent = view.findViewById(R.id.layoutNextEvent);
+        tvNextEventText = view.findViewById(R.id.tvNextEventText);
 
-        // 🟢 Σύνδεση των Borders με το XML
-        borderTue = findViewById(R.id.borderTue);
-        borderWed = findViewById(R.id.borderWed);
-        borderThu = findViewById(R.id.borderThu);
-        borderFri = findViewById(R.id.borderFri);
+        borderTue = view.findViewById(R.id.borderTue);
+        borderWed = view.findViewById(R.id.borderWed);
+        borderThu = view.findViewById(R.id.borderThu);
+        borderFri = view.findViewById(R.id.borderFri);
 
-        View mainView = findViewById(R.id.mainConstraintLayout);
+        View mainView = view.findViewById(R.id.mainConstraintLayout);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -68,25 +71,26 @@ public class HomeActivity extends AppCompatActivity {
             });
         }
 
-        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        // 4. 🟢 ΦΙΞ: requireContext() αντί για plain getSharedPreferences
+        SharedPreferences prefs = requireContext().getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getInt("USER_ID", 1);
 
-        View cardHomeCalendar = findViewById(R.id.cardHomeCalendar);
+        View cardHomeCalendar = view.findViewById(R.id.cardHomeCalendar);
         if (currentUserId == -1 && cardHomeCalendar != null) {
             cardHomeCalendar.setVisibility(View.GONE);
         }
 
-        CardView cardFindGift = findViewById(R.id.cardFindGift);
-        CardView cardWishlist = findViewById(R.id.cardWishlist);
+        CardView cardFindGift = view.findViewById(R.id.cardFindGift);
+        CardView cardWishlist = view.findViewById(R.id.cardWishlist);
 
-        View.OnTouchListener microInteractionListener = (view, event) -> {
+        View.OnTouchListener microInteractionListener = (touchView, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    view.animate().scaleX(0.95f).scaleY(0.95f).alpha(0.8f).setDuration(100).start();
+                    touchView.animate().scaleX(0.95f).scaleY(0.95f).alpha(0.8f).setDuration(100).start();
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    view.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                    touchView.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
                     break;
             }
             return false;
@@ -95,40 +99,33 @@ public class HomeActivity extends AppCompatActivity {
         if (cardFindGift != null) cardFindGift.setOnTouchListener(microInteractionListener);
         if (cardWishlist != null) cardWishlist.setOnTouchListener(microInteractionListener);
 
-        TextView tvViewAllReminders = findViewById(R.id.tvViewAllReminders);
+        // 5. 🟢 Αντικατάσταση των onClick του XML με Java listeners για ασφάλεια στα Fragments
+        if (cardFindGift != null) {
+            cardFindGift.setOnClickListener(v -> openSuggestions());
+        }
+
+        if (cardWishlist != null) {
+            cardWishlist.setOnClickListener(v -> openWishlist());
+        }
+
+        TextView tvViewAllReminders = view.findViewById(R.id.tvViewAllReminders);
         if (tvViewAllReminders != null) {
             tvViewAllReminders.setOnClickListener(v -> {
-                Intent intent = new Intent(HomeActivity.this, RemindersActivity.class);
+                Intent intent = new Intent(requireContext(), RemindersActivity.class);
                 startActivity(intent);
             });
         }
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        // 🔴 Ο παλιός κώδικας του BottomNavigationView αφαιρέθηκε εντελώς από εδώ,
+        // καθώς πλέον η μπάρα ελέγχεται κεντρικά από την DashboardActivity.
 
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.nav_home) {
-                    return true;
-                } else if (id == R.id.nav_search) {
-                    startActivity(new Intent(HomeActivity.this, GiftFinderActivity.class));
-                    return true;
-                } else if (id == R.id.nav_wishlist) {
-                    startActivity(new Intent(HomeActivity.this, WishlistActivity.class));
-                    return true;
-                } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
-                    return true;
-                }
-                return false;
-            });
-        }
+        return view;
     }
 
+    // 6. 🟢 Στα Fragments χρησιμοποιούμε την onStart() για ανανέωση δεδομένων αντί για την onResume()
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         updateCalendarWidget();
     }
 
@@ -137,7 +134,6 @@ public class HomeActivity extends AppCompatActivity {
 
         List<ReminderModel> reminders = dbHandler.getUserReminders(currentUserId);
 
-        // 🟢 ΑΡΧΙΚΟΠΟΙΗΣΗ TIMELINE: Σβήνουμε όλα τα μωβ περιγράμματα πριν τον έλεγχο
         clearTimelineBorders();
 
         if (reminders == null || reminders.isEmpty()) {
@@ -158,38 +154,29 @@ public class HomeActivity extends AppCompatActivity {
         ReminderModel mostUpcomingEvent = null;
         long minDaysRemaining = Long.MAX_VALUE;
 
-        // 🟢 ΔΥΝΑΜΙΚΟΣ ΕΛΕΓΧΟΣ ΓΙΑ ΤΟ ΚΥΚΛΩΜΑ ΤΩΝ ΗΜΕΡΩΝ
-        // Βρόχος για την εύρεση του πιο κοντινού event και του timeline highlight
         for (ReminderModel reminder : reminders) {
             try {
                 Date eventDate = sdf.parse(reminder.getEventDate());
 
                 if (eventDate != null) {
-                    // 🟢 ΝΕΟΣ ΑΚΡΙΒΗΣ ΥΠΟΛΟΓΙΣΜΟΣ ΗΜΕΡΩΝ ΜΕ CALENDAR
                     Calendar calToday = Calendar.getInstance();
                     calToday.setTime(today);
 
                     Calendar calEvent = Calendar.getInstance();
                     calEvent.setTime(eventDate);
 
-                    // Υπολογίζουμε τη διαφορά καθαρά σε ημέρες, αγνοώντας ώρες και λεπτά
                     long diffInMillies = calEvent.getTimeInMillis() - calToday.getTimeInMillis();
                     long daysRemaining = diffInMillies / (24 * 60 * 60 * 1000);
 
-                    // Λόγω πιθανών μικροδιαφορών στην ώρα, αν το αποτέλεσμα είναι οριακό,
-                    // σιγουρευόμαστε ότι στρογγυλοποιείται σωστά στην πλησιέστερη ημέρα
                     if (diffInMillies % (24 * 60 * 60 * 1000) > (12 * 60 * 60 * 1000)) {
                         daysRemaining++;
                     }
 
                     if (daysRemaining >= 0) {
-                        // 1. Κράτησε το πιο κοντινό για το κάτω widget
                         if (daysRemaining < minDaysRemaining) {
                             minDaysRemaining = daysRemaining;
                             mostUpcomingEvent = reminder;
                         }
-
-                        // 2. 🌟 Κυκλώνουμε την κατάλληλη μέρα
                         highlightEventDay(daysRemaining);
                     }
                 }
@@ -217,9 +204,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 🟢 Ανάβει το μωβ δαχτυλίδι (περίγραμμα) ανάλογα με το πόσες μέρες απέχει το Event από σήμερα (Δευτέρα)
-     */
     private void highlightEventDay(long daysRemaining) {
         ColorStateList purpleColor = ColorStateList.valueOf(Color.parseColor("#8B5CF6"));
 
@@ -234,9 +218,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 🟢 Καθαρίζει όλα τα περιγράμματα επαναφέροντάς τα στο χρώμα του φόντου (#1E1E24)
-     */
     private void clearTimelineBorders() {
         ColorStateList darkBackground = ColorStateList.valueOf(Color.parseColor("#1E1E24"));
         if (borderTue != null) borderTue.setBackgroundTintList(darkBackground);
@@ -245,13 +226,28 @@ public class HomeActivity extends AppCompatActivity {
         if (borderFri != null) borderFri.setBackgroundTintList(darkBackground);
     }
 
-    public void openWishlist(View view) {
-        Intent intent = new Intent(this, WishlistActivity.class);
-        startActivity(intent);
+    // 7. 🟢 Προσαρμογή των μεθόδων πλοήγησης με requireContext()
+    public void openWishlist() {
+        if (getActivity() instanceof DashboardActivity) {
+            DashboardActivity dashboard = (DashboardActivity) getActivity();
+            dashboard.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new WishlistActivity())
+                    .commit();
+
+            BottomNavigationView nav = dashboard.findViewById(R.id.bottomNavigation);
+            if (nav != null) nav.setSelectedItemId(R.id.nav_wishlist);
+        }
     }
 
-    public void openSuggestions(View view) {
-        Intent intent = new Intent(this, GiftFinderActivity.class);
-        startActivity(intent);
+    public void openSuggestions() {
+        if (getActivity() instanceof DashboardActivity) {
+            DashboardActivity dashboard = (DashboardActivity) getActivity();
+            dashboard.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new GiftFinderActivity())
+                    .commit();
+
+            BottomNavigationView nav = dashboard.findViewById(R.id.bottomNavigation);
+            if (nav != null) nav.setSelectedItemId(R.id.nav_search);
+        }
     }
 }

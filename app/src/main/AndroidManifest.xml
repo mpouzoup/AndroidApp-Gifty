@@ -31,30 +31,11 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.HomeActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.WishlistActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".ui.RemindersActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.ProfileActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.AboutHelpActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".ui.RegisterActivity"
-            android:exported="false" />
-
-        <activity android:name=".ui.GiftFinderActivity"
             android:exported="false" />
 
         <activity
@@ -67,6 +48,14 @@
 
         <activity
             android:name=".ui.SettingsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.DashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.AboutHelpActivity"
             android:exported="false" />
 
     </application>

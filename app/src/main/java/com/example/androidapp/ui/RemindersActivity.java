@@ -18,7 +18,6 @@ import com.example.androidapp.adapters.ReminderAdapter;
 import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.ReminderModel;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +58,7 @@ public class RemindersActivity extends AppCompatActivity {
         rvReminders.setLayoutManager(new LinearLayoutManager(this));
 
         if (btnBackToHome != null) {
+            // 🟢 ΦΙΞ: Κλείνει ομαλά την οθόνη και επιστρέφει τον χρήστη στο σταθερό Dashboard
             btnBackToHome.setOnClickListener(v -> finish());
         }
 
@@ -68,48 +68,19 @@ public class RemindersActivity extends AppCompatActivity {
             });
         }
 
-        // 🟢 ΠΡΟΣΘΗΚΗ: Interactive φιλτράρισμα όταν ο χρήστης πατάει μια μέρα στο ημερολόγιο
+        // 🟢 Interactive φιλτράρισμα όταν ο χρήστης πατάει μια μέρα στο ημερολόγιο
         if (calendarView != null) {
             calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-                // Το month ξεκινάει από το 0 (0 = Ιανουάριος), οπότε προσθέτουμε +1
                 int realMonth = month + 1;
-
-                // Φτιάχνουμε το String της ημερομηνίας ώστε να ταιριάζει ακριβώς με το dd/MM/yyyy (π.χ. 27/05/2026)
-                // Χρησιμοποιούμε %02d για να βάζει αυτόματα μηδενικό μπροστά αν η μέρα/μήνας είναι μονοψήφιος (π.χ. 05 αντί για 5)
                 String selectedDate = String.format(java.util.Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, realMonth, year);
-
                 filterRemindersByDate(selectedDate);
             });
         }
 
         loadDatabaseEvents();
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setSelectedItemId(R.id.nav_home);
-
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.nav_home) {
-                    startActivity(new Intent(RemindersActivity.this, HomeActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_search) {
-                    startActivity(new Intent(RemindersActivity.this, GiftFinderActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_wishlist) {
-                    startActivity(new Intent(RemindersActivity.this, WishlistActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(RemindersActivity.this, ProfileActivity.class));
-                    finish();
-                    return true;
-                }
-                return false;
-            });
-        }
+        // 🔴 Ο παλιός, επικίνδυνος κώδικας του BottomNavigationView αφαιρέθηκε από εδώ,
+        // καθώς η RemindersActivity είναι δευτερεύουσα activity και κλείνει απλώς με finish().
     }
 
     private void loadDatabaseEvents() {
@@ -139,14 +110,12 @@ public class RemindersActivity extends AppCompatActivity {
             filteredList.addAll(fromDb); // Αρχικά δείχνουμε όλα τα events
         }
 
-        // Σύνδεση του Adapter με τη ΦΙΛΤΡΑΡΙΣΜΕΝΗ λίστα
         adapter = new ReminderAdapter(filteredList, position -> {
             if (position >= 0 && position < filteredList.size()) {
                 ReminderModel reminderToDelete = filteredList.get(position);
 
                 dbHandler.deleteReminder(reminderToDelete.getId());
 
-                // Αφαιρούμε το αντικείμενο και από τις δύο λίστες για να είμαστε συγχρονισμένοι
                 allRemindersList.remove(reminderToDelete);
                 filteredList.remove(position);
 
@@ -161,19 +130,17 @@ public class RemindersActivity extends AppCompatActivity {
     }
 
     /**
-     * 🟢 Φιλτράρει τη λίστα των Reminders με βάση την επιλεγμένη ημερομηνία dd/MM/yyyy
+     * Φιλτράρει τη λίστα των Reminders με βάση την επιλεγμένη ημερομηνία dd/MM/yyyy
      */
     private void filterRemindersByDate(String date) {
         filteredList.clear();
 
         for (ReminderModel reminder : allRemindersList) {
-            // Αν η ημερομηνία του reminder ταιριάζει με αυτήν που πατήθηκε στο ημερολόγιο
             if (reminder.getEventDate() != null && reminder.getEventDate().trim().equals(date.trim())) {
                 filteredList.add(reminder);
             }
         }
 
-        // Ενημερώνουμε τον adapter ότι τα δεδομένα άλλαξαν για να ανανεώσει το UI
         if (adapter != null) {
             adapter.notifyDataSetChanged();
 

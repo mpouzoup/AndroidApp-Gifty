@@ -51,10 +51,14 @@ public class RegisterActivity extends AppCompatActivity {
             int userId = dbHandler.checkUserLogin(username, password);
             if (userId != -1) {
                 SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-                prefs.edit().putInt("USER_ID", userId).apply();
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("USER_ID", userId);
+                editor.putBoolean("IS_LOGGED_IN", true); // 🟢 ΠΡΟΣΘΗΚΗ: Κρατάμε το session ενεργό
+                editor.apply();
             }
 
-            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+            // 🟢 ΦΙΞ: Στέλνουμε τον χρήστη στη DashboardActivity αντί για την HomeActivity
+            Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Καθαρίζει το ιστορικό οθονών
             startActivity(intent);
             finish();

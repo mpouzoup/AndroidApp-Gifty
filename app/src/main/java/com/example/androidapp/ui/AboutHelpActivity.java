@@ -1,22 +1,32 @@
 package com.example.androidapp.ui;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
-import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.example.androidapp.R;
 
-public class AboutHelpActivity extends AppCompatActivity {
+public class AboutHelpActivity extends Fragment {
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_help);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_about_help, container, false);
 
-        ImageButton btnBack = findViewById(R.id.btnBack);
+        ImageButton btnBack = view.findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> {
-                finish();
+                // 🟢 ΦΙΞ: Κάνει back στο προηγούμενο Fragment (στο Profile) αντί να κλείσει το App
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             });
         }
+        return view;
     }
 }

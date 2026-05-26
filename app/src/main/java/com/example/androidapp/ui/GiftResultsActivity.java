@@ -9,13 +9,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.Gift;
 import com.example.androidapp.model.GiftRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import java.util.List;
 
@@ -25,7 +23,6 @@ public class GiftResultsActivity extends AppCompatActivity {
     private TextView tvResultsCount;
     private ImageButton btnBack;
     private MyDBHandler dbHandler;
-    private BottomNavigationView bottomNavigation;
 
     private Chip chipActiveAge, chipActiveBudget, chipActiveInterest;
 
@@ -39,7 +36,6 @@ public class GiftResultsActivity extends AppCompatActivity {
         rvResults = findViewById(R.id.rvResults);
         tvResultsCount = findViewById(R.id.tvResultsCount);
         btnBack = findViewById(R.id.btnBack);
-        bottomNavigation = findViewById(R.id.bottomNavigation);
         dbHandler = new MyDBHandler(this);
 
         chipActiveAge = findViewById(R.id.chipActiveAge);
@@ -52,36 +48,10 @@ public class GiftResultsActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         int currentUserId = prefs.getInt("USER_ID", 1);
 
-        // 3. Λειτουργία του Bottom Navigation Menu
-        if (bottomNavigation != null) {
-            bottomNavigation.setOnItemSelectedListener(item -> {
-                int itemId = item.getItemId();
+        // 🔴 Ο παλιός, επικίνδυνος κώδικας του bottomNavigation.setOnItemSelectedListener
+        // αφαιρέθηκε εντελώς, καθώς η GiftResultsActivity κλείνει ομαλά με finish().
 
-                if (itemId == R.id.nav_home) {
-                    Intent intentHome = new Intent(GiftResultsActivity.this, HomeActivity.class);
-                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intentHome);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_search) {
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_wishlist) {
-                    Intent intentWishlist = new Intent(GiftResultsActivity.this, WishlistActivity.class);
-                    startActivity(intentWishlist);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    Intent intentProfile = new Intent(GiftResultsActivity.this, ProfileActivity.class);
-                    startActivity(intentProfile);
-                    finish();
-                    return true;
-                }
-                return false;
-            });
-        }
-
-        // 4. Λήψη του GiftRequest από το Intent
+        // 3. Λήψη του GiftRequest από το Intent
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("GIFT_REQUEST")) {
             GiftRequest request = (GiftRequest) intent.getSerializableExtra("GIFT_REQUEST");
@@ -105,7 +75,7 @@ public class GiftResultsActivity extends AppCompatActivity {
                     tvResultsCount.setText("Found " + recommendedGifts.size() + " ideas");
                 }
 
-                // 5. Σύνδεση με τον Adapter
+                // 4. Σύνδεση με τον Adapter
                 if (!recommendedGifts.isEmpty()) {
                     com.example.androidapp.adapters.GiftSuggestionsAdapter adapter =
                             new com.example.androidapp.adapters.GiftSuggestionsAdapter(recommendedGifts, new com.example.androidapp.adapters.GiftSuggestionsAdapter.OnAddClickListener() {
@@ -114,7 +84,7 @@ public class GiftResultsActivity extends AppCompatActivity {
 
                                     Log.d("WISHLIST_ADD", "User ID: " + currentUserId + " | Gift ID: " + gift.getId() + " | Title: " + gift.getTitle());
 
-                                    // 🟢 ΔΙΟΡΘΩΣΗ: Ελέγχουμε αν η εισαγωγή στη βάση πέτυχε ή αν υπήρχε ήδη
+                                    // Ελέγχουμε αν η εισαγωγή στη βάση πέτυχε ή αν υπήρχε ήδη
                                     boolean isAdded = dbHandler.addGiftToWishlist(currentUserId, gift.getId());
 
                                     if (isAdded) {
@@ -133,7 +103,7 @@ public class GiftResultsActivity extends AppCompatActivity {
         }
 
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
+            btnBack.setOnClickListener(v -> finish()); // Επιστρέφει ομαλά στο GiftFinderFragment
         }
     }
 }

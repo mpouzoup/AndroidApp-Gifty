@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
         userId = prefs.getInt("USER_ID", -1);
 
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
+            btnBack.setOnClickListener(v -> finish()); // Κλείνει ομαλά και επιστρέφει στο ProfileFragment
         }
 
         cvChangeUsername.setOnClickListener(v -> {
@@ -50,7 +50,6 @@ public class SettingsActivity extends AppCompatActivity {
             com.example.androidapp.model.User currentUser = dbHandler.getUserById(userId);
             if (currentUser != null && etNewUsername != null) {
                 etNewUsername.setText(currentUser.getUsername());
-
                 etNewUsername.setSelection(etNewUsername.getText().length());
             }
 
@@ -108,7 +107,12 @@ public class SettingsActivity extends AppCompatActivity {
                     .setMessage("Are you absolutely sure? This action cannot be undone and you will lose all your data and wishlists.")
                     .setPositiveButton("Delete Forever", (dialog, which) -> {
                         if (dbHandler.deleteUserAccount(userId)) {
-                            prefs.edit().remove("USER_ID").apply();
+                            // 🟢 ΦΙΞ: Καθαρίζουμε πλήρως το Session για να μην ξαναμπει αυτόματα
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.remove("USER_ID");
+                            editor.putBoolean("IS_LOGGED_IN", false);
+                            editor.apply();
+
                             Toast.makeText(this, "Account deleted successfully.", Toast.LENGTH_LONG).show();
                             navigateToLogin();
                         }

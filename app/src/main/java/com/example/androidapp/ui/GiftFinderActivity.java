@@ -2,46 +2,56 @@ package com.example.androidapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment; // 🟢 Υποχρεωτικό Import για Fragments
+
 import com.example.androidapp.R;
 import com.example.androidapp.model.GiftRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+
 import java.util.ArrayList;
 
-public class GiftFinderActivity extends AppCompatActivity {
+// 🟢 Κληρονομεί το Fragment αντί για το AppCompatActivity
+public class GiftFinderActivity extends Fragment {
 
     private EditText etRecipientAge, etMaxBudget;
     private Spinner spRelationship, spOccasion;
     private ChipGroup cgInterests;
     private Button btnFindGifts;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        androidx.activity.EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_search);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // 1. Φορτώνουμε το XML σχέδιο (activity_search.xml)
+        View view = inflater.inflate(R.layout.activity_search, container, false);
 
-        etRecipientAge = findViewById(R.id.etRecipientAge);
-        etMaxBudget = findViewById(R.id.etMaxBudget);
-        spRelationship = findViewById(R.id.spRelationship);
-        spOccasion = findViewById(R.id.spOccasion);
-        cgInterests = findViewById(R.id.cgInterests);
-        btnFindGifts = findViewById(R.id.btnFindGifts);
+        // 2. 🟢 Προσθήκη του "view." μπροστά από ΚΑΘΕ findViewById
+        etRecipientAge = view.findViewById(R.id.etRecipientAge);
+        etMaxBudget = view.findViewById(R.id.etMaxBudget);
+        spRelationship = view.findViewById(R.id.spRelationship);
+        spOccasion = view.findViewById(R.id.spOccasion);
+        cgInterests = view.findViewById(R.id.cgInterests);
+        btnFindGifts = view.findViewById(R.id.btnFindGifts);
 
+        // 3. 🟢 ΚΡΑΤΑΜΕ ΤΟΝ ΠΙΝΑΚΑ ΣΟΥ ( requireContext() αντί για 'this' )
         String[] relationships = {"Friend", "Mum", "Dad", "Boyfriend", "Girlfriend"};
-        ArrayAdapter<String> relAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, relationships);
+        ArrayAdapter<String> relAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, relationships);
         relAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRelationship.setAdapter(relAdapter);
 
         String[] occasions = {"Birthday", "Anniversary", "Christmas", "Graduation", "Housewarming", "General"};
-        ArrayAdapter<String> occAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, occasions);
+        ArrayAdapter<String> occAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, occasions);
         occAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spOccasion.setAdapter(occAdapter);
 
@@ -49,11 +59,14 @@ public class GiftFinderActivity extends AppCompatActivity {
             btnFindGifts.setOnClickListener(v -> {
                 String ageStr = etRecipientAge.getText().toString().trim();
                 String budgetStr = etMaxBudget.getText().toString().trim();
-                String selectedRelationship = spRelationship.getSelectedItem().toString().toLowerCase(); // Μετατροπή σε πεζά για τη βάση
-                String selectedOccasion = spOccasion.getSelectedItem().toString().toLowerCase();
+
+                // Κρατάμε το .trim() και αφαιρούμε το .toLowerCase() από τη σχέση για να match-άρει με τα Κεφαλαία του πίνακα
+                String selectedRelationship = spRelationship.getSelectedItem().toString().trim();
+                String selectedOccasion = spOccasion.getSelectedItem().toString().toLowerCase().trim();
 
                 if (ageStr.isEmpty() || budgetStr.isEmpty()) {
-                    Toast.makeText(GiftFinderActivity.this, "Please fill in Age and Budget", Toast.LENGTH_SHORT).show();
+                    // 🟢 requireContext() αντί για GiftFinderActivity.this
+                    Toast.makeText(requireContext(), "Please fill in Age and Budget", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -88,42 +101,17 @@ public class GiftFinderActivity extends AppCompatActivity {
                 giftRequest.setRelationship(selectedRelationship);
                 giftRequest.setOccasion(selectedOccasion);
                 giftRequest.setAge(age);
-                giftRequest.setHobby(selectedInterests);                Intent intent = new Intent(GiftFinderActivity.this, GiftResultsActivity.class);
+                giftRequest.setHobby(selectedInterests);
+
+                // 🟢 requireContext() αντί για GiftFinderActivity.this
+                Intent intent = new Intent(requireContext(), GiftResultsActivity.class);
                 intent.putExtra("GIFT_REQUEST", giftRequest);
                 startActivity(intent);
             });
         }
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setSelectedItemId(R.id.nav_search);
+        // Ο κώδικας του BottomNavigationView αφαιρέθηκε από εδώ, καθώς ελέγχεται κεντρικά.
 
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
-                androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
-                v.setPadding(0, 0, 0, systemBars.bottom);
-                return insets;
-            });
-
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-
-                if (id == R.id.nav_search) {
-                    return true;
-                } else if (id == R.id.nav_home) {
-                    startActivity(new Intent(GiftFinderActivity.this, HomeActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_wishlist) {
-                    startActivity(new Intent(GiftFinderActivity.this, WishlistActivity.class));
-                    finish();
-                    return true;
-                } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(GiftFinderActivity.this, ProfileActivity.class));
-                    finish();
-                    return true;
-                }
-                return false;
-            });
-        }
+        return view;
     }
 }
