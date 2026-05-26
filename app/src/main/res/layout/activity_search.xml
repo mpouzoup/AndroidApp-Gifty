@@ -188,7 +188,9 @@
                         android:layout_height="wrap_content"
                         android:text="Gaming"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false" app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6" app:chipStrokeWidth="1.5dp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipCooking"
@@ -197,7 +199,11 @@
                         android:layout_height="wrap_content"
                         android:text="Cooking"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false"
+                        app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6"
+                        app:chipStrokeWidth="1.5dp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFitness"
@@ -206,7 +212,11 @@
                         android:layout_height="wrap_content"
                         android:text="Fitness"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false"
+                        app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6"
+                        app:chipStrokeWidth="1.5dp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipReading"
@@ -215,7 +225,11 @@
                         android:layout_height="wrap_content"
                         android:text="Reading"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false"
+                        app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6"
+                        app:chipStrokeWidth="1.5dp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTech"
@@ -224,7 +238,11 @@
                         android:layout_height="wrap_content"
                         android:text="Tech"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false"
+                        app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6"
+                        app:chipStrokeWidth="1.5dp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTraveling"
@@ -233,7 +251,11 @@
                         android:layout_height="wrap_content"
                         android:text="Traveling"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false"
+                        app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6"
+                        app:chipStrokeWidth="1.5dp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipMusic"
@@ -242,7 +264,11 @@
                         android:layout_height="wrap_content"
                         android:text="Music"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        android:checkedIconVisible="false"
+                        app:chipBackgroundColor="#1E1E24"
+                        app:chipStrokeColor="#8B5CF6"
+                        app:chipStrokeWidth="1.5dp" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.button.MaterialButton
