@@ -20,4 +20,7 @@
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
+    <style name="CustomDatePickerTheme" parent="android:Theme.Material.Dialog">
+        <item name="android:colorAccent">#8B5CF6</item> <item name="android:colorControlActivated">#8B5CF6</item>
+    </style>
 </resources>

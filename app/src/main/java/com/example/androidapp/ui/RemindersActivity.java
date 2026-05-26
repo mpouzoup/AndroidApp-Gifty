@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CalendarView;
+import android.widget.DatePicker; // 🟢 Ίμπλοκ για το DatePicker αντί του CalendarView
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +26,9 @@ public class RemindersActivity extends AppCompatActivity {
 
     private RecyclerView rvReminders;
     private ReminderAdapter adapter;
-    private ArrayList<ReminderModel> allRemindersList; // 🟢 Κρατάει ΟΛΑ τα reminders από τη βάση
-    private ArrayList<ReminderModel> filteredList;    // 🟢 Κρατάει μόνο αυτά που δείχνουμε αυτή τη στιγμή
-    private CalendarView calendarView;
+    private ArrayList<ReminderModel> allRemindersList;
+    private ArrayList<ReminderModel> filteredList;
+    private DatePicker calendarView; // 🟢 ΦΙΞ: Αλλαγή τύπου σε DatePicker
     private FloatingActionButton fabAddReminder;
     private ImageButton btnBackToHome;
 
@@ -41,9 +41,12 @@ public class RemindersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminders);
 
         calendarView = findViewById(R.id.calendarView);
+
+        // 🟢 ΦΙΞ: Θέτουμε το minDate στο DatePicker για να μην επιλέγονται παλιές ημερομηνίες
         if (calendarView != null) {
             calendarView.setMinDate(System.currentTimeMillis() - 1000);
         }
+
         fabAddReminder = findViewById(R.id.fabAddReminder);
         rvReminders = findViewById(R.id.rvReminders);
         btnBackToHome = findViewById(R.id.btnBackToHome);
@@ -51,14 +54,13 @@ public class RemindersActivity extends AppCompatActivity {
         dbHandler = new MyDBHandler(this);
 
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-        currentUserId = prefs.getInt("USER_ID", 1);
+        currentUserId = prefs.getInt("USER_ID", -1); // 🟢 default σε -1 για σωστό Guest έλεγχο
 
         allRemindersList = new ArrayList<>();
         filteredList = new ArrayList<>();
         rvReminders.setLayoutManager(new LinearLayoutManager(this));
 
         if (btnBackToHome != null) {
-            // 🟢 ΦΙΞ: Κλείνει ομαλά την οθόνη και επιστρέφει τον χρήστη στο σταθερό Dashboard
             btnBackToHome.setOnClickListener(v -> finish());
         }
 
@@ -68,19 +70,16 @@ public class RemindersActivity extends AppCompatActivity {
             });
         }
 
-        // 🟢 Interactive φιλτράρισμα όταν ο χρήστης πατάει μια μέρα στο ημερολόγιο
+        // 🟢 ΜΟΝΤΕΡΝΟ ΦΙΞ: Νέος Listener ειδικά για DatePicker ώστε να δουλεύει το φιλτράρισμα
         if (calendarView != null) {
-            calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-                int realMonth = month + 1;
+            calendarView.setOnDateChangedListener((view, year, monthOfYear, dayOfMonth) -> {
+                int realMonth = monthOfYear + 1; // Ο μήνας ξεκινάει από το 0, οπότε προσθέτουμε 1
                 String selectedDate = String.format(java.util.Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, realMonth, year);
                 filterRemindersByDate(selectedDate);
             });
         }
 
         loadDatabaseEvents();
-
-        // 🔴 Ο παλιός, επικίνδυνος κώδικας του BottomNavigationView αφαιρέθηκε από εδώ,
-        // καθώς η RemindersActivity είναι δευτερεύουσα activity και κλείνει απλώς με finish().
     }
 
     private void loadDatabaseEvents() {
