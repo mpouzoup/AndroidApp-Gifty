@@ -6,37 +6,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment; // 🟢 Υποχρεωτικό Import για Fragments
+import androidx.fragment.app.Fragment;
 
 import com.example.androidapp.R;
 import com.example.androidapp.model.GiftRequest;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
-// 🟢 Κληρονομεί το Fragment αντί για το AppCompatActivity
 public class GiftFinderActivity extends Fragment {
 
-    private EditText etRecipientAge, etMaxBudget;
-    private Spinner spRelationship, spOccasion;
+    // 🟢 ΦΙΞ: Αλλαγή των τύπων σε TextInputEditText και AutoCompleteTextView για το νέο Layout
+    private TextInputEditText etRecipientAge, etMaxBudget;
+    private AutoCompleteTextView spRelationship, spOccasion;
     private ChipGroup cgInterests;
     private Button btnFindGifts;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 1. Φορτώνουμε το XML σχέδιο (activity_search.xml)
+        // 1. Φορτώνουμε το νέο, μοντέρνο XML σχέδιο
         View view = inflater.inflate(R.layout.activity_search, container, false);
 
-        // 2. 🟢 Προσθήκη του "view." μπροστά από ΚΑΘΕ findViewById
+        // 2. Σύνδεση των νέων Material στοιχείων UI
         etRecipientAge = view.findViewById(R.id.etRecipientAge);
         etMaxBudget = view.findViewById(R.id.etMaxBudget);
         spRelationship = view.findViewById(R.id.spRelationship);
@@ -44,15 +44,13 @@ public class GiftFinderActivity extends Fragment {
         cgInterests = view.findViewById(R.id.cgInterests);
         btnFindGifts = view.findViewById(R.id.btnFindGifts);
 
-        // 3. 🟢 ΚΡΑΤΑΜΕ ΤΟΝ ΠΙΝΑΚΑ ΣΟΥ ( requireContext() αντί για 'this' )
+        // 3. 🟢 ΦΙΞ: Προσαρμογή των πινάκων σου για AutoCompleteTextView (Exposed Dropdowns)
         String[] relationships = {"Friend", "Mum", "Dad", "Boyfriend", "Girlfriend"};
-        ArrayAdapter<String> relAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, relationships);
-        relAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> relAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, relationships);
         spRelationship.setAdapter(relAdapter);
 
         String[] occasions = {"Birthday", "Anniversary", "Christmas", "Graduation", "Housewarming", "General"};
-        ArrayAdapter<String> occAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, occasions);
-        occAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> occAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, occasions);
         spOccasion.setAdapter(occAdapter);
 
         if (btnFindGifts != null) {
@@ -60,12 +58,11 @@ public class GiftFinderActivity extends Fragment {
                 String ageStr = etRecipientAge.getText().toString().trim();
                 String budgetStr = etMaxBudget.getText().toString().trim();
 
-                // Κρατάμε το .trim() και αφαιρούμε το .toLowerCase() από τη σχέση για να match-άρει με τα Κεφαλαία του πίνακα
-                String selectedRelationship = spRelationship.getSelectedItem().toString().trim();
-                String selectedOccasion = spOccasion.getSelectedItem().toString().toLowerCase().trim();
+                // 🟢 ΦΙΞ: Λήψη κειμένου από το AutoCompleteTextView με .getText().toString() αντί για .getSelectedItem()
+                String selectedRelationship = spRelationship.getText().toString().trim();
+                String selectedOccasion = spOccasion.getText().toString().toLowerCase().trim();
 
                 if (ageStr.isEmpty() || budgetStr.isEmpty()) {
-                    // 🟢 requireContext() αντί για GiftFinderActivity.this
                     Toast.makeText(requireContext(), "Please fill in Age and Budget", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -103,14 +100,11 @@ public class GiftFinderActivity extends Fragment {
                 giftRequest.setAge(age);
                 giftRequest.setHobby(selectedInterests);
 
-                // 🟢 requireContext() αντί για GiftFinderActivity.this
                 Intent intent = new Intent(requireContext(), GiftResultsActivity.class);
                 intent.putExtra("GIFT_REQUEST", giftRequest);
                 startActivity(intent);
             });
         }
-
-        // Ο κώδικας του BottomNavigationView αφαιρέθηκε από εδώ, καθώς ελέγχεται κεντρικά.
 
         return view;
     }

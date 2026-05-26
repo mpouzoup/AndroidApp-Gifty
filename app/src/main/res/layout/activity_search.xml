@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://tools.android.com/tools"
-    xmlns:tools2="http://schemas.android.com/tools"
+    android:id="@+id/searchConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1B1B1F">
+    android:background="#131316">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
@@ -19,127 +19,164 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="24dp">
+            android:paddingBottom="40dp">
 
-            <TextView
-                android:id="@+id/tvSearchTitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="64dp"
+                android:paddingBottom="16dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvSearchTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gift Finder"
+                    android:textSize="32sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/tvSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Let's find the perfect gift ✨"
+                    android:textSize="16sp"
+                    android:textColor="#64748B" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="24dp"
                 android:layout_marginTop="24dp"
-                android:text="Gift Finder"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-            <TextView
-                android:id="@+id/tvSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Tell us more about your loved one"
-                android:textColor="#A0A0AB"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSearchTitle" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilAge"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:hint="Age"
+                    android:textColorHint="#64748B"
+                    app:hintTextColor="#8B5CF6"
+                    app:boxStrokeColor="#8B5CF6"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:layout_constraintEnd_toStartOf="@+id/tilMaxBudget"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/etRecipientAge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="12dp"
-                android:background="@android:drawable/editbox_background"
-                android:hint="Age"
-                android:inputType="number"
-                android:padding="16dp"
-                android:textColor="#070000"
-                android:textColorHint="#888888"
-                app:layout_constraintEnd_toStartOf="@+id/etMaxBudget"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRecipientAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textColor="#FFFFFF" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etMaxBudget"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background"
-                android:hint="Max Budget (€)"
-                android:inputType="numberDecimal"
-                android:padding="16dp"
-                android:textColor="#050000"
-                android:textColorHint="#888888"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/etRecipientAge"
-                app:layout_constraintTop_toTopOf="@id/etRecipientAge" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMaxBudget"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:hint="Max Budget (€)"
+                    android:textColorHint="#64748B"
+                    app:hintTextColor="#8B5CF6"
+                    app:boxStrokeColor="#8B5CF6"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tilAge"
+                    app:layout_constraintTop_toTopOf="@id/tilAge">
 
-            <TextView
-                android:id="@+id/tvRelLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Relationship"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                app:layout_constraintTop_toBottomOf="@id/etRecipientAge"
-                app:layout_constraintStart_toStartOf="parent" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMaxBudget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textColor="#FFFFFF" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <Spinner
-                android:id="@+id/spRelationship"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="6dp"
-                android:background="@android:drawable/btn_dropdown"
-                app:layout_constraintTop_toBottomOf="@id/tvRelLabel" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilRelationship"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="Relationship"
+                    android:textColorHint="#64748B"
+                    app:hintTextColor="#8B5CF6"
+                    app:boxStrokeColor="#8B5CF6"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/tilAge">
 
-            <TextView
-                android:id="@+id/tvOccasionLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Occasion"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                app:layout_constraintTop_toBottomOf="@id/spRelationship"
-                app:layout_constraintStart_toStartOf="parent" />
+                    <AutoCompleteTextView
+                        android:id="@+id/spRelationship"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="#FFFFFF" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <Spinner
-                android:id="@+id/spOccasion"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="8dp"
-                android:background="@android:drawable/btn_dropdown"
-                app:layout_constraintTop_toBottomOf="@id/tvOccasionLabel" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilOccasion"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="Occasion"
+                    android:textColorHint="#64748B"
+                    app:hintTextColor="#8B5CF6"
+                    app:boxStrokeColor="#8B5CF6"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/tilRelationship">
 
-            <TextView
-                android:id="@+id/tvInterestsLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="Interests &amp; Hobbies"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spOccasion" />
+                    <AutoCompleteTextView
+                        android:id="@+id/spOccasion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="#FFFFFF" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <HorizontalScrollView
-                android:id="@+id/svChips"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:scrollbars="none"
-                app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
+                <TextView
+                    android:id="@+id/tvInterestsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Select Interests"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilOccasion" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/cgInterests"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     app:chipSpacingHorizontal="8dp"
-                    app:singleSelection="false">
+                    app:chipSpacingVertical="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipGaming"
@@ -148,7 +185,7 @@
                         android:layout_height="wrap_content"
                         android:text="Gaming"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+                        app:chipBackgroundColor="#1E1E24" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipCooking"
@@ -157,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:text="Cooking"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+                        app:chipBackgroundColor="#1E1E24" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFitness"
@@ -166,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:text="Fitness"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+                        app:chipBackgroundColor="#1E1E24" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipReading"
@@ -175,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:text="Reading"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+                        app:chipBackgroundColor="#1E1E24" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTech"
@@ -184,25 +221,7 @@
                         android:layout_height="wrap_content"
                         android:text="Tech"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMusic"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Music"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipGym"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gym"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+                        app:chipBackgroundColor="#1E1E24" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTraveling"
@@ -211,58 +230,33 @@
                         android:layout_height="wrap_content"
                         android:text="Traveling"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
+                        app:chipBackgroundColor="#1E1E24" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipCoffee"
+                        android:id="@+id/chipMusic"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Coffee"
+                        android:text="Music"
                         android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMovies"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Movies"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipLegos"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Legos"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true" app:chipBackgroundColor="#2D2D34" />
-
+                        app:chipBackgroundColor="#1E1E24" />
                 </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
 
-            <Button
-                android:id="@+id/btnFindGifts"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="36dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#8B5CF6"
-                android:text="Let's go!"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/svChips"
-                app:layout_constraintVertical_bias="0.0" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFindGifts"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="40dp"
+                    android:text="Discover Ideas"
+                    android:textAllCaps="false"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-black"
+                    app:cornerRadius="20dp"
+                    android:backgroundTint="#8B5CF6"
+                    app:layout_constraintTop_toBottomOf="@id/cgInterests"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
