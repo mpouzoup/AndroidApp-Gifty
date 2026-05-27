@@ -149,21 +149,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 String[] parts = giftEntry.split("\\|");
                 if (parts.length >= 4) {
                     ContentValues values = new ContentValues();
-                    values.put(COLUMN_TITLE, parts[0]);
+                    values.put(COLUMN_TITLE, parts[0].trim());
 
                     try {
-                        values.put(COLUMN_PRICE, Double.parseDouble(parts[1]));
+                        values.put(COLUMN_PRICE, Double.parseDouble(parts[1].trim()));
                     } catch (NumberFormatException e) {
                         values.put(COLUMN_PRICE, 0.0);
                     }
 
-                    values.put(COLUMN_CATEGORY, parts[2]);
-                    values.put(COLUMN_RELATIONSHIP, parts[3]);
+                    values.put(COLUMN_CATEGORY, parts[2].trim());
+                    values.put(COLUMN_RELATIONSHIP, parts[3].trim());
 
-                    // 🟢 Διάβασμα ορίου ηλικίας από τη θέση 4
                     if (parts.length >= 5) {
                         try {
-                            values.put(COLUMN_AGE, Integer.parseInt(parts[4]));
+                            values.put(COLUMN_AGE, Integer.parseInt(parts[4].trim()));
                         } catch (NumberFormatException e) {
                             values.put(COLUMN_AGE, 0);
                         }
@@ -171,9 +170,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
                         values.put(COLUMN_AGE, 0);
                     }
 
-                    // Διάβασμα εικόνας από τη θέση 5 (αν υπάρχει)
+                    // 🟢 ΔΙΟΡΘΩΣΗ: Καθαρίζουμε το string της εικόνας από κενά πριν την αποθήκευση
                     if (parts.length >= 6) {
-                        values.put(COLUMN_IMAGE_PATH, parts[5]);
+                        values.put(COLUMN_IMAGE_PATH, parts[5].trim());
                     }
                     db.insert(TABLE_GIFTS, null, values);
                 }
@@ -187,7 +186,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // 1. Καθαρισμός Κατηγοριών
         String rawCategories = request.getCategory();
         if (rawCategories == null || rawCategories.trim().isEmpty()) {
             rawCategories = "all";
@@ -197,14 +195,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         StringBuilder categoryQuery = new StringBuilder();
         List<String> queryArgs = new ArrayList<>();
 
-        // Χτίσιμο του Query για τις κατηγορίες
         if (categories.length == 1 && categories[0].equals("all")) {
             categoryQuery.append("1=1");
         } else {
             categoryQuery.append("(");
             for (int i = 0; i < categories.length; i++) {
                 categoryQuery.append("category LIKE ?");
-                queryArgs.add("%" + categories[i].trim() + "%"); // 👈 ΑΥΤΑ ΜΠΑΙΝΟΥΝ ΠΡΩΤΑ ΣΤΗ ΛΙΣΤΑ
+                queryArgs.add("%" + categories[i].trim() + "%");
                 if (i < categories.length - 1) {
                     categoryQuery.append(" OR ");
                 }
@@ -212,43 +209,30 @@ public class MyDBHandler extends SQLiteOpenHelper {
             categoryQuery.append(")");
         }
 
-        // 2. 🟢 ΤΟ ΕΞΥΠΝΟ & ΚΑΘΑΡΟ SQL QUERY
-        // Χρησιμοποιούμε "INSTR" ή "LIKE" με ειδικό τρόπο για να ξεχωρίζει το Friend από το Boyfriend!
-        String finalQuery = "SELECT * FROM gifts WHERE " + categoryQuery.toString() +
-                " AND price <= ?" +
-                " AND age <= ?" +
-                " AND (relationship LIKE ? OR relationship = 'general' OR relationship = '')";
+        String finalQuery = "SELECT * FROM " + TABLE_GIFTS + " WHERE " + categoryQuery.toString() +
+                " AND " + COLUMN_PRICE + " <= ?" +
+                " AND " + COLUMN_AGE + " <= ?" +
+                " AND (" + COLUMN_RELATIONSHIP + " LIKE ? OR " + COLUMN_RELATIONSHIP + " = 'general' OR " + COLUMN_RELATIONSHIP + " = '')";
 
-        // 3. 🟢 ΠΡΟΣΘΗΚΗ ΥΠΟΛΟΙΠΩΝ ΟΡΙΣΜΑΤΩΝ ΜΕ ΤΗΝ ΑΥΣΤΗΡΑ ΣΩΣΤΗ ΣΕΙΡΑ
-
-        // Γεμίζει το: price <= ?
         queryArgs.add(String.valueOf(request.getMaxPrice()));
-
-        // Γεμίζει το: age <= ?
         queryArgs.add(String.valueOf(request.getAge()));
+        queryArgs.add("%" + request.getRelationship().trim() + "%");
 
-        // Γεμίζει το: relationship LIKE ?
-        // Προσθέτουμε κόμματα στα boundries ή ελέγχουμε καθαρά το string για να μην μπερδεύεται το Friend με το Boyfriend
-        String relation = request.getRelationship().trim();
-        queryArgs.add("%" + relation + "%");
-
-        // Μετατροπή της λίστας σε Array για την SQLite
         String[] argsArray = queryArgs.toArray(new String[0]);
-
-        // Εκτέλεση του Query
         Cursor cursor = db.rawQuery(finalQuery, argsArray);
 
         if (cursor.moveToFirst()) {
-            int idIndex = cursor.getColumnIndexOrThrow("gift_id");
-            int titleIndex = cursor.getColumnIndexOrThrow("title");
-            int priceIndex = cursor.getColumnIndexOrThrow("price");
-            int categoryIndex = cursor.getColumnIndexOrThrow("category");
-            int hobbyIndex = cursor.getColumnIndexOrThrow("hobby");
-            int occasionIndex = cursor.getColumnIndexOrThrow("occasion");
-            int relationshipIndex = cursor.getColumnIndexOrThrow("relationship");
-            int ageIndex = cursor.getColumnIndexOrThrow("age");
-            int descriptionIndex = cursor.getColumnIndexOrThrow("description");
-            int imageIndex = cursor.getColumnIndexOrThrow("image_path");
+            // 🟢 ΔΙΟΡΘΩΣΗ: Χρήση των επίσημων σταθερών για ασφάλεια στα indexes
+            int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
+            int titleIndex = cursor.getColumnIndexOrThrow(COLUMN_TITLE);
+            int priceIndex = cursor.getColumnIndexOrThrow(COLUMN_PRICE);
+            int categoryIndex = cursor.getColumnIndexOrThrow(COLUMN_CATEGORY);
+            int hobbyIndex = cursor.getColumnIndexOrThrow(COLUMN_HOBBY);
+            int occasionIndex = cursor.getColumnIndexOrThrow(COLUMN_OCCASION);
+            int relationshipIndex = cursor.getColumnIndexOrThrow(COLUMN_RELATIONSHIP);
+            int ageIndex = cursor.getColumnIndexOrThrow(COLUMN_AGE);
+            int descriptionIndex = cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION);
+            int imageIndex = cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH); // 👈 Εξασφαλίζει το σωστό column!
 
             do {
                 Gift gift = new Gift(
@@ -261,7 +245,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                         cursor.getString(occasionIndex),
                         cursor.getString(relationshipIndex),
                         cursor.getInt(ageIndex),
-                        cursor.getString(imageIndex)
+                        cursor.getString(imageIndex) // 👈 Φορτώνει πλέον πεντακάθαρα το String της εικόνας
                 );
                 suggestions.add(gift);
             } while (cursor.moveToNext());

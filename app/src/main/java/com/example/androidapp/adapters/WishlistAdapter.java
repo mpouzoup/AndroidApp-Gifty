@@ -86,8 +86,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         public WishlistViewHolder(@NonNull View itemView) {
             super(itemView);
             // 🟢 Ενημερωμένα IDs για να ταιριάζουν με το list_item_gift.xml
-            tvName = itemView.findViewById(R.id.tvGiftName);
-            tvPrice = itemView.findViewById(R.id.tvGiftPrice);
+            tvName = itemView.findViewById(R.id.tvSuggestionName);
+            tvPrice = itemView.findViewById(R.id.tvSuggestionPrice);
             ivDelete = itemView.findViewById(R.id.ivDelete);
             ivGiftImage = itemView.findViewById(R.id.ivGiftImage);
         }
