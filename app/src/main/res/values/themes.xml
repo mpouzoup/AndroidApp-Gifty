@@ -8,9 +8,7 @@
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#F8FAFC</item>
-
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-
         <item name="postSplashScreenTheme">@style/Theme.AndroidApp</item>
     </style>
 
@@ -20,7 +18,18 @@
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
-    <style name="CustomDatePickerTheme" parent="android:Theme.Material.Dialog">
-        <item name="android:colorAccent">#8B5CF6</item> <item name="android:colorControlActivated">#8B5CF6</item>
+
+    <style name="CustomDatePickerTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#8B5CF6</item>
+        <item name="colorAccent">#8B5CF6</item>
+        <item name="colorControlActivated">#8B5CF6</item>
+
+        <item name="colorSurface">#1E1E24</item>
+        <item name="android:background">#1E1E24</item>
+        <item name="android:windowBackground">#1E1E24</item>
+
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#64748B</item>
     </style>
+
 </resources>

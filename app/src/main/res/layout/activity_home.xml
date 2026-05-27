@@ -134,7 +134,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="AI Suggestions"
+                            android:text="Suggestions"
                             android:textSize="12sp"
                             android:textColor="#64748B" />
                     </LinearLayout>

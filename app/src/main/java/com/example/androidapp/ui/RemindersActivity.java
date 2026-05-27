@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.DatePicker; // 🟢 Ίμπλοκ για το DatePicker αντί του CalendarView
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
@@ -28,9 +30,12 @@ public class RemindersActivity extends AppCompatActivity {
     private ReminderAdapter adapter;
     private ArrayList<ReminderModel> allRemindersList;
     private ArrayList<ReminderModel> filteredList;
-    private DatePicker calendarView; // 🟢 ΦΙΞ: Αλλαγή τύπου σε DatePicker
+    private DatePicker calendarView;
     private FloatingActionButton fabAddReminder;
     private ImageButton btnBackToHome;
+
+    private CardView cvEventsContainer;
+    private LinearLayout emptyRemindersLayout;
 
     private MyDBHandler dbHandler;
     private int currentUserId = 1;
@@ -42,7 +47,6 @@ public class RemindersActivity extends AppCompatActivity {
 
         calendarView = findViewById(R.id.calendarView);
 
-        // 🟢 ΦΙΞ: Θέτουμε το minDate στο DatePicker για να μην επιλέγονται παλιές ημερομηνίες
         if (calendarView != null) {
             calendarView.setMinDate(System.currentTimeMillis() - 1000);
         }
@@ -51,10 +55,13 @@ public class RemindersActivity extends AppCompatActivity {
         rvReminders = findViewById(R.id.rvReminders);
         btnBackToHome = findViewById(R.id.btnBackToHome);
 
+        cvEventsContainer = findViewById(R.id.cvEventsContainer);
+        emptyRemindersLayout = findViewById(R.id.emptyRemindersLayout);
+
         dbHandler = new MyDBHandler(this);
 
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
-        currentUserId = prefs.getInt("USER_ID", -1); // 🟢 default σε -1 για σωστό Guest έλεγχο
+        currentUserId = prefs.getInt("USER_ID", -1);
 
         allRemindersList = new ArrayList<>();
         filteredList = new ArrayList<>();
@@ -70,10 +77,9 @@ public class RemindersActivity extends AppCompatActivity {
             });
         }
 
-        // 🟢 ΜΟΝΤΕΡΝΟ ΦΙΞ: Νέος Listener ειδικά για DatePicker ώστε να δουλεύει το φιλτράρισμα
         if (calendarView != null) {
             calendarView.setOnDateChangedListener((view, year, monthOfYear, dayOfMonth) -> {
-                int realMonth = monthOfYear + 1; // Ο μήνας ξεκινάει από το 0, οπότε προσθέτουμε 1
+                int realMonth = monthOfYear + 1;
                 String selectedDate = String.format(java.util.Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, realMonth, year);
                 filterRemindersByDate(selectedDate);
             });
@@ -90,6 +96,8 @@ public class RemindersActivity extends AppCompatActivity {
             if (calendarView != null) calendarView.setVisibility(View.GONE);
             if (rvReminders != null) rvReminders.setVisibility(View.GONE);
             if (fabAddReminder != null) fabAddReminder.setVisibility(View.GONE);
+            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
+            if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
 
             TextView tvRemindersTitle = findViewById(R.id.tvRemindersTitle);
             if (tvRemindersTitle != null) {
@@ -100,14 +108,16 @@ public class RemindersActivity extends AppCompatActivity {
         }
 
         if (calendarView != null) calendarView.setVisibility(View.VISIBLE);
-        if (rvReminders != null) rvReminders.setVisibility(View.VISIBLE);
         if (fabAddReminder != null) fabAddReminder.setVisibility(View.VISIBLE);
 
+        // Φόρτωση δεδομένων από τη βάση
         List<ReminderModel> fromDb = dbHandler.getUserReminders(currentUserId);
         if (fromDb != null) {
             allRemindersList.addAll(fromDb);
-            filteredList.addAll(fromDb); // Αρχικά δείχνουμε όλα τα events
+            filteredList.addAll(fromDb);
         }
+
+        updateUiState();
 
         adapter = new ReminderAdapter(filteredList, position -> {
             if (position >= 0 && position < filteredList.size()) {
@@ -122,6 +132,8 @@ public class RemindersActivity extends AppCompatActivity {
                 adapter.notifyItemRangeChanged(position, filteredList.size());
 
                 Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
+
+                updateUiState();
             }
         });
 
@@ -142,10 +154,21 @@ public class RemindersActivity extends AppCompatActivity {
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+        }
 
-            if (filteredList.isEmpty()) {
-                Toast.makeText(this, "No events for " + date, Toast.LENGTH_SHORT).show();
-            }
+        updateUiState();
+    }
+
+    /**
+     * 🟢 ΒΟΗΘΗΤΙΚΗ ΜΕΘΟΔΟΣ: Ανοιγοκλείνει δυναμικά το container και το empty layout
+     */
+    private void updateUiState() {
+        if (filteredList.isEmpty()) {
+            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
+            if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.VISIBLE);
+        } else {
+            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.VISIBLE);
+            if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
         }
     }
 
