@@ -95,23 +95,14 @@
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cvEventsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#1E1E24"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#11FFFFFF"
-                app:strokeWidth="1dp"
-                android:visibility="visible"> <androidx.recyclerview.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvReminders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/list_item_reminder" />
-            </com.google.android.material.card.MaterialCardView>
+
 
             <LinearLayout
                 android:id="@+id/emptyRemindersLayout"
@@ -121,12 +112,13 @@
                 android:orientation="vertical"
                 android:paddingVertical="40dp"
                 android:paddingHorizontal="20dp"
-                android:visibility="gone"> <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@android:drawable/ic_popup_reminder"
-                app:tint="#3F3F46"
-                android:layout_marginBottom="16dp" />
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@android:drawable/ic_popup_reminder"
+                    app:tint="#3F3F46"
+                    android:layout_marginBottom="16dp" />
 
                 <TextView
                     android:layout_width="wrap_content"

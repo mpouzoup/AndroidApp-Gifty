@@ -36,8 +36,6 @@ public class RemindersActivity extends AppCompatActivity {
     private DatePicker calendarView;
     private FloatingActionButton fabAddReminder;
     private ImageButton btnBackToHome;
-
-    private CardView cvEventsContainer;
     private LinearLayout emptyRemindersLayout;
 
     private MyDBHandler dbHandler;
@@ -58,7 +56,6 @@ public class RemindersActivity extends AppCompatActivity {
         rvReminders = findViewById(R.id.rvReminders);
         btnBackToHome = findViewById(R.id.btnBackToHome);
 
-        cvEventsContainer = findViewById(R.id.cvEventsContainer);
         emptyRemindersLayout = findViewById(R.id.emptyRemindersLayout);
 
         // 🌟 ΕΝΕΡΓΟΠΟΙΗΣΗ SWIPE TO DELETE
@@ -140,7 +137,7 @@ public class RemindersActivity extends AppCompatActivity {
             if (calendarView != null) calendarView.setVisibility(View.GONE);
             if (rvReminders != null) rvReminders.setVisibility(View.GONE);
             if (fabAddReminder != null) fabAddReminder.setVisibility(View.GONE);
-            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
+//            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
             if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
 
             TextView tvRemindersTitle = findViewById(R.id.tvRemindersTitle);
@@ -201,10 +198,10 @@ public class RemindersActivity extends AppCompatActivity {
 
     private void updateUiState() {
         if (filteredList.isEmpty()) {
-            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
+            if (rvReminders != null) rvReminders.setVisibility(View.GONE);
             if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.VISIBLE);
         } else {
-            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.VISIBLE);
+            if (rvReminders != null) rvReminders.setVisibility(View.VISIBLE);
             if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
         }
     }
