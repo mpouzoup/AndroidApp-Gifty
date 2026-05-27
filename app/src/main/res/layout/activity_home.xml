@@ -378,14 +378,18 @@
                         </LinearLayout>
                     </HorizontalScrollView>
 
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/layoutNextEvent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="#131316"> <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:background="#26262B"
                         android:padding="16dp"
-                        android:backgroundTint="#131316"
                         android:gravity="center_vertical">
 
                         <ImageView
@@ -401,8 +405,10 @@
                             android:layout_marginStart="12dp"
                             android:text="No upcoming events this week"
                             android:textSize="14sp"
-                            android:textColor="#E2E8F0" />
+                            android:textColor="#E2E8F0"
+                            android:fontFamily="sans-serif-medium" />
                     </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

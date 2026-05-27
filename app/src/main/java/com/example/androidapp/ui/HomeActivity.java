@@ -39,7 +39,7 @@ public class HomeActivity extends Fragment {
     private int currentUserId = 1;
     private MyDBHandler dbHandler;
 
-    private LinearLayout layoutNextEvent;
+    private androidx.cardview.widget.CardView layoutNextEvent;
     private TextView tvNextEventText;
 
     private FrameLayout borderTue, borderWed, borderThu, borderFri;
