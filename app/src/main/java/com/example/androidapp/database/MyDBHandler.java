@@ -266,12 +266,21 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return id != -1;
     }
 
-    public int checkUserLogin(String username, String password) {
+    public int checkUserLogin(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COLUMN_USER_ID + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
-        Cursor cursor = db.rawQuery(query, new String[]{username, password});
+
+        // 1. Το σωστό SQL Query που ελέγχει και τα δύο πεδία
+        String query = "SELECT " + COLUMN_USER_ID + " FROM " + TABLE_USERS +
+                " WHERE (" + COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?) AND " + COLUMN_PASSWORD + "=?";
+
+        // 2. 🟢 ΚΡΑΤΑΜΕ ΜΟΝΟ ΑΥΤΗ ΤΗ ΓΡΑΜΜΗ: Περνάμε το usernameOrEmail δύο φορές
+        Cursor cursor = db.rawQuery(query, new String[]{usernameOrEmail, usernameOrEmail, password});
+
         int userId = -1;
-        if (cursor.moveToFirst()) userId = cursor.getInt(0);
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(0);
+        }
+
         cursor.close();
         db.close();
         return userId;

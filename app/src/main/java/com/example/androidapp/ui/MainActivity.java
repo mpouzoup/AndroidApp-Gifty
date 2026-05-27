@@ -26,17 +26,24 @@ public class MainActivity extends AppCompatActivity {
         boolean isLoggedIn = prefs.getBoolean("IS_LOGGED_IN", false);
 
         if (isLoggedIn) {
-            // 🟢 ΦΙΞ: Αν είναι ήδη συνδεδεμένος, τον στέλνουμε κατευθείαν στη DashboardActivity!
             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             startActivity(intent);
-            finish(); // Κλείνουμε τη MainActivity ακαριαία
-            return; // Σταματάμε την εκτέλεση της onCreate
+
+            // 🟢 Smooth μετάβαση και στο αυτόματο Login
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
+            } else {
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+
+            finish();
+            return;
         }
 
         // 2. Αν ΔΕΝ είναι συνδεδεμένος, συνεχίζει κανονικά η αρχική οθόνη
         super.onCreate(savedInstanceState);
         androidx.activity.EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main); // Φορτώνει μόνο το δικό της XML
+        setContentView(R.layout.activity_main);
 
         // 3. Σύνδεση με τα IDs του XML σου
         etUsername = findViewById(R.id.etUsername);
@@ -117,19 +124,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Εκτελεί τον έλεγχο Login στη βάση δεδομένων
+     * Εκτελεί τον έλεγχο Login στη βάση δεδομένων (Υποστηρίζει Username ή Email)
      */
     public void handleLogin(View view) {
-        String username = etUsername.getText().toString().trim();
+        // 🟢 Μετονομασία σε usernameOrEmail για να συμφωνεί με τη λογική μας
+        String usernameOrEmail = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (usernameOrEmail.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Παρακαλώ συμπληρώστε όλα τα πεδία", Toast.LENGTH_SHORT).show();
             return;
         }
 
         MyDBHandler dbHandler = new MyDBHandler(this);
-        int userId = dbHandler.checkUserLogin(username, password);
+        // Κλήση της αναβαθμισμένης μεθόδου της βάσης
+        int userId = dbHandler.checkUserLogin(usernameOrEmail, password);
 
         if (userId != -1) {
             SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
@@ -138,15 +147,12 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("IS_LOGGED_IN", true);
             editor.apply();
 
-            // 🟢 ΦΙΞ: Ανακατεύθυνση στη DashboardActivity αντί για την HomeActivity
             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             startActivity(intent);
+
+            // 🟢 Smooth Transition Animation
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(
-                        OVERRIDE_TRANSITION_OPEN,
-                        R.anim.fade_in,
-                        R.anim.fade_out
-                );
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
             } else {
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
@@ -171,9 +177,16 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("IS_LOGGED_IN", false);
         editor.apply();
 
-        // 🟢 ΦΙΞ: Ανακατεύθυνση του Guest στη DashboardActivity αντί για την HomeActivity
         Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
         startActivity(intent);
+
+        // 🟢 Smooth Transition Animation και για τον Guest!
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
+        } else {
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }
+
         finish();
     }
 }

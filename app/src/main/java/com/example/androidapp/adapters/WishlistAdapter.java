@@ -44,8 +44,12 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         holder.tvPrice.setText(String.format(Locale.getDefault(), "€%.2f", currentItem.getGiftPrice()));
 
         // ==================== 🟢 ΠΡΟΣΘΗΚΗ: ΦΟΡΤΩΣΗ ΕΙΚΟΝΑΣ ΣΤΗ WISHLIST ====================
+        // ==================== 🟢 DEBUGGING ΦΟΡΤΩΣΗΣ ΕΙΚONΑΣ ====================
         String imagePath = currentItem.getImagePath();
         int imageResId = 0;
+
+// Αυτό θα τυπώσει στο Logcat τι ακριβώς διαβάζει η Java από τη βάση!
+        System.out.println("GIFTY_DEBUG: Looking for image name -> '" + imagePath + "'");
 
         if (imagePath != null && !imagePath.trim().isEmpty()) {
             imageResId = context.getResources().getIdentifier(
@@ -54,6 +58,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
                     context.getPackageName()
             );
         }
+
+        System.out.println("GIFTY_DEBUG: Found Resource ID -> " + imageResId);
+// ==============================================================================
 
         if (holder.ivGiftImage != null) {
             if (imageResId != 0) {
