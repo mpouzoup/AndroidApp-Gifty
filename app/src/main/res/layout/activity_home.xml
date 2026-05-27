@@ -29,8 +29,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="24dp"
-                android:paddingTop="32dp"
-                android:paddingBottom="16dp"
+                android:paddingTop="28dp"
+                android:paddingBottom="12dp"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
@@ -38,161 +38,143 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hello, Gifty User!"
-                    android:textSize="30sp"
-                    android:fontFamily="sans-serif-black"
-                    android:textColor="#FFFFFF" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Let's make someone happy today ✨"
-                    android:textSize="15sp"
-                    android:textColor="#64748B" />
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardQuote"
-                android:layout_width="0dp"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="#E2E8F0" /> <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#1E1E24"
-                app:layout_constraintTop_toBottomOf="@id/headerLayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/tvQuoteText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="&quot;The best gift is a piece of your heart.&quot;"
-                        android:textSize="15sp"
-                        android:fontFamily="sans-serif-italic"
-                        android:textColor="#94A3B8" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                android:layout_marginTop="24dp"
+                android:text="Ready to discover the perfect gift? "
+                android:textSize="14sp"
+                android:textColor="#64748B"
+                android:fontFamily="sans-serif" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/gridActionsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="20dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@id/cardQuote">
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardFindGift"
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_weight="1"
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="28dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="#1E1E24"
-                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="#8B5CF6" android:clickable="true"
                     android:focusable="true">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="top|start"
                         android:padding="22dp">
 
-                        <FrameLayout
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:background="@android:drawable/dialog_holo_dark_frame"
-                            android:backgroundTint="#2D2D35">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gift Finder"
+                                android:textSize="20sp"
+                                android:fontFamily="sans-serif-black"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Find smart AI suggestions instantly"
+                                android:textSize="13sp"
+                                android:textColor="#DDD6FE" />
+                        </LinearLayout>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            app:cardCornerRadius="14dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp"
+                            app:cardBackgroundColor="#A78BFA">
                             <ImageView
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_search"
-                                app:tint="#8B5CF6" />
-                        </FrameLayout>
+                                app:tint="#FFFFFF" />
+                        </com.google.android.material.card.MaterialCardView>
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            android:text="Gift Finder"
-                            android:textSize="18sp"
-                            android:fontFamily="sans-serif-black"
-                            android:textColor="#FFFFFF" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Suggestions"
-                            android:textSize="12sp"
-                            android:textColor="#64748B" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardWishlist"
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_weight="1"
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="28dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="#251E35"
-                    android:clickable="true"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#251E35"
+                    app:cardBackgroundColor="#1E1E24" android:clickable="true"
                     android:focusable="true">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="top|start"
-                        android:padding="22dp">
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="12dp">
 
-                        <FrameLayout
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:background="@android:drawable/dialog_holo_dark_frame"
-                            android:backgroundTint="#3B2667">
-                            <ImageView
-                                android:layout_width="22dp"
-                                android:layout_height="22dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/btn_star_big_on"
-                                app:tint="#A78BFA" />
-                        </FrameLayout>
+                        <ImageView
+                            android:id="@+id/ivWishlistIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:src="@android:drawable/btn_star_big_on"
+                            app:tint="#A78BFA" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/ivWishlistIcon"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="My Wishlist"
+                                android:textSize="16sp"
+                                android:fontFamily="sans-serif-bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            android:text="My Wishlist"
-                            android:textSize="18sp"
-                            android:fontFamily="sans-serif-black"
-                            android:textColor="#A78BFA" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Saved Items"
-                            android:textSize="12sp"
-                            android:textColor="#8B5CF6" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="View Saved"
+                            android:textColor="#8B5CF6"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif-medium" />
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardHomeCalendar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -200,6 +182,7 @@
                 android:layout_marginTop="20dp"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="0dp"
+                app:strokeWidth="0dp"
                 app:cardBackgroundColor="#1E1E24"
                 app:layout_constraintTop_toBottomOf="@id/gridActionsLayout"
                 app:layout_constraintStart_toStartOf="parent"
@@ -219,9 +202,11 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentStart="true"
                             android:text="Upcoming Events"
                             android:textSize="18sp"
-                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
                             android:textColor="#FFFFFF" />
 
                         <TextView
@@ -233,9 +218,12 @@
                             android:text="View All →"
                             android:textColor="#8B5CF6"
                             android:textSize="14sp"
-                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            android:background="?android:attr/selectableItemBackground" />
                     </RelativeLayout>
 
                     <HorizontalScrollView
@@ -252,128 +240,127 @@
                             android:gravity="center"
                             android:padding="4dp">
 
-                            <androidx.cardview.widget.CardView
+                            <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/dayMon"
                                 android:layout_width="60dp"
                                 android:layout_height="85dp"
                                 android:layout_marginEnd="10dp"
-                                app:cardCornerRadius="18dp"
+                                app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
+                                app:strokeWidth="0dp"
                                 app:cardBackgroundColor="#8B5CF6">
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:gravity="center">
-                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MON" android:textSize="11sp" android:textColor="#FFFFFF" android:textStyle="bold"/>
-                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="25" android:textSize="18sp" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginTop="2dp"/>
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MON" android:textSize="11sp" android:textColor="#FFFFFF" android:fontFamily="sans-serif-black"/>
+                                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="25" android:textSize="18sp" android:textColor="#FFFFFF" android:fontFamily="sans-serif-black" android:layout_marginTop="2dp"/>
                                 </LinearLayout>
-                            </androidx.cardview.widget.CardView>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <androidx.cardview.widget.CardView
+                            <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/dayTue"
                                 android:layout_width="60dp"
                                 android:layout_height="85dp"
                                 android:layout_marginEnd="10dp"
-                                app:cardCornerRadius="18dp"
+                                app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
-                                app:cardBackgroundColor="#1E1E24">
+                                app:strokeWidth="2dp"
+                                app:strokeColor="#8B5CF6"
+                                app:cardBackgroundColor="#131316">
                                 <FrameLayout
                                     android:id="@+id/borderTue"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:background="@android:drawable/dialog_holo_dark_frame"
-                                    android:backgroundTint="#8B5CF6"
                                     android:padding="2dp">
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="vertical"
-                                        android:gravity="center"
-                                        android:background="#1E1E24"
-                                        android:backgroundTint="#1E1E24">
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TUE" android:textSize="11sp" android:textColor="#94A3B8"/>
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="26" android:textSize="18sp" android:textColor="#FFFFFF" android:layout_marginTop="2dp"/>
+                                        android:gravity="center">
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TUE" android:textSize="11sp" android:textColor="#94A3B8" android:fontFamily="sans-serif-medium"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="26" android:textSize="18sp" android:textColor="#FFFFFF" android:fontFamily="sans-serif-medium" android:layout_marginTop="2dp"/>
                                     </LinearLayout>
                                 </FrameLayout>
-                            </androidx.cardview.widget.CardView>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <androidx.cardview.widget.CardView
+                            <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/dayWed"
                                 android:layout_width="60dp"
                                 android:layout_height="85dp"
                                 android:layout_marginEnd="10dp"
-                                app:cardCornerRadius="18dp"
+                                app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
-                                app:cardBackgroundColor="#1E1E24">
+                                app:strokeWidth="1dp"
+                                app:strokeColor="#2D2D35"
+                                app:cardBackgroundColor="#131316">
                                 <FrameLayout
                                     android:id="@+id/borderWed"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:background="@android:drawable/dialog_holo_dark_frame"
-                                    android:backgroundTint="#1E1E24"
                                     android:padding="2dp">
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="vertical"
                                         android:gravity="center">
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="WED" android:textSize="11sp" android:textColor="#94A3B8"/>
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="27" android:textSize="18sp" android:textColor="#FFFFFF" android:layout_marginTop="2dp"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="WED" android:textSize="11sp" android:textColor="#94A3B8" android:fontFamily="sans-serif-medium"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="27" android:textSize="18sp" android:textColor="#FFFFFF" android:fontFamily="sans-serif-medium" android:layout_marginTop="2dp"/>
                                     </LinearLayout>
                                 </FrameLayout>
-                            </androidx.cardview.widget.CardView>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <androidx.cardview.widget.CardView
+                            <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/dayThu"
                                 android:layout_width="60dp"
                                 android:layout_height="85dp"
                                 android:layout_marginEnd="10dp"
-                                app:cardCornerRadius="18dp"
+                                app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
-                                app:cardBackgroundColor="#1E1E24">
+                                app:strokeWidth="1dp"
+                                app:strokeColor="#2D2D35"
+                                app:cardBackgroundColor="#131316">
                                 <FrameLayout
                                     android:id="@+id/borderThu"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:background="@android:drawable/dialog_holo_dark_frame"
-                                    android:backgroundTint="#1E1E24"
                                     android:padding="2dp">
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="vertical"
                                         android:gravity="center">
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="THU" android:textSize="11sp" android:textColor="#94A3B8"/>
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="28" android:textSize="18sp" android:textColor="#FFFFFF" android:layout_marginTop="2dp"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="THU" android:textSize="11sp" android:textColor="#94A3B8" android:fontFamily="sans-serif-medium"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="28" android:textSize="18sp" android:textColor="#FFFFFF" android:fontFamily="sans-serif-medium" android:layout_marginTop="2dp"/>
                                     </LinearLayout>
                                 </FrameLayout>
-                            </androidx.cardview.widget.CardView>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <androidx.cardview.widget.CardView
+                            <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/dayFri"
                                 android:layout_width="60dp"
                                 android:layout_height="85dp"
-                                app:cardCornerRadius="18dp"
+                                app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
-                                app:cardBackgroundColor="#1E1E24">
+                                app:strokeWidth="1dp"
+                                app:strokeColor="#2D2D35"
+                                app:cardBackgroundColor="#131316">
                                 <FrameLayout
                                     android:id="@+id/borderFri"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:background="@android:drawable/dialog_holo_dark_frame"
-                                    android:backgroundTint="#1E1E24"
                                     android:padding="2dp">
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="vertical"
                                         android:gravity="center">
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="FRI" android:textSize="11sp" android:textColor="#94A3B8"/>
-                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="29" android:textSize="18sp" android:textColor="#FFFFFF" android:layout_marginTop="2dp"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="FRI" android:textSize="11sp" android:textColor="#94A3B8" android:fontFamily="sans-serif-medium"/>
+                                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="29" android:textSize="18sp" android:textColor="#FFFFFF" android:fontFamily="sans-serif-medium" android:layout_marginTop="2dp"/>
                                     </LinearLayout>
                                 </FrameLayout>
-                            </androidx.cardview.widget.CardView>
+                            </com.google.android.material.card.MaterialCardView>
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -385,33 +372,35 @@
                         app:cardCornerRadius="16dp"
                         app:cardElevation="0dp"
                         app:strokeWidth="0dp"
-                        app:cardBackgroundColor="#131316"> <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="16dp"
-                        android:gravity="center_vertical">
+                        app:cardBackgroundColor="#131316">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@android:drawable/ic_lock_idle_alarm"
-                            app:tint="#8B5CF6" />
-
-                        <TextView
-                            android:id="@+id/tvNextEventText"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:text="No upcoming events this week"
-                            android:textSize="14sp"
-                            android:textColor="#E2E8F0"
-                            android:fontFamily="sans-serif-medium" />
-                    </LinearLayout>
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_lock_idle_alarm"
+                                app:tint="#8B5CF6" />
+
+                            <TextView
+                                android:id="@+id/tvNextEventText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:text="No upcoming events this week"
+                                android:textSize="14sp"
+                                android:textColor="#E2E8F0"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
