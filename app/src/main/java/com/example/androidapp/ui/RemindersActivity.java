@@ -1,120 +1,217 @@
 package com.example.androidapp.ui;
 
-import android.Manifest;
-import android.content.ContentResolver;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.CalendarContract;
-import android.widget.CalendarView;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ItemTouchHelper; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
 
-// ΠΡΟΣΤΕΘΗΚΑΝ ΤΑ IMPORTS ΓΙΑ ΝΑ ΜΗΝ ΚΟΚΚΙΝΙΖΟΥΝ ΟΙ ΚΛΑΣΕΙΣ ΣΟΥ
 import com.example.androidapp.adapters.ReminderAdapter;
+import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.ReminderModel;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.List;
 
 public class RemindersActivity extends AppCompatActivity {
 
-    private static final int CALENDAR_PERMISSION_CODE = 100;
     private RecyclerView rvReminders;
     private ReminderAdapter adapter;
-    private ArrayList<ReminderModel> reminderList;
-    private CalendarView calendarView;
+    private ArrayList<ReminderModel> allRemindersList;
+    private ArrayList<ReminderModel> filteredList;
+    private DatePicker calendarView;
     private FloatingActionButton fabAddReminder;
+    private ImageButton btnBackToHome;
+
+    private CardView cvEventsContainer;
+    private LinearLayout emptyRemindersLayout;
+
+    private MyDBHandler dbHandler;
+    private int currentUserId = 1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { // Η ΔΗΛΩΣΗ ΔΙΟΡΘΩΘΗΚΕ ΕΔΩ
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminders);
 
         calendarView = findViewById(R.id.calendarView);
+
+        if (calendarView != null) {
+            calendarView.setMinDate(System.currentTimeMillis() - 1000);
+        }
+
         fabAddReminder = findViewById(R.id.fabAddReminder);
         rvReminders = findViewById(R.id.rvReminders);
+        btnBackToHome = findViewById(R.id.btnBackToHome);
 
-        reminderList = new ArrayList<>();
+        cvEventsContainer = findViewById(R.id.cvEventsContainer);
+        emptyRemindersLayout = findViewById(R.id.emptyRemindersLayout);
+
+        // 🌟 ΕΝΕΡΓΟΠΟΙΗΣΗ SWIPE TO DELETE
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if (adapter != null && position != RecyclerView.NO_POSITION) {
+                    // Καλεί το callback διαγραφής που ορίζεται παρακάτω στον adapter
+                    adapter.getOnDeleteClickListener().onDeleteClick(position);
+                }
+            }
+
+            // 🟢 Smooth μετακίνηση του frontLayout (λευκό/γκρι frame) αφήνοντας το backLayout (κόκκινο) σταθερό
+            @Override
+            public void onChildDraw(@NonNull android.graphics.Canvas c, @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+
+                View frontLayout = viewHolder.itemView.findViewById(R.id.frontLayout);
+                if (frontLayout != null) {
+                    getDefaultUIUtil().onDraw(c, recyclerView, frontLayout, dX, dY, actionState, isCurrentlyActive);
+                }
+            }
+
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                View frontLayout = viewHolder.itemView.findViewById(R.id.frontLayout);
+                if (frontLayout != null) {
+                    getDefaultUIUtil().clearView(frontLayout);
+                }
+            }
+        };
+
+        // Σύνδεση του ItemTouchHelper με το RecyclerView
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvReminders);
+
+        dbHandler = new MyDBHandler(this);
+
+        SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
+        currentUserId = prefs.getInt("USER_ID", -1);
+
+        allRemindersList = new ArrayList<>();
+        filteredList = new ArrayList<>();
         rvReminders.setLayoutManager(new LinearLayoutManager(this));
 
-        // Έλεγχος αδειών για το Real-Time Ημερολόγιο
-        checkCalendarPermissions();
+        if (btnBackToHome != null) {
+            btnBackToHome.setOnClickListener(v -> finish());
+        }
 
-        // Παράδειγμα ενέργειας στο FAB κουμπί
         if (fabAddReminder != null) {
             fabAddReminder.setOnClickListener(v -> {
-                Toast.makeText(RemindersActivity.this, "Εδώ θα ανοίγει το παράθυρο προσθήκης", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(RemindersActivity.this, AddReminderActivity.class));
             });
         }
-    }
 
-    private void checkCalendarPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_CODE);
-        } else {
-            loadRealTimeEvents();
+        if (calendarView != null) {
+            calendarView.setOnDateChangedListener((view, year, monthOfYear, dayOfMonth) -> {
+                int realMonth = monthOfYear + 1;
+                String selectedDate = String.format(java.util.Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, realMonth, year);
+                filterRemindersByDate(selectedDate);
+            });
         }
+
+        loadDatabaseEvents();
     }
 
-    private void loadRealTimeEvents() {
-        reminderList.clear();
-        ContentResolver contentResolver = getContentResolver();
-        Uri uri = CalendarContract.Events.CONTENT_URI;
+    private void loadDatabaseEvents() {
+        allRemindersList.clear();
+        filteredList.clear();
 
-        // Φιλτράρουμε για να πάρουμε γεγονότα από σήμερα και μετά
-        String selection = CalendarContract.Events.DTSTART + " >= ?";
-        String[] selectionArgs = new String[]{String.valueOf(Calendar.getInstance().getTimeInMillis())};
-        String sortOrder = CalendarContract.Events.DTSTART + " ASC";
+        if (currentUserId == -1) {
+            if (calendarView != null) calendarView.setVisibility(View.GONE);
+            if (rvReminders != null) rvReminders.setVisibility(View.GONE);
+            if (fabAddReminder != null) fabAddReminder.setVisibility(View.GONE);
+            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
+            if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
 
-        Cursor cursor = contentResolver.query(uri,
-                new String[]{CalendarContract.Events._ID, CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART},
-                selection, selectionArgs, sortOrder);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
-                String title = cursor.getString(1);
-                long dtStart = cursor.getLong(2);
-
-                // Μετατροπή των Milliseconds σε κανονική ημερομηνία
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(dtStart);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                String dateString = formatter.format(calendar.getTime());
-
-                reminderList.add(new ReminderModel(id, title, dateString));
+            TextView tvRemindersTitle = findViewById(R.id.tvRemindersTitle);
+            if (tvRemindersTitle != null) {
+                tvRemindersTitle.setText("Sign in to use Reminders!");
             }
-            cursor.close();
+            Toast.makeText(this, "Reminders are only available for registered accounts!", Toast.LENGTH_LONG).show();
+            return;
         }
 
-        // Σύνδεση με τον Adapter
-        adapter = new ReminderAdapter(reminderList, position -> {
-            reminderList.remove(position);
-            adapter.notifyItemRemoved(position);
+        if (calendarView != null) calendarView.setVisibility(View.VISIBLE);
+        if (fabAddReminder != null) fabAddReminder.setVisibility(View.VISIBLE);
+
+        List<ReminderModel> fromDb = dbHandler.getUserReminders(currentUserId);
+        if (fromDb != null) {
+            allRemindersList.addAll(fromDb);
+            filteredList.addAll(fromDb);
+        }
+
+        updateUiState();
+
+        adapter = new ReminderAdapter(filteredList, position -> {
+            if (position >= 0 && position < filteredList.size()) {
+                ReminderModel reminderToDelete = filteredList.get(position);
+
+                dbHandler.deleteReminder(reminderToDelete.getId());
+
+                allRemindersList.remove(reminderToDelete);
+                filteredList.remove(position);
+
+                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRangeChanged(position, filteredList.size());
+
+                Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
+
+                updateUiState();
+            }
         });
+
         rvReminders.setAdapter(adapter);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CALENDAR_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadRealTimeEvents();
-            } else {
-                Toast.makeText(this, "Η άδεια ημερολογίου απορρίφθηκε. Δεν είναι δυνατή η εμφάνιση real-time γεγονότων.", Toast.LENGTH_LONG).show();
+    private void filterRemindersByDate(String date) {
+        filteredList.clear();
+
+        for (ReminderModel reminder : allRemindersList) {
+            if (reminder.getEventDate() != null && reminder.getEventDate().trim().equals(date.trim())) {
+                filteredList.add(reminder);
             }
         }
+
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+
+        updateUiState();
+    }
+
+    private void updateUiState() {
+        if (filteredList.isEmpty()) {
+            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
+            if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.VISIBLE);
+        } else {
+            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.VISIBLE);
+            if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadDatabaseEvents();
     }
 }

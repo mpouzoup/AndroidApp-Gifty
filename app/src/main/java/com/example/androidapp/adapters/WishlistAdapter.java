@@ -1,28 +1,31 @@
 package com.example.androidapp.adapters;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
 import com.example.androidapp.model.WishlistItem;
+
 import java.util.List;
+import java.util.Locale;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.WishlistViewHolder> {
 
-    private List<WishlistItem> wishlist;
-    private OnDeleteClickListener deleteListener;
+    private List<WishlistItem> wishlistItems;
+    private OnDeleteClickListener listener;
 
     public interface OnDeleteClickListener {
-        void onDeleteClick(int position);
+        void onDeleteClick(WishlistItem item);
     }
 
-    public WishlistAdapter(List<WishlistItem> wishlist, OnDeleteClickListener listener) {
-        this.wishlist = wishlist;
-        this.deleteListener = listener;
+    public WishlistAdapter(List<WishlistItem> wishlistItems, OnDeleteClickListener listener) {
+        this.wishlistItems = wishlistItems;
+        this.listener = listener;
     }
 
     @NonNull
@@ -34,27 +37,66 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
 
     @Override
     public void onBindViewHolder(@NonNull WishlistViewHolder holder, int position) {
-        WishlistItem item = wishlist.get(position);
-        holder.tvTitle.setText(item.getTitle());
-        holder.tvPrice.setText(String.format("€%.2f", item.getPrice()));
+        WishlistItem currentItem = wishlistItems.get(position);
+        Context context = holder.itemView.getContext();
 
-        holder.btnDelete.setOnClickListener(v -> deleteListener.onDeleteClick(position));
+        holder.tvName.setText(currentItem.getGiftTitle());
+        holder.tvPrice.setText(String.format(Locale.getDefault(), "€%.2f", currentItem.getGiftPrice()));
+
+        // ==================== 🟢 ΠΡΟΣΘΗΚΗ: ΦΟΡΤΩΣΗ ΕΙΚΟΝΑΣ ΣΤΗ WISHLIST ====================
+        // ==================== 🟢 DEBUGGING ΦΟΡΤΩΣΗΣ ΕΙΚONΑΣ ====================
+        String imagePath = currentItem.getImagePath();
+        int imageResId = 0;
+
+// Αυτό θα τυπώσει στο Logcat τι ακριβώς διαβάζει η Java από τη βάση!
+        System.out.println("GIFTY_DEBUG: Looking for image name -> '" + imagePath + "'");
+
+        if (imagePath != null && !imagePath.trim().isEmpty()) {
+            imageResId = context.getResources().getIdentifier(
+                    imagePath.trim(),
+                    "drawable",
+                    context.getPackageName()
+            );
+        }
+
+        System.out.println("GIFTY_DEBUG: Found Resource ID -> " + imageResId);
+// ==============================================================================
+
+        if (holder.ivGiftImage != null) {
+            if (imageResId != 0) {
+                holder.ivGiftImage.setImageResource(imageResId);
+            } else {
+                // Default εικονίδιο αν δεν βρεθεί η φωτογραφία
+                holder.ivGiftImage.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
+        }
+        // ==============================================================================
+
+        holder.ivDelete.setOnClickListener(v -> {
+            int currentPosition = holder.getAdapterPosition();
+            if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
+                listener.onDeleteClick(wishlistItems.get(currentPosition));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return wishlist.size();
+        return wishlistItems != null ? wishlistItems.size() : 0;
     }
 
     public static class WishlistViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvPrice;
-        ImageView btnDelete;
+        TextView tvName, tvPrice;
+        ImageView ivDelete;
+        ImageView ivGiftImage; // 🟢 Προσθήκη για τη φωτογραφία
 
         public WishlistViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvGiftName);
-            tvPrice = itemView.findViewById(R.id.tvGiftPrice);
-            btnDelete = itemView.findViewById(R.id.ivDelete);
+            // 🟢 Ενημερωμένα IDs για να ταιριάζουν με το list_item_gift.xml
+            tvName = itemView.findViewById(R.id.tvSuggestionName);
+            tvPrice = itemView.findViewById(R.id.tvSuggestionPrice);
+            ivDelete = itemView.findViewById(R.id.ivDelete);
+            ivGiftImage = itemView.findViewById(R.id.ivGiftImage);
         }
     }
 }
