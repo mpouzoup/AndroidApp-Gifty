@@ -82,9 +82,15 @@ public class GiftResultsActivity extends AppCompatActivity {
                                 @Override
                                 public void onAddClick(Gift gift) {
 
+                                    // 🔒 ΕΛΕΓΧΟΣ GUEST: Αν ο χρήστης είναι επισκέπτης, δεν τον αφήνουμε να προσθέσει στη Wishlist
+                                    if (currentUserId == -1) {
+                                        Toast.makeText(GiftResultsActivity.this, "🔒 Sign in to create your personal Wishlist!", Toast.LENGTH_LONG).show();
+                                        return; // Σταματάει την εκτέλεση εδώ, οπότε δεν γίνεται insert στη βάση!
+                                    }
+
                                     Log.d("WISHLIST_ADD", "User ID: " + currentUserId + " | Gift ID: " + gift.getId() + " | Title: " + gift.getTitle());
 
-                                    // Ελέγχουμε αν η εισαγωγή στη βάση πέτυχε ή αν υπήρχε ήδη
+                                    // Αν ΔΕΝ είναι guest, η ροή συνεχίζει κανονικά στη βάση δεδομένων
                                     boolean isAdded = dbHandler.addGiftToWishlist(currentUserId, gift.getId());
 
                                     if (isAdded) {

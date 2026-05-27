@@ -3,7 +3,6 @@ package com.example.androidapp.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +28,11 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         this.listener = listener;
     }
 
+    // 🟢 Ολοσωστός Getter για να τον βλέπει η RemindersActivity!
+    public OnDeleteClickListener getOnDeleteClickListener() {
+        return this.listener;
+    }
+
     @NonNull
     @Override
     public ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,7 +44,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     public void onBindViewHolder(@NonNull ReminderViewHolder holder, int position) {
         ReminderModel currentItem = reminderList.get(position);
 
-        // 🟢 Σωστή χρήση των δικών σου μεθόδων
         holder.tvEvent.setText(currentItem.getEventName());
 
         if (currentItem.getEventDate() == null || currentItem.getEventDate().isEmpty()) {
@@ -51,12 +54,8 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             holder.tvDate.setText(currentItem.getEventDate());
         }
 
-        holder.ivDelete.setOnClickListener(v -> {
-            int currentPosition = holder.getAdapterPosition();
-            if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
-                listener.onDeleteClick(currentPosition);
-            }
-        });
+        // 🌟 Το Click Listener του ivDelete αφαιρέθηκε από εδώ
+        // γιατί πλέον τη διαγραφή τη χειρίζεται 100% το swipe της Activity!
     }
 
     @Override
@@ -66,13 +65,12 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
     public static class ReminderViewHolder extends RecyclerView.ViewHolder {
         TextView tvEvent, tvDate;
-        ImageView ivDelete;
+        // 🟢 Το ivDelete αφαιρέθηκε για να μην έχουμε NullPointerException
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             tvEvent = itemView.findViewById(R.id.tvReminderEvent);
             tvDate = itemView.findViewById(R.id.tvReminderDate);
-            ivDelete = itemView.findViewById(R.id.ivDeleteReminder);
         }
     }
 }

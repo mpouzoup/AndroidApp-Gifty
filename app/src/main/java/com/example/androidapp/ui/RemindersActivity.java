@@ -10,8 +10,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ItemTouchHelper; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
@@ -57,6 +60,47 @@ public class RemindersActivity extends AppCompatActivity {
 
         cvEventsContainer = findViewById(R.id.cvEventsContainer);
         emptyRemindersLayout = findViewById(R.id.emptyRemindersLayout);
+
+        // 🌟 ΕΝΕΡΓΟΠΟΙΗΣΗ SWIPE TO DELETE
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if (adapter != null && position != RecyclerView.NO_POSITION) {
+                    // Καλεί το callback διαγραφής που ορίζεται παρακάτω στον adapter
+                    adapter.getOnDeleteClickListener().onDeleteClick(position);
+                }
+            }
+
+            // 🟢 Smooth μετακίνηση του frontLayout (λευκό/γκρι frame) αφήνοντας το backLayout (κόκκινο) σταθερό
+            @Override
+            public void onChildDraw(@NonNull android.graphics.Canvas c, @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+
+                View frontLayout = viewHolder.itemView.findViewById(R.id.frontLayout);
+                if (frontLayout != null) {
+                    getDefaultUIUtil().onDraw(c, recyclerView, frontLayout, dX, dY, actionState, isCurrentlyActive);
+                }
+            }
+
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                View frontLayout = viewHolder.itemView.findViewById(R.id.frontLayout);
+                if (frontLayout != null) {
+                    getDefaultUIUtil().clearView(frontLayout);
+                }
+            }
+        };
+
+        // Σύνδεση του ItemTouchHelper με το RecyclerView
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvReminders);
 
         dbHandler = new MyDBHandler(this);
 
@@ -110,7 +154,6 @@ public class RemindersActivity extends AppCompatActivity {
         if (calendarView != null) calendarView.setVisibility(View.VISIBLE);
         if (fabAddReminder != null) fabAddReminder.setVisibility(View.VISIBLE);
 
-        // Φόρτωση δεδομένων από τη βάση
         List<ReminderModel> fromDb = dbHandler.getUserReminders(currentUserId);
         if (fromDb != null) {
             allRemindersList.addAll(fromDb);
@@ -140,9 +183,6 @@ public class RemindersActivity extends AppCompatActivity {
         rvReminders.setAdapter(adapter);
     }
 
-    /**
-     * Φιλτράρει τη λίστα των Reminders με βάση την επιλεγμένη ημερομηνία dd/MM/yyyy
-     */
     private void filterRemindersByDate(String date) {
         filteredList.clear();
 
@@ -159,9 +199,6 @@ public class RemindersActivity extends AppCompatActivity {
         updateUiState();
     }
 
-    /**
-     * 🟢 ΒΟΗΘΗΤΙΚΗ ΜΕΘΟΔΟΣ: Ανοιγοκλείνει δυναμικά το container και το empty layout
-     */
     private void updateUiState() {
         if (filteredList.isEmpty()) {
             if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
