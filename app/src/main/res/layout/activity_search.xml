@@ -64,9 +64,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:hint="Age"
-                    android:textColorHint="#64748B"
+                    android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-                    app:boxStrokeColor="#8B5CF6"
+
+                    app:boxStrokeColor="@drawable/input_box_stroke_color"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxStrokeWidthFocused="2.5dp"
+
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -90,9 +94,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:hint="Max Budget (€)"
-                    android:textColorHint="#64748B"
+                    android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-                    app:boxStrokeColor="#8B5CF6"
+
+                    app:boxStrokeColor="@drawable/input_box_stroke_color"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxStrokeWidthFocused="2.5dp"
+
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -116,9 +124,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:hint="Relationship"
-                    android:textColorHint="#64748B"
+                    android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-                    app:boxStrokeColor="#8B5CF6"
+
+                    app:boxStrokeColor="@drawable/input_box_stroke_color"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxStrokeWidthFocused="2.5dp"
+
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -140,9 +152,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:hint="Occasion"
-                    android:textColorHint="#64748B"
+                    android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-                    app:boxStrokeColor="#8B5CF6"
+
+                    app:boxStrokeColor="@drawable/input_box_stroke_color"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxStrokeWidthFocused="2.5dp"
+
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -185,7 +201,14 @@
                         android:layout_height="wrap_content"
                         android:text="Gaming"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color"
+                        />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipCooking"
@@ -194,7 +217,12 @@
                         android:layout_height="wrap_content"
                         android:text="Cooking"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFitness"
@@ -203,7 +231,12 @@
                         android:layout_height="wrap_content"
                         android:text="Fitness"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipReading"
@@ -212,7 +245,12 @@
                         android:layout_height="wrap_content"
                         android:text="Reading"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTech"
@@ -221,7 +259,12 @@
                         android:layout_height="wrap_content"
                         android:text="Tech"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTraveling"
@@ -230,7 +273,40 @@
                         android:layout_height="wrap_content"
                         android:text="Traveling"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCoffee"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Coffee"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMovies"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Movies"
+                        android:textColor="#FFFFFF"
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipMusic"
@@ -239,7 +315,12 @@
                         android:layout_height="wrap_content"
                         android:text="Music"
                         android:textColor="#FFFFFF"
-                        app:chipBackgroundColor="#1E1E24" />
+                        android:checkable="true"
+                        app:checkedIconVisible="false"
+
+                        app:chipStrokeColor="@drawable/chip_stroke_color"
+                        app:chipStrokeWidth="2dp"
+                        app:chipBackgroundColor="@drawable/chip_bg_color" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.button.MaterialButton
