@@ -166,6 +166,13 @@ public class MainActivity extends AppCompatActivity {
     public void handleSignUpNavigation(View view) {
         Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(intent);
+
+        // 🟢 ΠΡΟΣΘΗΚΗ: Smooth fade transition καθώς ανοίγει η RegisterActivity
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
+        } else {
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }
     }
 
     public void handleGuestLogin(View view) {
