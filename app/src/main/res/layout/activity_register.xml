@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Main root layout for the Register screen -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://tools.android.com/tools"
@@ -7,6 +9,7 @@
     android:background="#131316"
     tools:context=".ui.RegisterActivity">
 
+    <!-- Background container for animated falling gift effects -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fallingGiftsContainer"
         android:layout_width="match_parent"
@@ -31,6 +34,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.7" />
 
+    <!-- Username input container -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilRegisterUsername"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -61,6 +65,7 @@
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Email input container -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilRegisterEmail"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -91,6 +96,7 @@
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Password input container -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilRegisterPassword"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -123,6 +129,7 @@
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Register button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
         android:layout_width="0dp"
@@ -141,6 +148,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Button to return to login screen -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBackToLogin"
         style="@style/Widget.MaterialComponents.Button.TextButton"

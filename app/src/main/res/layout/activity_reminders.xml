@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Main root layout for the Reminders screen -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://tools.android.com/tools"
@@ -6,6 +8,7 @@
     android:layout_height="match_parent"
     android:background="#131316">
 
+    <!-- Header section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -15,6 +18,7 @@
         android:paddingBottom="16dp"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Back button -->
         <ImageButton
             android:id="@+id/btnBackToHome"
             android:layout_width="40dp"
@@ -59,12 +63,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
+        <!-- Main content container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
-            android:paddingBottom="100dp"> <com.google.android.material.card.MaterialCardView
+            android:paddingBottom="100dp">
+
+            <!-- Calendar card -->
+            <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -74,6 +82,7 @@
             app:strokeColor="#11FFFFFF"
             app:strokeWidth="1dp">
 
+            <!-- Calendar date picker -->
             <DatePicker
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
@@ -83,8 +92,10 @@
                 android:spinnersShown="false"
                 android:background="#1E1E24"
                 android:theme="@style/CustomDatePickerTheme" />
+
         </com.google.android.material.card.MaterialCardView>
 
+            <!-- Upcoming events section title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -95,6 +106,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
 
+            <!-- Container holding reminders RecyclerView -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvEventsContainer"
                 android:layout_width="match_parent"
@@ -104,7 +116,9 @@
                 app:cardElevation="0dp"
                 app:strokeColor="#11FFFFFF"
                 app:strokeWidth="1dp"
-                android:visibility="visible"> <androidx.recyclerview.widget.RecyclerView
+                android:visibility="visible">
+
+                <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvReminders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -113,6 +127,7 @@
                 tools:listitem="@layout/list_item_reminder" />
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Layout shown when there are no reminders -->
             <LinearLayout
                 android:id="@+id/emptyRemindersLayout"
                 android:layout_width="match_parent"
@@ -121,7 +136,9 @@
                 android:orientation="vertical"
                 android:paddingVertical="40dp"
                 android:paddingHorizontal="20dp"
-                android:visibility="gone"> <ImageView
+                android:visibility="gone">
+
+                <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@android:drawable/ic_popup_reminder"
@@ -150,6 +167,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Floating action button for adding reminders -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddReminder"
         android:layout_width="wrap_content"

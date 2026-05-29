@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Main root layout for the Gift Finder screen -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://tools.android.com/tools"
@@ -7,6 +9,7 @@
     android:layout_height="match_parent"
     android:background="#131316">
 
+    <!-- Scrollable container for all screen content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -50,6 +53,7 @@
                     android:textColor="#64748B" />
             </LinearLayout>
 
+            <!-- Main form section -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,6 +61,7 @@
                 android:layout_marginTop="24dp"
                 app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
+                <!-- Age input field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilAge"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -85,6 +90,7 @@
                         android:textColor="#FFFFFF" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Budget input field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilMaxBudget"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -113,6 +119,7 @@
                         android:textColor="#FFFFFF" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Relationship dropdown field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilRelationship"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -131,14 +138,17 @@
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:layout_constraintTop_toBottomOf="@id/tilAge">
 
+                    <!-- Dropdown selection for relationship -->
                     <AutoCompleteTextView
                         android:id="@+id/spRelationship"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:textColor="#FFFFFF" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Interests section label -->
                 <TextView
                     android:id="@+id/tvInterestsLabel"
                     android:layout_width="wrap_content"
@@ -149,7 +159,11 @@
                     android:textSize="18sp"
                     android:fontFamily="sans-serif-black"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tilRelationship" /> <com.google.android.material.chip.ChipGroup
+                    app:layout_constraintTop_toBottomOf="@id/tilRelationship" />
+
+                <!-- Chip group containing selectable interests -->
+                <com.google.android.material.chip.ChipGroup
+
                 android:id="@+id/cgInterests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -276,6 +290,7 @@
                     app:chipBackgroundColor="@drawable/chip_bg_color" />
             </com.google.android.material.chip.ChipGroup>
 
+                <!-- Button used to generate gift suggestions -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnFindGifts"
                     android:layout_width="match_parent"

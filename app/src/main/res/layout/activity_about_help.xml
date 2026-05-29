@@ -7,6 +7,11 @@
     android:layout_height="match_parent"
     android:background="#121214">
 
+    <!--
+        HEADER SECTION
+        Contains back navigation button and screen title.
+    -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -41,6 +46,10 @@
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--
+        SCROLLABLE HELP & DOCUMENTATION CONTENT
+        Contains app user guides and development team credits.
+    -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -305,6 +314,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- APP VERSION FOOTER -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

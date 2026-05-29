@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Card layout for a wishlist gift item (this .xml file is used in wishlist, so that all gifts appear in the same format -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,10 +13,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"> <RelativeLayout
+        android:orientation="vertical">
+
+        <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Gift image preview -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivGiftImage"
             android:layout_width="match_parent"
@@ -24,6 +29,7 @@
             android:src="@android:drawable/ic_menu_gallery"
             app:shapeAppearanceOverlay="@style/TopRoundedCorners" />
 
+        <!-- Delete wishlist item button -->
         <ImageView
             android:id="@+id/ivDelete"
             android:layout_width="28dp"
@@ -38,6 +44,7 @@
             android:contentDescription="Delete from Wishlist" />
     </RelativeLayout>
 
+        <!-- Gift information section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
