@@ -66,11 +66,9 @@
                     android:hint="Age"
                     android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-
                     app:boxStrokeColor="@drawable/input_box_stroke_color"
                     app:boxStrokeWidth="1.5dp"
                     app:boxStrokeWidthFocused="2.5dp"
-
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -96,11 +94,9 @@
                     android:hint="Max Budget (€)"
                     android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-
                     app:boxStrokeColor="@drawable/input_box_stroke_color"
                     app:boxStrokeWidth="1.5dp"
                     app:boxStrokeWidthFocused="2.5dp"
-
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -126,11 +122,9 @@
                     android:hint="Relationship"
                     android:textColorHint="#94A3B8"
                     app:hintTextColor="#8B5CF6"
-
                     app:boxStrokeColor="@drawable/input_box_stroke_color"
                     app:boxStrokeWidth="1.5dp"
                     app:boxStrokeWidthFocused="2.5dp"
-
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -139,34 +133,6 @@
 
                     <AutoCompleteTextView
                         android:id="@+id/spRelationship"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:textColor="#FFFFFF" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilOccasion"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="Occasion"
-                    android:textColorHint="#94A3B8"
-                    app:hintTextColor="#8B5CF6"
-
-                    app:boxStrokeColor="@drawable/input_box_stroke_color"
-                    app:boxStrokeWidth="1.5dp"
-                    app:boxStrokeWidthFocused="2.5dp"
-
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/tilRelationship">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/spOccasion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -183,145 +149,132 @@
                     android:textSize="18sp"
                     android:fontFamily="sans-serif-black"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tilOccasion" />
+                    app:layout_constraintTop_toBottomOf="@id/tilRelationship" /> <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgInterests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp"
+                app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/cgInterests"
-                    android:layout_width="match_parent"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipGaming"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:chipSpacingHorizontal="8dp"
-                    app:chipSpacingVertical="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
+                    android:text="Gaming"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipGaming"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gaming"
-                        android:textColor="#FFFFFF"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCooking"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cooking"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFitness"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fitness"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color"
-                        />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipReading"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reading"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipCooking"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cooking"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTech"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tech"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTraveling"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Traveling"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipFitness"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Fitness"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCoffee"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Coffee"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMovies"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Movies"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipReading"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reading"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipTech"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tech"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipTraveling"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Traveling"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipCoffee"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Coffee"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMovies"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Movies"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMusic"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Music"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-                </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMusic"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Music"
+                    android:textColor="#FFFFFF"
+                    android:checkable="true"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeColor="@drawable/chip_stroke_color"
+                    app:chipStrokeWidth="2dp"
+                    app:chipBackgroundColor="@drawable/chip_bg_color" />
+            </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnFindGifts"
