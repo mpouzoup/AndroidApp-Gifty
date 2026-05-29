@@ -37,7 +37,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String COLUMN_HOBBY = "hobby";
     private static final String COLUMN_OCCASION = "occasion";
     private static final String COLUMN_RELATIONSHIP = "relationship";
-    private static final String COLUMN_AGE = "age"; // 🟢 ΕΠΑΝΑΦΟΡΑ ΣΤΗΛΗΣ ΗΛΙΚΙΑΣ
+    private static final String COLUMN_AGE = "age";
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_IMAGE_PATH = "image_path";
 
