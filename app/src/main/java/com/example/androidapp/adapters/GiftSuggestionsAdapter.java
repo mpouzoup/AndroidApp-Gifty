@@ -14,6 +14,7 @@ import com.example.androidapp.model.Gift;
 import java.util.List;
 import java.util.Locale;
 
+//Adapter to display the list of gift ideas in our RecyclerView grid
 public class GiftSuggestionsAdapter extends RecyclerView.Adapter<GiftSuggestionsAdapter.SuggestionViewHolder> {
 
     private List<Gift> giftList;
@@ -40,13 +41,15 @@ public class GiftSuggestionsAdapter extends RecyclerView.Adapter<GiftSuggestions
         Gift currentGift = giftList.get(position);
         Context context = holder.itemView.getContext();
 
+        //Set the text fields for the gift title and format the price nicely with the Euro symbol
         holder.tvName.setText(currentGift.getTitle());
         holder.tvPrice.setText(String.format(Locale.getDefault(), "€%.2f", currentGift.getPrice()));
 
-        // ==================== 🟢 ΑΣΦΑΛΗΣ ΦΟΡΤΩΣΗ ΕΙΚΟΝΑΣ ====================
+
         String imagePath = currentGift.getImagePath();
         int imageResId = 0;
 
+        //Get the image name string from the database and look up its resource ID dynamically
         if (imagePath != null && !imagePath.trim().isEmpty()) {
             imageResId = context.getResources().getIdentifier(
                     imagePath.trim(),
@@ -55,7 +58,7 @@ public class GiftSuggestionsAdapter extends RecyclerView.Adapter<GiftSuggestions
             );
         }
 
-        // Έλεγχος null: Αν για οποιοδήποτε λόγο το layout δεν βρει το ID, η εφαρμογή ΔΕΝ θα κρασάρει
+        //Load the gift image. If anything goes wrong or the image is missing, use a generic fallback icon so the app doesn't crash.
         if (holder.ivGiftImage != null) {
             if (imageResId != 0) {
                 holder.ivGiftImage.setImageResource(imageResId);
@@ -63,21 +66,24 @@ public class GiftSuggestionsAdapter extends RecyclerView.Adapter<GiftSuggestions
                 holder.ivGiftImage.setImageResource(android.R.drawable.ic_menu_report_image);
             }
         }
-        // ==============================================================================
 
-        // Διαχείριση του Wishlist Star
+
+        //Set up the default state for the wishlist star (off/gray) when the item first loads
         holder.ivAdd.setImageResource(android.R.drawable.btn_star_big_off);
         holder.ivAdd.setColorFilter(android.graphics.Color.parseColor("#94A3B8")); // Απαλό γκρι
         holder.ivAdd.setClickable(true);
 
+        //When the user clicks the star, trigger the listener, light it up purple, and lock it to prevent accidental double clicks
         holder.ivAdd.setOnClickListener(v -> {
             int currentPosition = holder.getAdapterPosition();
             if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
                 listener.onAddClick(giftList.get(currentPosition));
 
+                //Change star asset to filled and turn it into our theme's purple color
                 holder.ivAdd.setImageResource(android.R.drawable.btn_star_big_on);
                 holder.ivAdd.setColorFilter(android.graphics.Color.parseColor("#8B5CF6")); // Το μωβ σου
 
+                //Disable clicks on this specific item star until the screen refreshes
                 holder.ivAdd.setClickable(false);
             }
         });
@@ -88,10 +94,11 @@ public class GiftSuggestionsAdapter extends RecyclerView.Adapter<GiftSuggestions
         return giftList != null ? giftList.size() : 0;
     }
 
+    //ViewHolder class to find and hold references to all our XML views
     public static class SuggestionViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvPrice;
         ImageView ivAdd;
-        ImageView ivGiftImage; // 🟢 Μετονομάστηκε σε ivGiftImage για να ταιριάζει ακριβώς με το XML
+        ImageView ivGiftImage;
 
         public SuggestionViewHolder(@NonNull View itemView) {
             super(itemView);

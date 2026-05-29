@@ -14,6 +14,7 @@ import com.example.androidapp.model.WishlistItem;
 import java.util.List;
 import java.util.Locale;
 
+//Adapter to manage and display all the items a user has saved to their Wishlist screen
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.WishlistViewHolder> {
 
     private List<WishlistItem> wishlistItems;
@@ -40,15 +41,15 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         WishlistItem currentItem = wishlistItems.get(position);
         Context context = holder.itemView.getContext();
 
+        //Set the text fields for the gift title and format the price cleanly with the Euro symbol
         holder.tvName.setText(currentItem.getGiftTitle());
         holder.tvPrice.setText(String.format(Locale.getDefault(), "€%.2f", currentItem.getGiftPrice()));
 
-        // ==================== 🟢 ΠΡΟΣΘΗΚΗ: ΦΟΡΤΩΣΗ ΕΙΚΟΝΑΣ ΣΤΗ WISHLIST ====================
-        // ==================== 🟢 DEBUGGING ΦΟΡΤΩΣΗΣ ΕΙΚONΑΣ ====================
+        //DYNAMIC IMAGE LOADING & DEBUGGING, because we ran into a problem loading the images ---
         String imagePath = currentItem.getImagePath();
         int imageResId = 0;
 
-// Αυτό θα τυπώσει στο Logcat τι ακριβώς διαβάζει η Java από τη βάση!
+
         System.out.println("GIFTY_DEBUG: Looking for image name -> '" + imagePath + "'");
 
         if (imagePath != null && !imagePath.trim().isEmpty()) {
@@ -60,18 +61,19 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         }
 
         System.out.println("GIFTY_DEBUG: Found Resource ID -> " + imageResId);
-// ==============================================================================
 
+
+        //Load the resolved image. If it's missing or broken, fall back to a generic gallery icon so the app doesn't crash.
         if (holder.ivGiftImage != null) {
             if (imageResId != 0) {
                 holder.ivGiftImage.setImageResource(imageResId);
             } else {
-                // Default εικονίδιο αν δεν βρεθεί η φωτογραφία
                 holder.ivGiftImage.setImageResource(android.R.drawable.ic_menu_gallery);
             }
         }
-        // ==============================================================================
 
+
+        //Set up the click listener for the trash/delete icon to fire our interface callback
         holder.ivDelete.setOnClickListener(v -> {
             int currentPosition = holder.getAdapterPosition();
             if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
@@ -88,11 +90,11 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
     public static class WishlistViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvPrice;
         ImageView ivDelete;
-        ImageView ivGiftImage; // 🟢 Προσθήκη για τη φωτογραφία
+        ImageView ivGiftImage;
 
         public WishlistViewHolder(@NonNull View itemView) {
             super(itemView);
-            // 🟢 Ενημερωμένα IDs για να ταιριάζουν με το list_item_gift.xml
+            //Linking our variables straight to the updated IDs inside list_item_gift.xml
             tvName = itemView.findViewById(R.id.tvSuggestionName);
             tvPrice = itemView.findViewById(R.id.tvSuggestionPrice);
             ivDelete = itemView.findViewById(R.id.ivDelete);

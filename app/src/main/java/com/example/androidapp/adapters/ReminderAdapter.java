@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+//Adapter to manage and display user reminders in the calendar/timeline list
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
 
     private ArrayList<ReminderModel> reminderList;
@@ -28,7 +29,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         this.listener = listener;
     }
 
-    // 🟢 Ολοσωστός Getter για να τον βλέπει η RemindersActivity!
     public OnDeleteClickListener getOnDeleteClickListener() {
         return this.listener;
     }
@@ -44,8 +44,10 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     public void onBindViewHolder(@NonNull ReminderViewHolder holder, int position) {
         ReminderModel currentItem = reminderList.get(position);
 
+        //Set the event title text field
         holder.tvEvent.setText(currentItem.getEventName());
 
+        //Check if the date is valid. If it's missing, default to today's date so the UI stays clean.
         if (currentItem.getEventDate() == null || currentItem.getEventDate().isEmpty()) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             String currentDate = sdf.format(new Date());
@@ -53,9 +55,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         } else {
             holder.tvDate.setText(currentItem.getEventDate());
         }
-
-        // 🌟 Το Click Listener του ivDelete αφαιρέθηκε από εδώ
-        // γιατί πλέον τη διαγραφή τη χειρίζεται 100% το swipe της Activity!
     }
 
     @Override
@@ -63,9 +62,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         return reminderList != null ? reminderList.size() : 0;
     }
 
+    //ViewHolder class to map our text fields and view variables to the XML layout elements
     public static class ReminderViewHolder extends RecyclerView.ViewHolder {
         TextView tvEvent, tvDate;
-        // 🟢 Το ivDelete αφαιρέθηκε για να μην έχουμε NullPointerException
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
