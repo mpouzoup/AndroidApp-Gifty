@@ -26,7 +26,7 @@ public class GiftFinderActivity extends Fragment {
 
     // 🟢 ΦΙΞ: Αλλαγή των τύπων σε TextInputEditText και AutoCompleteTextView για το νέο Layout
     private TextInputEditText etRecipientAge, etMaxBudget;
-    private AutoCompleteTextView spRelationship, spOccasion;
+    private AutoCompleteTextView spRelationship;
     private ChipGroup cgInterests;
     private Button btnFindGifts;
 
@@ -40,7 +40,6 @@ public class GiftFinderActivity extends Fragment {
         etRecipientAge = view.findViewById(R.id.etRecipientAge);
         etMaxBudget = view.findViewById(R.id.etMaxBudget);
         spRelationship = view.findViewById(R.id.spRelationship);
-        spOccasion = view.findViewById(R.id.spOccasion);
         cgInterests = view.findViewById(R.id.cgInterests);
         btnFindGifts = view.findViewById(R.id.btnFindGifts);
 
@@ -49,10 +48,6 @@ public class GiftFinderActivity extends Fragment {
         ArrayAdapter<String> relAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, relationships);
         spRelationship.setAdapter(relAdapter);
 
-        String[] occasions = {"Birthday", "Anniversary", "Christmas", "Graduation", "Housewarming", "General"};
-        ArrayAdapter<String> occAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, occasions);
-        spOccasion.setAdapter(occAdapter);
-
         if (btnFindGifts != null) {
             btnFindGifts.setOnClickListener(v -> {
                 String ageStr = etRecipientAge.getText().toString().trim();
@@ -60,7 +55,6 @@ public class GiftFinderActivity extends Fragment {
 
                 // 🟢 ΦΙΞ: Λήψη κειμένου από το AutoCompleteTextView με .getText().toString() αντί για .getSelectedItem()
                 String selectedRelationship = spRelationship.getText().toString().trim();
-                String selectedOccasion = spOccasion.getText().toString().toLowerCase().trim();
 
                 if (ageStr.isEmpty() || budgetStr.isEmpty()) {
                     Toast.makeText(requireContext(), "Please fill in Age and Budget", Toast.LENGTH_SHORT).show();
@@ -96,7 +90,6 @@ public class GiftFinderActivity extends Fragment {
 
                 GiftRequest giftRequest = new GiftRequest(combinedCategories, maxBudget);
                 giftRequest.setRelationship(selectedRelationship);
-                giftRequest.setOccasion(selectedOccasion);
                 giftRequest.setAge(age);
                 giftRequest.setHobby(selectedInterests);
 
