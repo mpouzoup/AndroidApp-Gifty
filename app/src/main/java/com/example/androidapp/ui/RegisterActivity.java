@@ -16,7 +16,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // 🟢 Ενημέρωση σε TextInputEditText για να κουμπώσει τέλεια με το νέο Material XML
     private TextInputEditText etRegisterUsername, etRegisterEmail, etRegisterPassword;
 
     @Override
@@ -25,12 +24,12 @@ public class RegisterActivity extends AppCompatActivity {
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
-        // Σύνδεση με τα νέα Material IDs
+        //Bind custom material design widgets mapping layout configurations
         etRegisterUsername = findViewById(R.id.etRegisterUsername);
         etRegisterEmail = findViewById(R.id.etRegisterEmail);
         etRegisterPassword = findViewById(R.id.etRegisterPassword);
 
-        // ==================== 🟢 ΔΥΝΑΜΙΚΗ ΒΡΟΧΗ ΔΩΡΩΝ (ΙΔΙΑ ΜΕ ΜΑΙΝ) ====================
+        //Initialize interactive background animation layout container matching viewports
         ConstraintLayout giftsContainer = findViewById(R.id.fallingGiftsContainer);
 
         if (giftsContainer != null) {
@@ -61,12 +60,14 @@ public class RegisterActivity extends AppCompatActivity {
                         giftView.setX(random.nextInt(screenWidth - size));
                     }
 
-                    giftView.setAlpha(0.25f + random.nextFloat() * 0.4f); // Ελαφρώς πιο αχνά για να μην ενοχλούν το input
+                    giftView.setAlpha(0.25f + random.nextFloat() * 0.4f);
                     giftsContainer.addView(giftView);
 
+                    //Compute velocity constraints dynamically to guarantee depth field interpolation
                     int screenHeight = giftsContainer.getHeight();
                     long duration = 7000 - (long)((float)(randomSizeDp - minSizeDp) / (maxSizeDp - minSizeDp) * 3000);
 
+                    //Execute translation property changes and drop references inside termination adapters
                     giftView.animate()
                             .translationY(screenHeight + size)
                             .rotation(random.nextFloat() * 360)
@@ -79,15 +80,15 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             });
 
-                    handler.postDelayed(this, 1600); // 1.6 δευτερόλεπτα καθυστέρηση για ισορροπημένη ροή
+                    handler.postDelayed(this, 1600);
                 }
             };
 
             giftsContainer.post(() -> handler.post(fallingRunnable));
         }
-        // ==============================================================================
     }
 
+    //Perform query string validation checks before triggering persistence layer write operations
     public void handleRegister(View view) {
         String username = etRegisterUsername.getText().toString().trim();
         String email = etRegisterEmail.getText().toString().trim();
@@ -105,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (isSuccess) {
             Toast.makeText(this, "Η εγγραφή έγινε επιτυχώς! Καλώς ήρθες, " + username, Toast.LENGTH_LONG).show();
 
+            //Perform session caching token management routines immediately
             int userId = dbHandler.checkUserLogin(username, password);
             if (userId != -1) {
                 SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
@@ -114,11 +116,11 @@ public class RegisterActivity extends AppCompatActivity {
                 editor.apply();
             }
 
+            //Reset parent intent stack histories configurations parameters
             Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
 
-            // 🟢 Smooth μετάβαση μετά την επιτυχή εγγραφή
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
             } else {
@@ -131,9 +133,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    //Terminate onboarding activity container state using explicit transition animations
     public void handleBackToLoginNavigation(View view) {
         finish();
-        // 🟢 ΣΙΓΟΥΡΗ ΛΥΣΗ: Χρήση του overridePendingTransition που παίζει παντού χωρίς errors!
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         } else {

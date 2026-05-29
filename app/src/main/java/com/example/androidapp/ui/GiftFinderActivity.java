@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 public class GiftFinderActivity extends Fragment {
 
-    // 🟢 ΦΙΞ: Αλλαγή των τύπων σε TextInputEditText και AutoCompleteTextView για το νέο Layout
     private TextInputEditText etRecipientAge, etMaxBudget;
     private AutoCompleteTextView spRelationship;
     private ChipGroup cgInterests;
@@ -33,17 +32,17 @@ public class GiftFinderActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 1. Φορτώνουμε το νέο, μοντέρνο XML σχέδιο
+        //Inflate custom search view component
         View view = inflater.inflate(R.layout.activity_search, container, false);
 
-        // 2. Σύνδεση των νέων Material στοιχείων UI
+        //Bind material layout widgets mapping
         etRecipientAge = view.findViewById(R.id.etRecipientAge);
         etMaxBudget = view.findViewById(R.id.etMaxBudget);
         spRelationship = view.findViewById(R.id.spRelationship);
         cgInterests = view.findViewById(R.id.cgInterests);
         btnFindGifts = view.findViewById(R.id.btnFindGifts);
 
-        // 3. 🟢 ΦΙΞ: Προσαρμογή των πινάκων σου για AutoCompleteTextView (Exposed Dropdowns)
+        //Setup adapter configuration binding for the exposed dropdown menu
         String[] relationships = {"Friend", "Mum", "Dad", "Boyfriend", "Girlfriend"};
         ArrayAdapter<String> relAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, relationships);
         spRelationship.setAdapter(relAdapter);
@@ -52,10 +51,9 @@ public class GiftFinderActivity extends Fragment {
             btnFindGifts.setOnClickListener(v -> {
                 String ageStr = etRecipientAge.getText().toString().trim();
                 String budgetStr = etMaxBudget.getText().toString().trim();
-
-                // 🟢 ΦΙΞ: Λήψη κειμένου από το AutoCompleteTextView με .getText().toString() αντί για .getSelectedItem()
                 String selectedRelationship = spRelationship.getText().toString().trim();
 
+                //Execute standard sanitation and validation checks
                 if (ageStr.isEmpty() || budgetStr.isEmpty()) {
                     Toast.makeText(requireContext(), "Please fill in Age and Budget", Toast.LENGTH_SHORT).show();
                     return;
@@ -64,6 +62,7 @@ public class GiftFinderActivity extends Fragment {
                 int age = Integer.parseInt(ageStr);
                 double maxBudget = Double.parseDouble(budgetStr);
 
+                //Iterate inside parent chip container group to collect selected tokens
                 ArrayList<String> selectedInterests = new ArrayList<>();
                 for (int i = 0; i < cgInterests.getChildCount(); i++) {
                     Chip chip = (Chip) cgInterests.getChildAt(i);
@@ -74,6 +73,7 @@ public class GiftFinderActivity extends Fragment {
 
                 String combinedCategories = "";
 
+                //Construct comma-separated formatting string criteria matching database schemas
                 if (!selectedInterests.isEmpty()) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < selectedInterests.size(); i++) {
@@ -88,11 +88,13 @@ public class GiftFinderActivity extends Fragment {
                     selectedInterests.add("all");
                 }
 
+                //Initialize target criteria state inside instance model layer structure
                 GiftRequest giftRequest = new GiftRequest(combinedCategories, maxBudget);
                 giftRequest.setRelationship(selectedRelationship);
                 giftRequest.setAge(age);
                 giftRequest.setHobby(selectedInterests);
 
+                //Dispatch intent routine mapping object serialization streaming data parameters
                 Intent intent = new Intent(requireContext(), GiftResultsActivity.class);
                 intent.putExtra("GIFT_REQUEST", giftRequest);
                 startActivity(intent);

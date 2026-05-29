@@ -15,7 +15,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
 
-        // Όταν ανοίγει για πρώτη φορά, φόρτωσε την HomeActivity ως Fragment
+        //Initialize default container state on initial lifecycle launch
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new HomeActivity())
@@ -25,7 +25,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
         }
 
-        // Διαχείριση των κλικ στη μπάρα
+        //Register navigation selection interceptor layout listener
         if (bottomNavigationView != null) {
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 Fragment selectedFragment = null;
@@ -41,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity {
                     selectedFragment = new ProfileActivity();
                 }
 
+                //Commit fragment transaction lifecycle swap dynamically
                 if (selectedFragment != null) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, selectedFragment)

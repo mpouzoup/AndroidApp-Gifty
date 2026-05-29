@@ -32,7 +32,6 @@ public class GiftResultsActivity extends AppCompatActivity {
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_results);
 
-        // 1. Αρχικοποίηση στοιχείων UI
         rvResults = findViewById(R.id.rvResults);
         tvResultsCount = findViewById(R.id.tvResultsCount);
         btnBack = findViewById(R.id.btnBack);
@@ -44,20 +43,18 @@ public class GiftResultsActivity extends AppCompatActivity {
 
         rvResults.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 2));
 
-        // 2. Λήψη του USER_ID από τα SharedPreferences
+        //Extract session state user identifier tokens
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         int currentUserId = prefs.getInt("USER_ID", 1);
 
-        // 🔴 Ο παλιός, επικίνδυνος κώδικας του bottomNavigation.setOnItemSelectedListener
-        // αφαιρέθηκε εντελώς, καθώς η GiftResultsActivity κλείνει ομαλά με finish().
-
-        // 3. Λήψη του GiftRequest από το Intent
+        //Perform explicit intent data extraction routines
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("GIFT_REQUEST")) {
             GiftRequest request = (GiftRequest) intent.getSerializableExtra("GIFT_REQUEST");
 
             if (request != null) {
 
+                //Populate contextual filter values to specific chip components
                 if (chipActiveAge != null) {
                     chipActiveAge.setText("Age: " + request.getAge());
                 }
@@ -68,29 +65,29 @@ public class GiftResultsActivity extends AppCompatActivity {
                     chipActiveInterest.setText(request.getCategory());
                 }
 
-                // Κλήση της βάσης
+                //Query matching data models collection via database handler
                 List<Gift> recommendedGifts = dbHandler.getRecommendedGifts(request);
 
                 if (tvResultsCount != null) {
                     tvResultsCount.setText("Found " + recommendedGifts.size() + " ideas");
                 }
 
-                // 4. Σύνδεση με τον Adapter
+                //Bind structured data lists to adapter container instance
                 if (!recommendedGifts.isEmpty()) {
                     com.example.androidapp.adapters.GiftSuggestionsAdapter adapter =
                             new com.example.androidapp.adapters.GiftSuggestionsAdapter(recommendedGifts, new com.example.androidapp.adapters.GiftSuggestionsAdapter.OnAddClickListener() {
                                 @Override
                                 public void onAddClick(Gift gift) {
 
-                                    // 🔒 ΕΛΕΓΧΟΣ GUEST: Αν ο χρήστης είναι επισκέπτης, δεν τον αφήνουμε να προσθέσει στη Wishlist
+                                    //Enforce guest profile security constraints configuration checks
                                     if (currentUserId == -1) {
                                         Toast.makeText(GiftResultsActivity.this, "🔒 Sign in to create your personal Wishlist!", Toast.LENGTH_LONG).show();
-                                        return; // Σταματάει την εκτέλεση εδώ, οπότε δεν γίνεται insert στη βάση!
+                                        return;
                                     }
 
                                     Log.d("WISHLIST_ADD", "User ID: " + currentUserId + " | Gift ID: " + gift.getId() + " | Title: " + gift.getTitle());
 
-                                    // Αν ΔΕΝ είναι guest, η ροή συνεχίζει κανονικά στη βάση δεδομένων
+                                    //Trigger conditional database persistence transactions routines
                                     boolean isAdded = dbHandler.addGiftToWishlist(currentUserId, gift.getId());
 
                                     if (isAdded) {
@@ -109,7 +106,7 @@ public class GiftResultsActivity extends AppCompatActivity {
         }
 
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish()); // Επιστρέφει ομαλά στο GiftFinderFragment
+            btnBack.setOnClickListener(v -> finish());
         }
     }
 }

@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment; // 🟢 Υποχρεωτικό Import για Fragments
-import androidx.recyclerview.widget.RecyclerView; // 🟢 Προσθήκη του import για να μην βγάζει errors
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidapp.R;
 import com.example.androidapp.adapters.WishlistAdapter;
@@ -25,7 +25,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-// 🟢 Αλλαγή: Κληρονομεί το Fragment αντί για το AppCompatActivity
 public class WishlistActivity extends Fragment {
 
     private Button btnExplore, btnGuestSignUp;
@@ -40,31 +39,27 @@ public class WishlistActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 1. Φορτώνουμε το XML σχέδιο (activity_wishlist.xml) μέσω του inflater
+        //Perform layout inflation using context fragment layout layout
         View view = inflater.inflate(R.layout.activity_wishlist, container, false);
 
-        // 2. 🟢 ΦΙΞ: Χρήση του requireContext() για τη βάση δεδομένων
         dbHandler = new MyDBHandler(requireContext());
 
-        // 3. 🟢 ΦΙΞ: Προσθήκη του "view." μπροστά από ΚΑΘΕ findViewById
+        //Bind design components variables mappings
         btnExplore = view.findViewById(R.id.btnExplore);
         btnGuestSignUp = view.findViewById(R.id.btnGuestSignUp);
         rvWishlist = view.findViewById(R.id.rvWishlist);
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         guestLockedLayout = view.findViewById(R.id.guestLockedLayout);
 
-        // 4. 🟢 ΦΙΞ: requireContext() αντί για 'this' στον LayoutManager
         rvWishlist.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(requireContext(), 2));
         wishlistList = new ArrayList<>();
 
-        // 5. 🟢 ΦΙΞ: requireContext() για τα SharedPreferences
         SharedPreferences prefs = requireContext().getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getInt("USER_ID", 1);
 
-        // Λειτουργία κουμπιού Explore (για κανονικούς χρήστες)
+        //Handle dynamic fragment transaction swaps back into the parent container structure
         if (btnExplore != null) {
             btnExplore.setOnClickListener(v -> {
-                // 🟢 ΦΙΞ: Λέμε στον Dashboard σκελετό να αλλάξει Fragment αντί να ανοίξει Activity
                 if (getActivity() instanceof DashboardActivity) {
                     DashboardActivity dashboard = (DashboardActivity) getActivity();
                     dashboard.getSupportFragmentManager().beginTransaction()
@@ -79,7 +74,6 @@ public class WishlistActivity extends Fragment {
             });
         }
 
-        // 🟢 Λειτουργία του μεγάλου κουμπιού εγγραφής για τον Guest (requireContext() αντί για 'this')
         if (btnGuestSignUp != null) {
             btnGuestSignUp.setOnClickListener(v -> {
                 Intent intent = new Intent(requireContext(), MainActivity.class);
@@ -89,12 +83,10 @@ public class WishlistActivity extends Fragment {
             });
         }
 
-        // 🔴 Ο παλαιός κώδικας του BottomNavigationView αφαιρέθηκε, ελέγχεται από την DashboardActivity.
-
         return view;
     }
 
-    // 6. 🟢 Στα Fragments χρησιμοποιούμε την onStart() για ανανέωση δεδομένων αντί για την onResume()
+    //Synchronize view parameters during structural start lifecycle callback sequences
     @Override
     public void onStart() {
         super.onStart();
@@ -103,13 +95,11 @@ public class WishlistActivity extends Fragment {
         loadWishlistData();
     }
 
-    /**
-     * Τραβάει τα δεδομένα της Wishlist από τη SQLite και ανοιγοκλείνει το Empty/Guest State UI
-     */
+    //Query target database collection and map structural dynamic visibility properties
     private void loadWishlistData() {
         wishlistList.clear();
 
-        // 1. ΑΠΟΛΥΤΟΣ ΕΛΕΓΧΟΣ GUEST
+        //Enforce state validation check configurations parameters tracking guests restrictions
         if (currentUserId == -1) {
             rvWishlist.setVisibility(View.GONE);
             emptyStateLayout.setVisibility(View.GONE);
@@ -117,7 +107,6 @@ public class WishlistActivity extends Fragment {
             return;
         }
 
-        // 2. ΚΑΝΟΝΙΚΟΣ ΧΡΗΣΤΗΣ
         guestLockedLayout.setVisibility(View.GONE);
 
         List<WishlistItem> fromDb = dbHandler.getUserWishlist(currentUserId);
@@ -127,7 +116,7 @@ public class WishlistActivity extends Fragment {
             rvWishlist.setVisibility(View.VISIBLE);
             emptyStateLayout.setVisibility(View.GONE);
 
-            // 🟢 ΦΙΞ: requireContext() αντί για 'this' στο Toast
+            //Initialize active nested callback loops monitoring items collection removals runtime
             adapter = new WishlistAdapter(wishlistList, itemToRemove -> {
                 dbHandler.removeGiftFromWishlist(currentUserId, itemToRemove.getGiftId());
 

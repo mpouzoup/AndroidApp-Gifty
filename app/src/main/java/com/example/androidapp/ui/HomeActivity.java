@@ -20,7 +20,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment; // 🟢 Υποχρεωτικό Import για Fragments
+import androidx.fragment.app.Fragment;
 
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-// 🟢 Αλλαγή: Κληρονομεί πλέον το Fragment αντί για το AppCompatActivity
 public class HomeActivity extends Fragment {
 
     private int currentUserId = 1;
@@ -47,13 +46,13 @@ public class HomeActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 1. 🟢 Φορτώνουμε το XML σχέδιο μέσω του inflater
+        //Inflate layout component resources via fragment transaction context
         View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        // 2. 🟢 ΦΙΞ: Χρήση του requireContext() για τη βάση δεδομένων
+        //Initialize persistence schema controller with valid fragment context
         dbHandler = new MyDBHandler(requireContext());
 
-        // 3. 🟢 ΦΙΞ: Προσθήκη του "view." μπροστά από ΚΑΘΕ findViewById
+        //Bind design components layer mappings
         layoutNextEvent = view.findViewById(R.id.layoutNextEvent);
         tvNextEventText = view.findViewById(R.id.tvNextEventText);
 
@@ -71,7 +70,7 @@ public class HomeActivity extends Fragment {
             });
         }
 
-        // 4. 🟢 ΦΙΞ: requireContext() αντί για plain getSharedPreferences
+        //Extract shared preferences state profile index key
         SharedPreferences prefs = requireContext().getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getInt("USER_ID", 1);
 
@@ -83,6 +82,7 @@ public class HomeActivity extends Fragment {
         CardView cardFindGift = view.findViewById(R.id.cardFindGift);
         CardView cardWishlist = view.findViewById(R.id.cardWishlist);
 
+        //Register inline interaction listener tracking animation scaling properties
         View.OnTouchListener microInteractionListener = (touchView, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -99,7 +99,6 @@ public class HomeActivity extends Fragment {
         if (cardFindGift != null) cardFindGift.setOnTouchListener(microInteractionListener);
         if (cardWishlist != null) cardWishlist.setOnTouchListener(microInteractionListener);
 
-        // 5. 🟢 Αντικατάσταση των onClick του XML με Java listeners για ασφάλεια στα Fragments
         if (cardFindGift != null) {
             cardFindGift.setOnClickListener(v -> openSuggestions());
         }
@@ -116,19 +115,17 @@ public class HomeActivity extends Fragment {
             });
         }
 
-        // 🔴 Ο παλιός κώδικας του BottomNavigationView αφαιρέθηκε εντελώς από εδώ,
-        // καθώς πλέον η μπάρα ελέγχεται κεντρικά από την DashboardActivity.
-
         return view;
     }
 
-    // 6. 🟢 Στα Fragments χρησιμοποιούμε την onStart() για ανανέωση δεδομένων αντί για την onResume()
+    //Synchronize view state parameters inside start lifecycle callback sequence
     @Override
     public void onStart() {
         super.onStart();
         updateCalendarWidget();
     }
 
+    //Query reminder collection datasets and evaluate upcoming milestones
     private void updateCalendarWidget() {
         if (currentUserId == -1) return;
 
@@ -154,6 +151,7 @@ public class HomeActivity extends Fragment {
         ReminderModel mostUpcomingEvent = null;
         long minDaysRemaining = Long.MAX_VALUE;
 
+        //Parse date formats sequences to determine epoch mathematical differences
         for (ReminderModel reminder : reminders) {
             try {
                 Date eventDate = sdf.parse(reminder.getEventDate());
@@ -185,6 +183,7 @@ public class HomeActivity extends Fragment {
             }
         }
 
+        //Format conditional status string updates onto dashboard overview
         if (mostUpcomingEvent != null && layoutNextEvent != null && tvNextEventText != null) {
             layoutNextEvent.setVisibility(View.VISIBLE);
 
@@ -204,6 +203,7 @@ public class HomeActivity extends Fragment {
         }
     }
 
+    //Apply tint mapping states to synchronize upcoming layout parameters indicators
     private void highlightEventDay(long daysRemaining) {
         ColorStateList purpleColor = ColorStateList.valueOf(Color.parseColor("#8B5CF6"));
 
@@ -226,7 +226,7 @@ public class HomeActivity extends Fragment {
         if (borderFri != null) borderFri.setBackgroundTintList(darkBackground);
     }
 
-    // 7. 🟢 Προσαρμογή των μεθόδων πλοήγησης με requireContext()
+    //Perform parent container layout transactions routing target subfragments
     public void openWishlist() {
         if (getActivity() instanceof DashboardActivity) {
             DashboardActivity dashboard = (DashboardActivity) getActivity();

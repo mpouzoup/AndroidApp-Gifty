@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.ItemTouchHelper; // 🟢 ΠΡΟΣΘΗΚΗ IMPORT
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.androidapp.R;
@@ -58,7 +58,7 @@ public class RemindersActivity extends AppCompatActivity {
 
         emptyRemindersLayout = findViewById(R.id.emptyRemindersLayout);
 
-        // 🌟 ΕΝΕΡΓΟΠΟΙΗΣΗ SWIPE TO DELETE
+        //Initialize swipe-to-delete callback functionality configuration
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -70,12 +70,11 @@ public class RemindersActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
 
                 if (adapter != null && position != RecyclerView.NO_POSITION) {
-                    // Καλεί το callback διαγραφής που ορίζεται παρακάτω στον adapter
                     adapter.getOnDeleteClickListener().onDeleteClick(position);
                 }
             }
 
-            // 🟢 Smooth μετακίνηση του frontLayout (λευκό/γκρι frame) αφήνοντας το backLayout (κόκκινο) σταθερό
+            //Manage custom layer translation during active touch interaction gestures
             @Override
             public void onChildDraw(@NonNull android.graphics.Canvas c, @NonNull RecyclerView recyclerView,
                                     @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
@@ -96,7 +95,7 @@ public class RemindersActivity extends AppCompatActivity {
             }
         };
 
-        // Σύνδεση του ItemTouchHelper με το RecyclerView
+        //Attach simple gesture utilities helper instance to active recycler layout container
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvReminders);
 
         dbHandler = new MyDBHandler(this);
@@ -129,15 +128,16 @@ public class RemindersActivity extends AppCompatActivity {
         loadDatabaseEvents();
     }
 
+    //Synchronize active local storage context datasets blocks from persistence schema handles
     private void loadDatabaseEvents() {
         allRemindersList.clear();
         filteredList.clear();
 
+        //Verify visitor profile fallback mode view constraints properties flags
         if (currentUserId == -1) {
             if (calendarView != null) calendarView.setVisibility(View.GONE);
             if (rvReminders != null) rvReminders.setVisibility(View.GONE);
             if (fabAddReminder != null) fabAddReminder.setVisibility(View.GONE);
-//            if (cvEventsContainer != null) cvEventsContainer.setVisibility(View.GONE);
             if (emptyRemindersLayout != null) emptyRemindersLayout.setVisibility(View.GONE);
 
             TextView tvRemindersTitle = findViewById(R.id.tvRemindersTitle);
@@ -159,6 +159,7 @@ public class RemindersActivity extends AppCompatActivity {
 
         updateUiState();
 
+        //Initialize custom inline adapter configurations monitoring relational removal queues
         adapter = new ReminderAdapter(filteredList, position -> {
             if (position >= 0 && position < filteredList.size()) {
                 ReminderModel reminderToDelete = filteredList.get(position);
@@ -180,6 +181,7 @@ public class RemindersActivity extends AppCompatActivity {
         rvReminders.setAdapter(adapter);
     }
 
+    //Filter global datasets array instances relative to user selection variables inputs
     private void filterRemindersByDate(String date) {
         filteredList.clear();
 
@@ -196,6 +198,7 @@ public class RemindersActivity extends AppCompatActivity {
         updateUiState();
     }
 
+    //Perform layout structural updates mapping current size boundaries parameters states
     private void updateUiState() {
         if (filteredList.isEmpty()) {
             if (rvReminders != null) rvReminders.setVisibility(View.GONE);

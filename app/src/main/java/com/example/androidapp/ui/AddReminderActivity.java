@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.database.MyDBHandler;
 import com.example.androidapp.model.ReminderModel;
-import com.google.android.material.datepicker.CalendarConstraints; // 🟢 Προσθήκη Import
-import com.google.android.material.datepicker.DateValidatorPointForward; // 🟢 Προσθήκη Import
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -35,6 +35,7 @@ public class AddReminderActivity extends AppCompatActivity {
 
         dbHandler = new MyDBHandler(this);
 
+        //Extract session state user identifier
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         currentUserId = prefs.getInt("USER_ID", 1);
 
@@ -43,21 +44,22 @@ public class AddReminderActivity extends AppCompatActivity {
         etEventDate = findViewById(R.id.etEventDate);
         btnSaveReminder = findViewById(R.id.btnSaveReminder);
 
-        // 1. 🟢 Δημιουργία περιορισμών: Επιτρέπεται η επιλογή ΜΟΝΟ από σήμερα και μετά
+        //Enforce calendar constraints validation to restrict past selections
         CalendarConstraints constraints = new CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.now())
                 .build();
 
-        // 2. 🟢 Σύνδεση των constraints με τον DatePicker
+        //Instantiate MaterialDatePicker layout instance binding structural constraints
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select Event Date")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .setCalendarConstraints(constraints) // 🔴 Η αλλαγή έγινε εδώ!
+                .setCalendarConstraints(constraints)
                 .build();
 
         etEventDate.setOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "DATE_PICKER"));
         tilEventDate.setEndIconOnClickListener(v -> datePicker.show(getSupportFragmentManager(), "DATE_PICKER"));
 
+        //Interactions callback interceptor implementing timezone offset normalization
         datePicker.addOnPositiveButtonClickListener(selection -> {
             TimeZone timeZoneUTC = TimeZone.getDefault();
             int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
@@ -76,6 +78,7 @@ public class AddReminderActivity extends AppCompatActivity {
         btnSaveReminder.setOnClickListener(v -> saveEvent());
     }
 
+    //Perform input sanitation and validation checks before triggering persistence layer transaction
     private void saveEvent() {
         String name = etEventName.getText().toString().trim();
         String date = etEventDate.getText().toString().trim();

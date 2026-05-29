@@ -33,10 +33,10 @@ public class ProfileActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 1. Φορτώνουμε το XML σχέδιο (activity_profile.xml) μέσω του inflater
+        //Inflate fragment layout design layout structures
         View view = inflater.inflate(R.layout.activity_profile, container, false);
 
-        // 2. Σύνδεση των στοιχείων UI
+        //Bind design element variables mappings
         cvAccountSettings = view.findViewById(R.id.cvAccountSettings);
         tvUsername = view.findViewById(R.id.tvUsername);
         tvUserEmail = view.findViewById(R.id.tvUserEmail);
@@ -44,12 +44,11 @@ public class ProfileActivity extends Fragment {
         cvLogout = view.findViewById(R.id.cvLogout);
         tvLogoutText = view.findViewById(R.id.tvLogoutText);
 
-        // 3. Προετοιμασία Preferences και Βάσης Δεδομένων
+        //Initialize database operations and share preferences state tracking keys
         dbHandler = new MyDBHandler(requireContext());
         prefs = requireContext().getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         userId = prefs.getInt("USER_ID", -1);
 
-        // 4. Λειτουργία: Account Settings (Η SettingsActivity παραμένει Activity)
         if (cvAccountSettings != null) {
             cvAccountSettings.setOnClickListener(v -> {
                 Intent intent = new Intent(requireContext(), SettingsActivity.class);
@@ -57,11 +56,9 @@ public class ProfileActivity extends Fragment {
             });
         }
 
-        // 5. Λειτουργία: Help & Support
+        //Perform dynamic fragment backstack navigation transactions routines
         if (cvHelpSupport != null) {
             cvHelpSupport.setOnClickListener(v -> {
-                // 🟢 ΔΙΟΡΘΩΣΗ: Αντικαθιστούμε το Profile Fragment με το AboutHelpActivity Fragment
-                // και το προσθέτουμε στο BackStack για να λειτουργεί το κουμπί πίσω ομαλά!
                 if (getActivity() instanceof DashboardActivity) {
                     DashboardActivity dashboard = (DashboardActivity) getActivity();
                     dashboard.getSupportFragmentManager().beginTransaction()
@@ -72,7 +69,7 @@ public class ProfileActivity extends Fragment {
             });
         }
 
-        // 6. Λειτουργία: Log Out
+        //Handle profile clear routines or onboarding rerouting operations
         if (cvLogout != null) {
             cvLogout.setOnClickListener(v -> {
                 if (isGuest) {
@@ -107,13 +104,14 @@ public class ProfileActivity extends Fragment {
         return view;
     }
 
-    // 7. Ανανέωση δεδομένων στην onStart()
+    //Synchronize database state data structures inside lifecycle start callback sequence
     @Override
     public void onStart() {
         super.onStart();
 
         userId = prefs.getInt("USER_ID", -1);
 
+        //Verify guest parameters layout constraints configurations conditions
         if (userId == -1) {
             isGuest = true;
             if (tvUsername != null) tvUsername.setText("Guest Visitor");

@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 1. 🟢 ΕΛΕΓΧΟΣ SESSION: Ελέγχουμε αν είναι ήδη συνδεδεμένος ΠΡΙΝ φορτώσουμε το UI
+        //Verify session persistence state before loading default view component tree
         SharedPreferences prefs = getSharedPreferences("GiftyPrefs", Context.MODE_PRIVATE);
         boolean isLoggedIn = prefs.getBoolean("IS_LOGGED_IN", false);
 
@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             startActivity(intent);
 
-            // 🟢 Smooth μετάβαση και στο αυτόματο Login
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
             } else {
@@ -40,19 +39,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. Αν ΔΕΝ είναι συνδεδεμένος, συνεχίζει κανονικά η αρχική οθόνη
         super.onCreate(savedInstanceState);
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // 3. Σύνδεση με τα IDs του XML σου
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
         btnGuest = findViewById(R.id.btnGuest);
 
-        // 4. Click Listeners
         if (btnLogin != null) {
             btnLogin.setOnClickListener(v -> handleLogin(v));
         }
@@ -65,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             btnGuest.setOnClickListener(v -> handleGuestLogin(v));
         }
 
-        // ==================== 🟢 ΔΥΝΑΜΙΚΗ ΒΡΟΧΗ ΔΩΡΩΝ ====================
+        //Initialize interactive background viewport container mapping animation logic
         ConstraintLayout giftsContainer = findViewById(R.id.fallingGiftsContainer);
 
         if (giftsContainer != null) {
@@ -99,9 +95,11 @@ public class MainActivity extends AppCompatActivity {
                     giftView.setAlpha(0.3f + random.nextFloat() * 0.5f);
                     giftsContainer.addView(giftView);
 
+                    //Compute velocity constraints dynamically to preserve depth effects
                     int screenHeight = giftsContainer.getHeight();
                     long duration = 7000 - (long)((float)(randomSizeDp - minSizeDp) / (maxSizeDp - minSizeDp) * 3000);
 
+                    //Execute translation parameters property values and release layout resources
                     giftView.animate()
                             .translationY(screenHeight + size)
                             .rotation(random.nextFloat() * 360)
@@ -120,14 +118,10 @@ public class MainActivity extends AppCompatActivity {
 
             giftsContainer.post(() -> handler.post(fallingRunnable));
         }
-        // ==============================================================================
     }
 
-    /**
-     * Εκτελεί τον έλεγχο Login στη βάση δεδομένων (Υποστηρίζει Username ή Email)
-     */
+    //Perform query parsing inputs against controller persistence logic verification
     public void handleLogin(View view) {
-        // 🟢 Μετονομασία σε usernameOrEmail για να συμφωνεί με τη λογική μας
         String usernameOrEmail = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
@@ -137,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         MyDBHandler dbHandler = new MyDBHandler(this);
-        // Κλήση της αναβαθμισμένης μεθόδου της βάσης
         int userId = dbHandler.checkUserLogin(usernameOrEmail, password);
 
         if (userId != -1) {
@@ -150,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             startActivity(intent);
 
-            // 🟢 Smooth Transition Animation
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
             } else {
@@ -167,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(intent);
 
-        // 🟢 ΠΡΟΣΘΗΚΗ: Smooth fade transition καθώς ανοίγει η RegisterActivity
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
         } else {
@@ -175,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Assign unrestricted default session indexing values context keys
     public void handleGuestLogin(View view) {
         Toast.makeText(this, "Είσοδος ως επισκέπτης", Toast.LENGTH_SHORT).show();
 
@@ -187,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
         startActivity(intent);
 
-        // 🟢 Smooth Transition Animation και για τον Guest!
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in, R.anim.fade_out);
         } else {

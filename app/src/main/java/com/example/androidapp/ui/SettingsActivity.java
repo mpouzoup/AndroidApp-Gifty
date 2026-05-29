@@ -38,9 +38,10 @@ public class SettingsActivity extends AppCompatActivity {
         userId = prefs.getInt("USER_ID", -1);
 
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish()); // Κλείνει ομαλά και επιστρέφει στο ProfileFragment
+            btnBack.setOnClickListener(v -> finish());
         }
 
+        //Configure custom dialog mapping for username updates
         cvChangeUsername.setOnClickListener(v -> {
             if (checkIfGuest()) return;
 
@@ -69,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .show();
         });
 
+        //Handle validation checks for updating active password structures
         cvChangePassword.setOnClickListener(v -> {
             if (checkIfGuest()) return;
 
@@ -99,6 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .show();
         });
 
+        //Execute account removal and complete session invalidation routines
         cvDeleteAccount.setOnClickListener(v -> {
             if (checkIfGuest()) return;
 
@@ -107,7 +110,6 @@ public class SettingsActivity extends AppCompatActivity {
                     .setMessage("Are you absolutely sure? This action cannot be undone and you will lose all your data and wishlists.")
                     .setPositiveButton("Delete Forever", (dialog, which) -> {
                         if (dbHandler.deleteUserAccount(userId)) {
-                            // 🟢 ΦΙΞ: Καθαρίζουμε πλήρως το Session για να μην ξαναμπει αυτόματα
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.remove("USER_ID");
                             editor.putBoolean("IS_LOGGED_IN", false);
@@ -122,6 +124,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    //Enforce system guard criteria parameters tracking fallback state
     private boolean checkIfGuest() {
         if (userId == -1) {
             Toast.makeText(this, "Guest visitors cannot change profile properties!", Toast.LENGTH_LONG).show();
@@ -130,6 +133,7 @@ public class SettingsActivity extends AppCompatActivity {
         return false;
     }
 
+    //Reset structural parent tasks flags and route context back to landing activity
     private void navigateToLogin() {
         Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
