@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Main layout for the Account Settings screen -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -38,8 +40,10 @@
             app:layout_constraintStart_toEndOf="@id/btnBack"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Main settings content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -48,6 +52,7 @@
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- Section label for profile settings -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,6 +64,7 @@
             android:textAllCaps="true"
             android:layout_marginBottom="16dp" />
 
+        <!-- Card for updating username -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvChangeUsername"
             android:layout_width="match_parent"
@@ -93,6 +99,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Card for changing password -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvChangePassword"
             android:layout_width="match_parent"
@@ -127,6 +134,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Section label for dangerous actions, such as deleting the account -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,6 +146,7 @@
             android:textAllCaps="true"
             android:layout_marginBottom="16dp" />
 
+        <!-- Card for deleting the account -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDeleteAccount"
             android:layout_width="match_parent"

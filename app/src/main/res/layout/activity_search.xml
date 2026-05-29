@@ -1,343 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Main root layout for the Gift Results screen -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://tools.android.com/tools"
-    android:id="@+id/searchConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#131316">
+    android:background="#1B1B1F"
+    android:paddingTop="28dp">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <!-- Top bar container holding navigation and active filters -->
+    <LinearLayout
+        android:id="@+id/topBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1B1B1F"
+        android:orientation="vertical"
+        android:elevation="6dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="40dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- Back navigation button -->
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Go back"
+                android:src="@drawable/baseline_arrow_back_ios_24" app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#8B5CF6" />
 
             <LinearLayout
-                android:id="@+id/headerLayout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="64dp"
-                android:paddingBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/tvSearchTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gift Finder"
-                    android:textSize="32sp"
                     android:fontFamily="sans-serif-black"
-                    android:textColor="#FFFFFF" />
+                    android:text="Perfect Matches"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp" />
 
+                <!-- Displays the number of gift suggestions found -->
                 <TextView
-                    android:id="@+id/tvSubtitle"
+                    android:id="@+id/tvResultsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Let's find the perfect gift ✨"
-                    android:textSize="16sp"
-                    android:textColor="#64748B" />
+                    android:text="Found 0 ideas"
+                    android:textColor="#A0A0AB"
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Horizontal scrolling area for active search filters -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="12dp"
+            android:scrollbars="none">
+
+            <!-- Chip group containing active filter chips -->
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@id/headerLayout">
+                app:singleLine="true">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilAge"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:hint="Age"
-                    android:textColorHint="#94A3B8"
-                    app:hintTextColor="#8B5CF6"
-
-                    app:boxStrokeColor="@drawable/input_box_stroke_color"
-                    app:boxStrokeWidth="1.5dp"
-                    app:boxStrokeWidthFocused="2.5dp"
-
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:layout_constraintEnd_toStartOf="@+id/tilMaxBudget"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etRecipientAge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textColor="#FFFFFF" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilMaxBudget"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:hint="Max Budget (€)"
-                    android:textColorHint="#94A3B8"
-                    app:hintTextColor="#8B5CF6"
-
-                    app:boxStrokeColor="@drawable/input_box_stroke_color"
-                    app:boxStrokeWidth="1.5dp"
-                    app:boxStrokeWidthFocused="2.5dp"
-
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tilAge"
-                    app:layout_constraintTop_toTopOf="@id/tilAge">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMaxBudget"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="#FFFFFF" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilRelationship"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="Relationship"
-                    android:textColorHint="#94A3B8"
-                    app:hintTextColor="#8B5CF6"
-
-                    app:boxStrokeColor="@drawable/input_box_stroke_color"
-                    app:boxStrokeWidth="1.5dp"
-                    app:boxStrokeWidthFocused="2.5dp"
-
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/tilAge">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/spRelationship"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:textColor="#FFFFFF" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilOccasion"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="Occasion"
-                    android:textColorHint="#94A3B8"
-                    app:hintTextColor="#8B5CF6"
-
-                    app:boxStrokeColor="@drawable/input_box_stroke_color"
-                    app:boxStrokeWidth="1.5dp"
-                    app:boxStrokeWidthFocused="2.5dp"
-
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/tilRelationship">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/spOccasion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:textColor="#FFFFFF" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/tvInterestsLabel"
+                <!-- Active age filter chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipActiveAge"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="Select Interests"
+                    android:text="Age: 34"
+                    app:chipBackgroundColor="#2D2D34"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:fontFamily="sans-serif-black"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tilOccasion" />
+                    app:chipMinHeight="32dp"/>
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/cgInterests"
-                    android:layout_width="match_parent"
+                <!-- Active budget filter chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipActiveBudget"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:chipSpacingHorizontal="8dp"
-                    app:chipSpacingVertical="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
+                    android:text="Under 50.0€"
+                    app:chipBackgroundColor="#2D2D34"
+                    android:textColor="#FFFFFF"
+                    app:chipMinHeight="32dp"/>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipGaming"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gaming"
-                        android:textColor="#FFFFFF"
+                <!-- Active interest/category filter chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipActiveInterest"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Art"
+                    app:chipBackgroundColor="#3F3F46"
+                    android:textColor="#8B5CF6"
+                    app:chipMinHeight="32dp"/>
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+    </LinearLayout>
 
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
+    <!-- RecyclerView displaying the list of gift suggestions -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvResults"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/topBarContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/list_item_gift" />
 
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color"
-                        />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipCooking"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cooking"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipFitness"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Fitness"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipReading"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reading"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipTech"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tech"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipTraveling"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Traveling"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipCoffee"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Coffee"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMovies"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Movies"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMusic"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Music"
-                        android:textColor="#FFFFFF"
-                        android:checkable="true"
-                        app:checkedIconVisible="false"
-
-                        app:chipStrokeColor="@drawable/chip_stroke_color"
-                        app:chipStrokeWidth="2dp"
-                        app:chipBackgroundColor="@drawable/chip_bg_color" />
-                </com.google.android.material.chip.ChipGroup>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFindGifts"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="40dp"
-                    android:text="Discover Ideas"
-                    android:textAllCaps="false"
-                    android:textSize="18sp"
-                    android:fontFamily="sans-serif-black"
-                    app:cornerRadius="20dp"
-                    android:backgroundTint="#8B5CF6"
-                    app:layout_constraintTop_toBottomOf="@id/cgInterests"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
