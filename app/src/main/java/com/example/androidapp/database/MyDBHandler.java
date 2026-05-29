@@ -16,19 +16,16 @@ import com.example.androidapp.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-//Main database layer handling local SQLite queries, user profiles, reminders, and product catalogs
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GiftGuider.db";
     private static final int DATABASE_VERSION = 5;
 
-    //Table definition keys for storing credentials
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PASSWORD = "password";
 
-    //Table definition keys managing the gift recommendation catalog
     private static final String TABLE_GIFTS = "gifts";
     private static final String COLUMN_GIFT_ID = "gift_id";
     private static final String COLUMN_TITLE = "title";
@@ -41,11 +38,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_IMAGE_PATH = "image_path";
 
-    //Wishlist bridge table fields (connects a user ID to a gift ID)
     private static final String TABLE_WISHLIST = "wishlist";
     private static final String COLUMN_WISH_ID = "wish_id";
 
-    //Reminders table fields
     private static final String TABLE_REMINDERS = "reminders";
     private static final String COLUMN_REMINDER_ID = "reminder_id";
     private static final String COLUMN_USER_ID_FK = "user_id";
@@ -61,7 +56,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //Set up the users table
         String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "(" +
                 COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_USERNAME + " TEXT," +
@@ -69,7 +63,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_PASSWORD + " TEXT" + ")";
         db.execSQL(CREATE_USERS_TABLE);
 
-        //Set up the gifts table
         String CREATE_GIFTS_TABLE = "CREATE TABLE " + TABLE_GIFTS + "(" +
                 COLUMN_GIFT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_TITLE + " TEXT," +
@@ -83,14 +76,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_IMAGE_PATH + " TEXT" + ")";
         db.execSQL(CREATE_GIFTS_TABLE);
 
-        //Set up the wishlist table
         String CREATE_WISHLIST_TABLE = "CREATE TABLE " + TABLE_WISHLIST + "(" +
                 COLUMN_WISH_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_USER_ID + " INTEGER," +
                 COLUMN_GIFT_ID + " INTEGER" + ")";
         db.execSQL(CREATE_WISHLIST_TABLE);
 
-        //Set up the reminders table
         String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "(" +
                 COLUMN_REMINDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_USER_ID_FK + " INTEGER," +
@@ -98,13 +89,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_REMINDER_DATE + " TEXT" + ")";
         db.execSQL(CREATE_REMINDERS_TABLE);
 
-        //Populate local tables automatically right after setup completes
         seedDatabase(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //Drop old tables during development updates and rebuild everything cleanly
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GIFTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WISHLIST);
@@ -112,7 +101,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    //Grab a user's reminders and sort them so the soonest events show up first
+    //Fetch relational datasets using ordered query parameters sequences
     public List<ReminderModel> getUserReminders(int userId) {
         List<ReminderModel> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -128,7 +117,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return list;
     }
 
-    //Delete a specific reminder and catch any database issues to avoid app crashes
+    //Perform contextual deletion routines wrapped inside exception safety safeguards
     public void deleteReminder(int reminderId) {
         if (reminderId <= 0) return;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -141,7 +130,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    //Look up username and email strings using a user's ID
+    //Query database records matching targeted identification conditions keys
     public User getUserById(int userId) {
         User user = null;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -155,7 +144,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return user;
     }
 
-    //Read initial data from arrays.xml and split the strings by pipelines to fill our database
+    //De-serialize initial application strings asset elements to perform initialization seeds
     private void seedDatabase(SQLiteDatabase db) {
         try {
             String[] giftList = myContext.getResources().getStringArray(R.array.initial_gifts);
@@ -195,7 +184,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    //Our main search algorithm. It loops over chosen category strings and builds dynamic safe queries
+    //Construct dynamic conditional search queries and unpack results sets into updated object models
     public List<Gift> getRecommendedGifts(GiftRequest request) {
         List<Gift> suggestions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -205,7 +194,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             rawCategories = "all";
         }
 
-        //Split multiple category tags up and build appropriate 'LIKE' filter blocks
         String[] categories = rawCategories.split(",\\s*");
         StringBuilder categoryQuery = new StringBuilder();
         List<String> queryArgs = new ArrayList<>();
@@ -224,7 +212,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             categoryQuery.append(")");
         }
 
-        //Filter everything dynamically based on budget constraints, age bounds, and recipient relationships
         String finalQuery = "SELECT * FROM " + TABLE_GIFTS + " WHERE " + categoryQuery.toString() +
                 " AND " + COLUMN_PRICE + " <= ?" +
                 " AND " + COLUMN_AGE + " <= ?" +
@@ -241,25 +228,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
             int idIndex = cursor.getColumnIndexOrThrow(COLUMN_GIFT_ID);
             int titleIndex = cursor.getColumnIndexOrThrow(COLUMN_TITLE);
             int priceIndex = cursor.getColumnIndexOrThrow(COLUMN_PRICE);
-            int categoryIndex = cursor.getColumnIndexOrThrow(COLUMN_CATEGORY);
-            int hobbyIndex = cursor.getColumnIndexOrThrow(COLUMN_HOBBY);
-            int occasionIndex = cursor.getColumnIndexOrThrow(COLUMN_OCCASION);
-            int relationshipIndex = cursor.getColumnIndexOrThrow(COLUMN_RELATIONSHIP);
-            int ageIndex = cursor.getColumnIndexOrThrow(COLUMN_AGE);
-            int descriptionIndex = cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION);
             int imageIndex = cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH);
 
             do {
+                //Instantiate updated initialization mapping arguments matching structural model parameters
                 Gift gift = new Gift(
                         cursor.getInt(idIndex),
                         cursor.getString(titleIndex),
-                        cursor.getString(descriptionIndex),
                         cursor.getDouble(priceIndex),
-                        cursor.getString(categoryIndex),
-                        cursor.getString(hobbyIndex),
-                        cursor.getString(occasionIndex),
-                        cursor.getString(relationshipIndex),
-                        cursor.getInt(ageIndex),
                         cursor.getString(imageIndex)
                 );
                 suggestions.add(gift);
@@ -270,7 +246,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return suggestions;
     }
 
-    //Save a new user's username, email, and password to our database when they sign up
+    //Commit structural user credentials records changes inside the database storage rows
     public boolean registerUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -282,7 +258,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return id != -1;
     }
 
-    //Handles user authentication, allowing either a username string or an email identifier
+    //Perform dual contextual field matching logic checks during routing lookups
     public int checkUserLogin(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -301,7 +277,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return userId;
     }
 
-    //Add a new reminder to local data rows
+    //Append model content parameters values into targeted storage layers
     public void addReminder(ReminderModel reminder) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -312,7 +288,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    //Add items to a user's wishlist, making sure we don't allow duplicates
+    //Perform pre-insertion constraint query validations before executing write parameters operations
     public boolean addGiftToWishlist(int userId, int giftId) {
         SQLiteDatabase db = this.getWritableDatabase();
         String checkQuery = "SELECT 1 FROM " + TABLE_WISHLIST + " WHERE " + COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?";
@@ -321,7 +297,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         cursor.close();
         if (exists) {
             db.close();
-            return false; //Exit immediately if the item is already saved
+            return false;
         }
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_ID, userId);
@@ -331,19 +307,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return id != -1;
     }
 
-    //Remove a saved gift from a user's wishlist table row explicitly
+    //Trigger relational parameters cleanup drop routines relative to context parameters variables
     public void removeGiftFromWishlist(int userId, int giftId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_WISHLIST, COLUMN_USER_ID + "=? AND " + COLUMN_GIFT_ID + "=?", new String[]{String.valueOf(userId), String.valueOf(giftId)});
         db.close();
     }
 
-    //Fetch everything inside a user's wishlist using an inner join to load specific gift metadata like titles and image paths
+    //Execute relational inner join statements transformations to bind distinct schema features
     public List<WishlistItem> getUserWishlist(int userId) {
         List<WishlistItem> wishlist = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        //Join query to grab titles, prices, and images from our main gifts table
         String query = "SELECT w." + COLUMN_WISH_ID + ", g." + COLUMN_GIFT_ID + ", g." + COLUMN_TITLE + ", g." + COLUMN_PRICE + ", g.image_path" +
                 " FROM " + TABLE_WISHLIST + " w " +
                 " JOIN " + TABLE_GIFTS + " g ON w." + COLUMN_GIFT_ID + " = g." + COLUMN_GIFT_ID +
@@ -355,7 +330,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             do {
                 WishlistItem item = new WishlistItem(
                         cursor.getInt(0),
-                        userId,              // user_id
+                        userId,
                         cursor.getInt(1),
                         cursor.getString(2),
                         cursor.getDouble(3),
@@ -369,7 +344,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return wishlist;
     }
 
-    //Edit a user's profile username string in storage matching their unique user ID
+    //Perform attribute value modifications procedures bound to specific key values indices
     public boolean updateUsername(int userId, String newUsername) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -379,7 +354,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return rows > 0;
     }
 
-    //Overwrite old user account password records securely
+    //Modify targeted table row cells details safely via the transactional controller handler
     public boolean updatePassword(int userId, String newPassword) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -389,7 +364,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return rows > 0;
     }
 
-    //Completely wipe a user's data—removes their wishlists and reminders along with their main user account record
+    //Execute sequential database persistence drop transactions to eliminate profile tracking nodes
     public boolean deleteUserAccount(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("wishlist", "user_id = ?", new String[]{String.valueOf(userId)});
@@ -399,7 +374,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return rows > 0;
     }
 
-    //Double-check the user's current password input to verify identity before making risky account changes
+    //Verify profile parameters criteria mappings integrity checks before accepting data modifications
     public boolean checkCurrentPassword(int userId, String currentPassword) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM users WHERE user_id = ? AND password = ?";
